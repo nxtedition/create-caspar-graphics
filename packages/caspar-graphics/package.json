@@ -11,8 +11,9 @@
   "files": [
     "bin",
     "config",
+    "lib",
     "scripts",
-    "template",
+    "utils",
     "babel.js"
   ],
   "keywords": [
