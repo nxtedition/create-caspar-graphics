@@ -74,12 +74,12 @@ export default class Controls extends React.Component {
         >
           <Button
             style={{ marginRight: 5 }}
-            title={isPlaying ? 'Pause (Space / F4)' : 'Play (Space / F2)'}
+            title={isPlaying ? 'Pause (F4)' : 'Play (F2)'}
             onClick={isPlaying ? pause : play}
           >
             {isPlaying ? <PauseIcon /> : <PlayIcon />}
           </Button>
-          <Button title="Stop (Backspace / F1)" onClick={stop}>
+          <Button title="Stop (F1)" onClick={stop}>
             <StopIcon />
           </Button>
           <div

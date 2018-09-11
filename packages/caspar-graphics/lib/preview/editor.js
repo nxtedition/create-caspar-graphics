@@ -103,6 +103,8 @@ export default class Editor extends Component {
                 evt.preventDefault()
                 this.props.onSave && this.props.onSave()
               }
+
+              evt.stopPropagation()
             }}
             tabIndex={0}
             ref={measureRef}

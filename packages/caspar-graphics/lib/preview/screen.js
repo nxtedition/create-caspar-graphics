@@ -12,13 +12,11 @@ export default class Screen extends React.Component {
   state = { scale: 1, isFullscreen: false }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.onKeyDown)
     document.addEventListener('webkitfullscreenchange', this.onFullscreenChange)
     document.addEventListener('fullscreenchange', this.onFullscreenChange)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown)
     document.removeEventListener(
       'webkitfullscreenchange',
       this.onFullscreenChange
@@ -34,6 +32,10 @@ export default class Screen extends React.Component {
   }
 
   enterFullscreen = () => {
+    if (this.state.isFullscreen || !this.ref) {
+      return
+    }
+
     if (this.ref.requestFullscreen) {
       this.ref.requestFullscreen()
     } else if (this.ref.webkitRequestFullscreen) {
@@ -50,13 +52,7 @@ export default class Screen extends React.Component {
   }
 
   onKeyDown = evt => {
-    if (evt.key !== 'f' || !this.ref) {
-      return
-    }
-
-    if (this.state.isFullscreen) {
-      this.exitFullscreen()
-    } else {
+    if (evt.key === 'f' || evt.key === 'F12') {
       this.enterFullscreen()
     }
   }
@@ -86,6 +82,8 @@ export default class Screen extends React.Component {
         {({ measureRef }) => (
           <div
             ref={measureRef}
+            tabIndex={0}
+            onKeyDown={this.onKeyDown}
             onMouseEnter={() => {
               this.setState({ showControls: true })
             }}
@@ -93,6 +91,7 @@ export default class Screen extends React.Component {
               this.setState({ showControls: false })
             }}
             style={{
+              outline: 'none',
               display: 'flex',
               alignItems: 'center',
               flex: '1 0 0',

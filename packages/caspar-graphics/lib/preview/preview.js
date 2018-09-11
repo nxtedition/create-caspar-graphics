@@ -6,6 +6,7 @@ import { States } from '../constants'
 import Editor from './editor'
 import Button from './button'
 import Controls from './controls'
+import { getQueryData } from '../utils/parse'
 
 const readSettings = (key, defaultValue) => {
   const value = window.localStorage.getItem(key)
@@ -16,10 +17,18 @@ export default class Preview extends React.Component {
   state = {
     autoPreview: readSettings('autoPreview', true),
     background: readSettings('background', '#ffffff'),
-    data: this.props.currentTemplate.component.previewData || {},
+    data: {
+      ...(this.props.currentTemplate.component.previewData || {}),
+      ...(getQueryData() || {})
+    },
     state: null,
     screenSize: null
   }
+
+  onDataChange = data => {
+    this.setState({ data })
+  }
+
   onStateChange = state => {
     this.setState({ state })
   }
@@ -62,6 +71,7 @@ export default class Preview extends React.Component {
             name={currentTemplate.name}
             ref={ref => (this.cg = ref)}
             template={currentTemplate.component}
+            data={this.state.data}
             onStateChange={this.onStateChange}
             autoPreview={autoPreview}
           />
@@ -113,7 +123,7 @@ export default class Preview extends React.Component {
                 play={this.cg.play}
                 pause={this.cg.pause}
                 stop={this.cg.stop}
-                update={this.cg.update}
+                update={this.onDataChange}
                 data={this.state.data}
                 isPlaying={state === States.playing}
                 background={this.state.background}

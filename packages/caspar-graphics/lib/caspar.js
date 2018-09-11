@@ -11,18 +11,20 @@ let timeline = new TimelineMax({ paused: true })
 export default class Caspar extends React.Component {
   state = {
     isLoaded: false,
+    isFullscreen: false,
     didStart: false,
     didMount: false,
     didError: false,
     preventTimelineAutoplay: false,
     state: undefined,
-    data: getQueryData()
+    data: undefined
   }
 
   constructor(props) {
     super()
     addCasparMethods(this)
     this.Graphic = withTransition(props.template, this.remove)
+    this.state.data = props.data || getQueryData()
   }
 
   componentDidCatch(error, info) {
@@ -37,9 +39,7 @@ export default class Caspar extends React.Component {
       F3: this.load,
       F4: this.pause,
       F6: this.update,
-      F7: this.preview,
-      Backspace: this.stop,
-      ' ': this.state.state === States.playing ? this.pause : this.play
+      F7: this.preview
     }[evt.key]
     fn && fn()
   }
@@ -64,6 +64,28 @@ export default class Caspar extends React.Component {
     this.remove()
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.data !== prevProps.data) {
+      this.update(this.props.data)
+      return
+    }
+
+    const { preventTimelineAutoplay, state, didMount } = this.state
+
+    if (
+      didMount &&
+      state === States.playing &&
+      prevState.state !== States.playing &&
+      preventTimelineAutoplay === false
+    ) {
+      timeline.play()
+    }
+
+    if (this.props.onStateChange && prevState.state !== state) {
+      this.props.onStateChange(state)
+    }
+  }
+
   log = (message, ...rest) => {
     console.log(`${this.props.name || 'caspar'}${message}`)
     rest && rest.length && console.log(rest)
@@ -74,7 +96,7 @@ export default class Caspar extends React.Component {
     this.setState({
       state: States.playing,
       didStart: true,
-      data: {
+      data: this.props.data || {
         ...(this.props.template.previewData || {}),
         ...(getQueryData() || {})
       }
@@ -109,7 +131,7 @@ export default class Caspar extends React.Component {
     this.setState({ isLoaded: true })
   }
 
-  update = (data = {}) => {
+  update = (data = this.props.data || {}) => {
     this.log(`.update(${JSON.stringify(data || {}, null, 2)})`)
     this.setState({ data })
   }
@@ -119,7 +141,10 @@ export default class Caspar extends React.Component {
     timeline.clear()
     timeline.kill()
     timeline = new TimelineMax({ paused: true })
-    this.setState({ didStart: false, data: getQueryData() })
+    this.setState({
+      didStart: false,
+      data: this.props.data || getQueryData()
+    })
 
     // TODO: Uncomment when caspar can handle it.
     // setTimeout(() => window.remove && window.remove(), 100)
