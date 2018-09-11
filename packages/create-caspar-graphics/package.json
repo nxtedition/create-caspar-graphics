@@ -13,7 +13,7 @@
     "url": "https://github.com/nxtedition/caspar-graphics/issues"
   },
   "bin": {
-    "create-caspar-graphics": "./bin/create-caspar-graphics"
+    "create-caspar-graphics": "./bin/create-caspar-graphics.js"
   },
   "dependencies": {
     "ansi-escapes": "^2.0.0",
