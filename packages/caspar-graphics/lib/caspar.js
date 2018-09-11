@@ -11,7 +11,6 @@ let timeline = new TimelineMax({ paused: true })
 export default class Caspar extends React.Component {
   state = {
     isLoaded: false,
-    isFullscreen: false,
     didStart: false,
     didMount: false,
     didError: false,
@@ -155,6 +154,11 @@ export default class Caspar extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.data !== prevProps.data) {
+      this.update(this.props.data)
+      return
+    }
+
     const { preventTimelineAutoplay, state, didMount } = this.state
 
     if (
