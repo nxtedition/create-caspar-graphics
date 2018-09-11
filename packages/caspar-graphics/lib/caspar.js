@@ -6,9 +6,9 @@ import { isProduction, States } from './constants'
 import withTransition from './utils/with-transition'
 import scaleToFit from './utils/scale-to-fit'
 
-let timeline = new TimelineMax({ paused: true })
-
 export default class Caspar extends React.Component {
+  timeline = new TimelineMax({ paused: true })
+
   state = {
     isLoaded: false,
     didStart: false,
@@ -60,7 +60,9 @@ export default class Caspar extends React.Component {
   componentWillUnmount() {
     removeCasparMethods(this)
     document.removeEventListener('keydown', this.onKeyDown)
-    this.remove()
+    this.timeline.clear()
+    this.timeline.kill()
+    this.timeline = null
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -77,7 +79,7 @@ export default class Caspar extends React.Component {
       prevState.state !== States.playing &&
       preventTimelineAutoplay === false
     ) {
-      timeline.play()
+      this.timeline.play()
     }
 
     if (this.props.onStateChange && prevState.state !== state) {
@@ -121,7 +123,7 @@ export default class Caspar extends React.Component {
   pause = () => {
     this.log('.pause()')
     this.setState({ state: States.paused }, () => {
-      timeline.pause()
+      this.timeline.pause()
     })
   }
 
@@ -137,9 +139,9 @@ export default class Caspar extends React.Component {
 
   remove = () => {
     this.log('.remove()')
-    timeline.clear()
-    timeline.kill()
-    timeline = new TimelineMax({ paused: true })
+    this.timeline.clear()
+    this.timeline.kill()
+    this.timeline = new TimelineMax({ paused: true })
     this.setState({
       didStart: false,
       data: this.props.data || getQueryData()
@@ -167,7 +169,7 @@ export default class Caspar extends React.Component {
       prevState.state !== States.playing &&
       preventTimelineAutoplay === false
     ) {
-      timeline.play()
+      this.timeline.play()
     }
 
     if (this.props.onStateChange && prevState.state !== state) {
@@ -198,7 +200,7 @@ export default class Caspar extends React.Component {
         <Graphic
           shouldRender={state !== States.stopped}
           data={data}
-          timeline={timeline}
+          timeline={this.timeline}
           didStart={didStart}
           isPreview={!isProduction || data._preview === true}
           isPaused={state === States.paused}
