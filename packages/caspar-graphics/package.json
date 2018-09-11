@@ -1,6 +1,6 @@
 {
   "name": "caspar-graphics",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Create graphics for CasparCG in React JS with no configuration",
   "repository": "git@github.com:nxtedition/caspar-graphics.git",
   "author": "Boffins Technologies",
