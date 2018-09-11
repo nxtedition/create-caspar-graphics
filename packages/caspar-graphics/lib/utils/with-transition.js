@@ -9,11 +9,9 @@ function FirstChild(props) {
 export default (Component, onRemove) => {
   Component.prototype.componentDidLeave = onRemove
 
-  // return ({ shouldRender, ...props }) => (
-  //   <TransitionGroup component={FirstChild}>
-  //     {shouldRender && <Component {...props} />}
-  //   </TransitionGroup>
-  // )
-  return ({ shouldRender, ...props }) =>
-    shouldRender && <Component {...props} />
+  return ({ shouldRender, ...props }) => (
+    <TransitionGroup component={FirstChild}>
+      {shouldRender && <Component {...props} />}
+    </TransitionGroup>
+  )
 }
