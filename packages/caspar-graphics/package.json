@@ -1,0 +1,59 @@
+{
+  "name": "caspar-graphics",
+  "version": "0.1.0",
+  "description": "Create graphics for CasparCG in React JS with no configuration",
+  "repository": "git@github.com:nxtedition/caspar-graphics.git",
+  "author": "Boffins Technologies",
+  "license": "MIT",
+  "bin": {
+    "caspar-graphics": "./bin/caspar-graphics.js"
+  },
+  "files": [
+    "bin",
+    "config",
+    "scripts",
+    "template",
+    "babel.js"
+  ],
+  "keywords": [
+    "caspar",
+    "react",
+    "webpack"
+  ],
+  "dependencies": {
+    "babel-core": "6.25.0",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "7.1.4",
+    "chalk": "1.1.3",
+    "babel-preset-caspar-graphics": "0.1.0",
+    "css-loader": "0.28.11",
+    "dotenv": "4.0.0",
+    "fs-extra": "3.0.1",
+    "gsap": "2.0.1",
+    "html-webpack-inline-source-plugin": "0.0.10",
+    "html-webpack-plugin": "3.2.0",
+    "junk": "2.1.0",
+    "monaco-editor": "0.14.3",
+    "monaco-editor-webpack-plugin": "^1.4.0",
+    "postcss-flexbugs-fixes": "3.3.0",
+    "postcss-loader": "^2.1.3",
+    "react": "^16.4.2",
+    "react-addons-transition-group": "15.6.2",
+    "react-color": "2.14.1",
+    "react-dev-utils": "5.0.0",
+    "react-dom": "^16.4.2",
+    "react-error-overlay": "^2.0.0",
+    "react-icons": "3.0.5",
+    "react-measure": "2.1.0",
+    "react-router": "4.3.1",
+    "react-router-dom": "4.3.1",
+    "source-map-support": "^0.5.6",
+    "style-loader": "0.22.1",
+    "uglifyjs-webpack-plugin": "1.2.4",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.6.0",
+    "webpack-dev-server": "3.1.5",
+    "webpack-node-externals": "1.6.0",
+    "xml2js": "0.4.19"
+  }
+}

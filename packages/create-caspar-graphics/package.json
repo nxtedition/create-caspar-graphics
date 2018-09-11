@@ -1,0 +1,36 @@
+{
+  "name": "create-caspar-graphics",
+  "version": "0.1.0",
+  "description": "CLI tool to bootstrap CasparCG graphics with no configuration",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Boffins Technologies",
+  "engines": {
+    "node": ">=6"
+  },
+  "repository": "nxtedition/caspar-graphics",
+  "bugs": {
+    "url": "https://github.com/nxtedition/caspar-graphics/issues"
+  },
+  "bin": {
+    "create-caspar-graphics": "./bin/create-caspar-graphics"
+  },
+  "dependencies": {
+    "ansi-escapes": "^2.0.0",
+    "chalk": "^1.1.3",
+    "commander": "^2.9.0",
+    "cross-spawn": "^5.1.0",
+    "execa": "^0.6.3",
+    "fs-extra": "^3.0.0",
+    "mkdirp-then": "^1.2.0",
+    "ms": "^1.0.0",
+    "mz": "^2.6.0",
+    "ora": "^1.2.0",
+    "promise": "^7.1.1"
+  },
+  "keywords": [
+    "caspar",
+    "react",
+    "webpack"
+  ]
+}

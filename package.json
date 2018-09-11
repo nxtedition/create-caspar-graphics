@@ -1,0 +1,36 @@
+{
+  "private": true,
+  "name": "caspar-graphics",
+  "bugs": "https://github.com/nxtedition/caspar-graphics/issues",
+  "homepage": "https://github.com/nxtedition/caspar-graphics#readme",
+  "devDependencies": {
+    "eslint": "^4.6.1",
+    "husky": "^0.14.3",
+    "lerna": "2.10.1",
+    "lint-staged": "^4.0.0",
+    "prettier": "^1.4.4",
+    "ps-tree": "1.1.0",
+    "semver": "5.4.1",
+    "shelljs": "^0.7.8"
+  },
+  "scripts": {
+    "changelog": "lerna-changelog",
+    "format": "prettier --single-quote --no-semi --write 'packages/*/*.js' 'packages/*/!(node_modules)/**/*.js'",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --no-semi --write",
+      "git add"
+    ]
+  },
+  "resolutions": {
+    "file-loader": "1.1.11"
+  },
+  "dependencies": {},
+  "workspaces": [
+    "packages/caspar-graphics",
+    "packages/babel-preset-caspar-graphics",
+    "packages/create-caspar-graphics"
+  ]
+}
