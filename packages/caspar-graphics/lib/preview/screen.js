@@ -1,28 +1,85 @@
 import React from 'react'
 import Measure from 'react-measure'
 
+const calcScale = (containerBounds, graphicBounds) => {
+  const ratio = containerBounds.width / containerBounds.height
+  return ratio >= 16 / 9
+    ? containerBounds.height / graphicBounds.height
+    : containerBounds.width / graphicBounds.width
+}
+
 export default class Screen extends React.Component {
-  state = { scale: 1 }
+  state = { scale: 1, isFullscreen: false }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.onKeyDown)
+    document.addEventListener('webkitfullscreenchange', this.onFullscreenChange)
+    document.addEventListener('fullscreenchange', this.onFullscreenChange)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onKeyDown)
+    document.removeEventListener(
+      'webkitfullscreenchange',
+      this.onFullscreenChange
+    )
+    document.removeEventListener('fullscreenchange ', this.onFullscreenChange)
+  }
+
+  onFullscreenChange = () => {
+    this.setState({
+      isFullscreen:
+        (document.fullscreenElement || document.webkitFullscreenElement) != null
+    })
+  }
+
+  enterFullscreen = () => {
+    if (this.ref.requestFullscreen) {
+      this.ref.requestFullscreen()
+    } else if (this.ref.webkitRequestFullscreen) {
+      this.ref.webkitRequestFullscreen()
+    }
+  }
+
+  exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen()
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen()
+    }
+  }
+
+  onKeyDown = evt => {
+    if (evt.key !== 'f' || !this.ref) {
+      return
+    }
+
+    if (this.state.isFullscreen) {
+      this.exitFullscreen()
+    } else {
+      this.enterFullscreen()
+    }
+  }
 
   render() {
-    const { scale, showControls } = this.state
+    const { height, width } = this.props
+    const { showControls, isFullscreen } = this.state
+    let scale = !isFullscreen
+      ? this.state.scale
+      : calcScale(
+          { height: window.screen.height, width: window.screen.width },
+          { height, width }
+        )
 
     return (
       <Measure
         bounds
         onResize={contentRect => {
-          const { height, width } = contentRect.bounds
-          const ratio = width / height
-          const scale =
-            ratio >= 16 / 9
-              ? height / this.props.height
-              : width / this.props.width
-
-          console.log('resize')
+          const scale = calcScale(contentRect.bounds, { width, height })
           this.setState({ scale })
           this.props.onSizeChange({
-            height: this.props.height * scale,
-            width: this.props.width * scale
+            height: height * scale,
+            width: width * scale
           })
         }}
       >
@@ -43,6 +100,9 @@ export default class Screen extends React.Component {
             }}
           >
             <div
+              ref={ref => {
+                this.ref = ref
+              }}
               style={{
                 background: this.props.background,
                 boxShadow: 'rgba(0, 0, 0, 0.5) 0px 20px 100px -20px',

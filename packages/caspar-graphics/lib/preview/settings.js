@@ -25,7 +25,6 @@ export default class Settings extends React.Component {
   render() {
     const { value, onChange } = this.props
     const { background, autoPreview } = value
-    console.log({ autoPreview })
     const { showColorPicker } = this.state
 
     return (

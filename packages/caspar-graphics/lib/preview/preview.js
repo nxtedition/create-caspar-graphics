@@ -20,11 +20,6 @@ export default class Preview extends React.Component {
     state: null,
     screenSize: null
   }
-
-  componentDidMount() {
-    console.log('mount')
-  }
-
   onStateChange = state => {
     this.setState({ state })
   }
