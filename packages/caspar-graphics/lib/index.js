@@ -4,7 +4,7 @@ import Caspar from './caspar'
 ;(function() {
   // Set window size
   const mode = process.env.MODE
-  const is720 = mode.startsWith('720')
+  const is720 = mode && mode.startsWith('720')
   const width = is720 ? 1280 : 1920
   const height = is720 ? 720 : 1080
   const html = document.documentElement

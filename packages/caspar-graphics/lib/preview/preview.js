@@ -39,7 +39,7 @@ export default class Preview extends React.Component {
   }
 
   onScreenSizeChange = screenSize => {
-    this.setState({ screenSize })
+    // this.setState({ screenSize })
   }
 
   render() {
@@ -95,6 +95,9 @@ export default class Preview extends React.Component {
               display: 'grid',
               gridGap: 10,
               gridTemplateColumns: 'repeat(4, 1fr)',
+              gridAutoRows: 50,
+              paddingRight: 24,
+              overflow: 'overlay',
               width: '50%'
             }}
           >
@@ -103,7 +106,6 @@ export default class Preview extends React.Component {
                 key={name}
                 to={`/${name}`}
                 style={{
-                  background: 'rgba(255, 255, 255, .4)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

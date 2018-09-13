@@ -96,7 +96,6 @@ export default class Caspar extends React.Component {
     this.log('.preview()')
     this.setState({
       state: States.playing,
-      didStart: true,
       data: this.props.data || {
         ...(this.props.template.previewData || {}),
         ...(getQueryData() || {})
@@ -107,7 +106,6 @@ export default class Caspar extends React.Component {
   play = () => {
     this.log('.play()')
     this.setState(state => ({
-      didStart: true,
       state: States.playing,
       data: state.data || {}
     }))
@@ -122,9 +120,7 @@ export default class Caspar extends React.Component {
 
   pause = () => {
     this.log('.pause()')
-    this.setState({ state: States.paused }, () => {
-      this.timeline.pause()
-    })
+    this.setState({ state: States.paused })
   }
 
   load = () => {
@@ -155,26 +151,61 @@ export default class Caspar extends React.Component {
     this.setState({ preventTimelineAutoplay: true })
   }
 
+  onReadyToPlay = shouldPlay => {
+    if (shouldPlay === false) {
+      return
+    }
+
+    this.timeline.play()
+    this.setState({ didStart: true })
+  }
+
+  requestInitialPlay = () => {
+    // If the component has defined a componentWillPlay() method,
+    // we wait for it to tell us it's ready.
+    if (this.graphicRef.componentWillPlay) {
+      this.graphicRef.componentWillPlay(this.onReadyToPlay)
+    } else {
+      this.onReadyToPlay()
+    }
+  }
+
   componentDidUpdate(prevProps, prevState) {
+    // New data from props (dev preview)
     if (this.props.data !== prevProps.data) {
       this.update(this.props.data)
       return
     }
 
-    const { preventTimelineAutoplay, state, didMount } = this.state
-
-    if (
-      didMount &&
-      state === States.playing &&
-      prevState.state !== States.playing &&
-      preventTimelineAutoplay === false
-    ) {
-      this.timeline.play()
+    // Notify listeners about changes in Caspar state.
+    if (this.props.onStateChange && prevState.state !== this.state.state) {
+      this.props.onStateChange(this.state.state)
     }
 
-    if (this.props.onStateChange && prevState.state !== state) {
-      this.props.onStateChange(state)
+    const { state, didMount, didStart } = this.state
+
+    // Wait for component to mount before doing anything.
+    if (!didMount || !this.graphicRef) {
+      return
     }
+
+    // Play
+    if (state === States.playing && prevState.state !== States.playing) {
+      if (!this.state.didStart) {
+        this.requestInitialPlay()
+      } else {
+        this.timeline.play()
+      }
+    }
+
+    // Pause
+    if (state === States.paused && prevState.state !== States.paused) {
+      this.timeline.pause()
+    }
+  }
+
+  onGraphicRef = ref => {
+    this.graphicRef = ref
   }
 
   render() {
@@ -194,10 +225,12 @@ export default class Caspar extends React.Component {
           flexDirection: 'column',
           position: 'relative',
           height: '100%',
+          opacity: didStart ? 1 : 0,
           width: '100%'
         }}
       >
         <Graphic
+          ref={this.onGraphicRef}
           shouldRender={state !== States.stopped}
           data={data}
           timeline={this.timeline}

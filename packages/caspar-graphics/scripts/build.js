@@ -18,6 +18,7 @@ const fs = require('fs-extra')
 const chalk = require('chalk')
 const path = require('path')
 const paths = require('../config/paths')
+const getClientEnv = require('../config/env').getClientEnv
 const packageJson = require(paths.appPackageJson)
 const { mode = '1080p' } = packageJson['caspar-graphics'] || {}
 const createConfig = require('../config/webpack.config.prod')
@@ -27,16 +28,59 @@ const FileSizeReporter = require('react-dev-utils/FileSizeReporter')
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages')
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild
 const junk = require('junk')
+const commandLineArgs = require('command-line-args')
+const optionDefinitions = [
+  { name: 'include', alias: 'i', type: String, multiple: true },
+  { name: 'exclude', alias: 'e', type: String, multiple: true }
+]
 
 function build() {
-  // Remove all content but keep the directory so that
-  // if you're in it, you don't end up in Trash
-  fs.emptyDirSync(paths.appBuild)
-  const templates = fs.readdirSync(paths.appTemplates).filter(junk.not)
-  const config = createConfig(templates)
+  const options = commandLineArgs(optionDefinitions, { argv: process.argv })
+  const allTemplates = fs.readdirSync(paths.appTemplates)
+  const templates = allTemplates.filter(junk.not).filter(template => {
+    if (Array.isArray(options.include)) {
+      return options.include.includes(template)
+    }
+
+    if (Array.isArray(options.exclude)) {
+      return !options.exclude.includes(template)
+    }
+
+    return true
+  })
+
+  if (templates.length === 0) {
+    console.log()
+
+    if (options.include) {
+      console.log(chalk.red(`Couldn't find any of the specified templates.`))
+      console.log(`\nHere are all the available templates:\n`)
+      console.log(' ' + allTemplates.join('\n '))
+    } else {
+      console.log(
+        chalk.red(`Couldn't find any templates to build, aborting...`)
+      )
+    }
+
+    console.log()
+    process.exit(0)
+  }
+
+  // Remove all the templates we're about to build, but keep the directory
+  // so that if you're in it, you don't end up in Trash.
+  templates.forEach(template => {
+    try {
+      fs.unlinkSync(path.join(paths.appBuild, `${template}.html`))
+    } catch (err) {}
+  })
+
+  const dotenv = getClientEnv({ templates, mode })
+  const config = createConfig({ templates, dotenv })
 
   process.noDeprecation = true // turns off that loadQuery clutter.
-  console.log('Building graphics...')
+  console.log(
+    `\nBuilding graphics:\n\n${chalk.cyan(' ' + templates.join('\n '))}\n`
+  )
 
   return new Promise((resolve, reject) => {
     compile(config, (err, stats) => {

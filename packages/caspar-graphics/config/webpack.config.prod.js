@@ -70,7 +70,5 @@ const createConfig = (template, dotenv) => ({
   }
 })
 
-module.exports = (templates, { host = 'localhost', port = 8080 } = {}) => {
-  const dotenv = getClientEnv({ host, port, templates })
-  return templates.map(template => createConfig(template, dotenv))
-}
+module.exports = ({ templates, dotenv }) =>
+  templates.map(template => createConfig(template, dotenv))
