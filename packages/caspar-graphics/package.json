@@ -5,6 +5,7 @@
   "repository": "git@github.com:nxtedition/caspar-graphics.git",
   "author": "Boffins Technologies",
   "license": "MIT",
+  "main": "./index.js",
   "bin": {
     "caspar-graphics": "./bin/caspar-graphics.js"
   },
@@ -31,7 +32,6 @@
     "css-loader": "0.28.11",
     "dotenv": "4.0.0",
     "fs-extra": "3.0.1",
-    "gsap": "2.0.1",
     "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "3.2.0",
     "junk": "2.1.0",
