@@ -10,6 +10,7 @@
     "caspar-graphics": "./bin/caspar-graphics.js"
   },
   "files": [
+    "index.js",
     "bin",
     "config",
     "lib",
