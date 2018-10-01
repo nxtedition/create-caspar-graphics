@@ -8,7 +8,7 @@
   "engines": {
     "node": ">=6"
   },
-  "repository": "nxtedition/caspar-graphics",
+  "repository": "github:nxtedition/create-caspar-graphics",
   "bugs": {
     "url": "https://github.com/nxtedition/caspar-graphics/issues"
   },

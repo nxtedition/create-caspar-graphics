@@ -4,7 +4,7 @@
   "description": "Babel presets for CasparCG Graphics",
   "main": "index.js",
   "author": "Boffins Technologies",
-  "repository": "git@github.com:nxtedition/caspar-graphics.git",
+  "repository": "github:nxtedition/create-caspar-graphics.git",
   "license": "MIT",
   "files": [
     "index.js"

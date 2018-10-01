@@ -2,7 +2,13 @@
 
 Create graphics for [CasparCG](https://www.casparcg.com/) using [React](https://reactjs.org/) — with no build configuration.
 
-## Creating a graphics project
+* [Creating a Graphics Project](#creating-a-graphics-project) – How to create a new graphics project.
+* [Developing Graphics](#developing-graphics) – How to develop graphics for a project bootstrapped with Create Caspar Graphics.
+
+Create Caspar Graphics works on macOS, Windows, and Linux.<br>
+If something doesn’t work, please [file an issue](https://github.com/nxtedition/create-caspar-graphics/issues/new).
+
+## Creating a Graphics Project
 
 To create a new app, you can choose one of the following methods:
 
@@ -79,7 +85,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 Your graphics are now ready to be played in CasparCG!
 
-## Developing graphics
+## Developing Graphics
 
 Start by adding a new folder to your `src/templates` folder, with the name of your new graphic. Then add an index.js file in the folder you just created,
 and make sure it exports a [React Component](https://reactjs.org/docs/react-component.html), and you're done! 💫

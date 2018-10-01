@@ -1,17 +1,7 @@
-# Create Caspar Graphics
+# create-caspar-graphics
 
-Create graphic templates for Caspar CG using React — all in one command.
+This package includes the global command for [Create Caspar Graphics](https://github.com/nxtedition/create-caspar-graphics).<br>
+Please refer to its documentation:
 
-```
-npx create-caspar-graphics my-proj
-cd my-proj
-npm start
-```
-
-or.... with the `yarn create` command:
-
-```
-yarn create caspar-graphics my-proj
-cd my-proj
-yarn start
-```
+* [Getting Started](https://github.com/nxtedition/create-caspar-graphics#creating-a-graphics-project) – How to create a new graphics project.
+* [User Guide](https://github.com/nxtedition/create-caspar-graphics#developing-graphics) – How to develop graphics for a project bootstrapped with Create Caspar Graphics.
