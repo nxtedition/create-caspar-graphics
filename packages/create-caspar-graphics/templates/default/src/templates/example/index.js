@@ -3,17 +3,6 @@ import React from 'react'
 export default class Example extends React.Component {
   static previewData = { text: 'Example Text' }
 
-  componentDidMount() {
-    this.props.timeline.from(this.el, 0.6, { opacity: 0, x: '-=30' })
-  }
-
-  componentWillLeave(callback) {
-    this.props.timeline
-      .eventCallback('onReverseComplete', callback)
-      .timeScale(2)
-      .reverse()
-  }
-
   render() {
     const { text } = this.props.data
 

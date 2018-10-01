@@ -2,27 +2,25 @@ import React from 'react'
 import { getQueryData } from './utils/parse'
 import { addCasparMethods, removeCasparMethods } from './utils/caspar-methods'
 import { isProduction, States } from './constants'
-import withTransition from './utils/with-transition'
 import scaleToFit from './utils/scale-to-fit'
+import TransitionGroup from 'react-addons-transition-group'
+import FirstChild from './utils/first-child'
 
 export default class Caspar extends React.Component {
-  state = {
-    isLoaded: false,
-    didError: false,
-    state: undefined,
-    data: undefined
-  }
-
   constructor(props) {
     super()
 
-    addCasparMethods(this)
-    this.Graphic = withTransition(props.template, this.remove)
-    this.state.data = props.data || getQueryData()
+    this.state = {
+      state: States.loading,
+      data: props.data || getQueryData(),
+      didError: false
+    }
 
     if (this.state.data._fit) {
       scaleToFit()
     }
+
+    addCasparMethods(this)
   }
 
   componentDidCatch(error, info) {
@@ -60,6 +58,16 @@ export default class Caspar extends React.Component {
     rest && rest.length && console.log(rest)
   }
 
+  update = (data = this.props.data || {}) => {
+    this.log(`.update(${JSON.stringify(data || {}, null, 2)})`)
+    this.setState({ data })
+  }
+
+  load = () => {
+    this.log('.load()')
+    this.setState({ state: States.loaded })
+  }
+
   preview = () => {
     this.log('.preview()')
     this.setState({
@@ -79,29 +87,23 @@ export default class Caspar extends React.Component {
     }))
   }
 
-  stop = () => {
-    this.log('.stop()')
-    this.setState({ state: States.stopped })
-  }
-
   pause = () => {
     this.log('.pause()')
     this.setState({ state: States.paused })
   }
 
-  load = () => {
-    this.log('.load()')
-    this.setState({ isLoaded: true })
+  stop = () => {
+    this.log('.stop()')
+    this.setState({ state: States.stopping })
   }
 
-  update = (data = this.props.data || {}) => {
-    this.log(`.update(${JSON.stringify(data || {}, null, 2)})`)
-    this.setState({ data })
+  componentDidLeave = () => {
+    this.setState({ state: States.stopped })
+    this.remove()
   }
 
   remove = () => {
     this.log('.remove()')
-
     // TODO: Uncomment when caspar can handle it.
     // setTimeout(() => window.remove && window.remove(), 100)
   }
@@ -120,8 +122,10 @@ export default class Caspar extends React.Component {
   }
 
   render() {
-    const { Graphic } = this
+    const { template: Template } = this.props
     const { state, data, didError } = this.state
+    const shouldRender =
+      !didError && state !== States.stopping && state !== States.stopped
 
     return (
       <div
@@ -139,12 +143,9 @@ export default class Caspar extends React.Component {
           width: '100%'
         }}
       >
-        <Graphic
-          data={data}
-          state={state}
-          shouldRender={state !== States.stopped && !didError}
-          onRemove={this.remove}
-        />
+        <TransitionGroup component={FirstChild}>
+          {shouldRender && <Template data={data} state={state} />}
+        </TransitionGroup>
       </div>
     )
   }
