@@ -2,7 +2,7 @@
   "name": "caspar-graphics",
   "version": "0.2.2",
   "description": "Create graphics for CasparCG in React JS with no configuration",
-  "repository": "git@github.com:nxtedition/caspar-graphics.git",
+  "repository": "github:nxtedition/caspar-graphics",
   "author": "Boffins Technologies",
   "license": "MIT",
   "main": "./index.js",
