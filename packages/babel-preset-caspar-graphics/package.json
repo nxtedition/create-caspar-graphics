@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-caspar-graphics",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Babel presets for CasparCG Graphics",
   "main": "index.js",
   "author": "Boffins Technologies",
