@@ -16,6 +16,11 @@ export function getQueryData() {
 export function parse(str) {
   try {
     const m = str.match(/<templateData>(.*)<\/templateData>/) || []
+
+    if (m.length < 2) {
+      return JSON.parse(str)
+    }
+
     let str2 = m[1]
     str2 = Base64.decode(str2)
     return JSON.parse(str2)
