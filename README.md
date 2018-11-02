@@ -1,3 +1,26 @@
+Table of Contents
+=================
+
+   * [Create Caspar Graphics]()
+      * [Creating a Graphics Project]()
+         * [npx]()
+         * [npm]()
+         * [Yarn]()
+         * [npm start or <code>yarn start</code>]()
+         * [npm run build or <code>yarn build</code>]()
+      * [Developing Graphics]()
+         * [Props]()
+            * [data]()
+            * [state]()
+         * [componentWillLeave(onComplete)]()
+         * [static previewData]()
+         * [Example (using GSAP)]()
+         * [Viewing Your Graphic]()
+            * [With Development UI]()
+            * [Without Development UI]()
+            * [Query Parameters]()
+      * [Extras]()
+
 # Create Caspar Graphics
 
 Create graphics for [CasparCG](https://www.casparcg.com/) using [React](https://reactjs.org/) — with no build configuration.
@@ -102,7 +125,7 @@ The only thing different from a "normal" React component, is that you have one e
 
 Contains the data sent by CasparCG. Every time a new `update()` is performed, you'll receive the new data in `props.data`.
 
-### `state`
+#### `state`
 > string | defaults to `"LOADING"`
 
 The current Caspar state. All available states are exported under the `States` namespace:
@@ -190,12 +213,20 @@ export default class Example extends Component {
 }
 ```
 
+### Viewing Your Graphic
+
+#### With Development UI
+
 To view your graphic, just go to [http://localhost:8080/example](http://localhost:8080/example).
+
+#### Without Development UI
 
 If you want to view it outside of the provided GUI, e.g. directly in CasparCG,
 you can also go to [http://localhost:8080/example.html](http://localhost:8080/example.html).
 
 > Tip: use your local IP instead of localhost to view it in CasparCG.
+
+#### Query Parameters
 
 You can pass a few query parameters:
 
@@ -213,7 +244,6 @@ Add a background to your graphic's container. Either pass true, for a green colo
 > boolean | defaults to `false`
 
 If true, the graphic will be played immediately when mounted.  
-
 
 **e.g.**
 > http://localhost:8080/example.html?_fit=true&_bg="#ff0000"&_autoPreview=true
