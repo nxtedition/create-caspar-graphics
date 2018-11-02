@@ -15,10 +15,10 @@ Table of Contents
          * [componentWillLeave(onComplete)]()
          * [static previewData]()
          * [Example (using GSAP)]()
-         * [Viewing your graphic]()
-            * [With development UI]()
-            * [Without development UI]()
-            * [Query parameters]()
+         * [Viewing Your Graphic]()
+            * [With Development UI]()
+            * [Without Development UI]()
+            * [Query Parameters]()
       * [Extras]()
 
 # Create Caspar Graphics
@@ -213,20 +213,20 @@ export default class Example extends Component {
 }
 ```
 
-### Viewing your graphic
+### Viewing Your Graphic
 
-#### With development UI
+#### With Development UI
 
 To view your graphic, just go to [http://localhost:8080/example](http://localhost:8080/example).
 
-#### Without development UI
+#### Without Development UI
 
 If you want to view it outside of the provided GUI, e.g. directly in CasparCG,
 you can also go to [http://localhost:8080/example.html](http://localhost:8080/example.html).
 
 > Tip: use your local IP instead of localhost to view it in CasparCG.
 
-#### Query parameters
+#### Query Parameters
 
 You can pass a few query parameters:
 
