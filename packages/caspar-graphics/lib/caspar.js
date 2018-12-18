@@ -7,6 +7,18 @@ import TransitionGroup from 'react-addons-transition-group'
 import FirstChild from './utils/first-child'
 
 export default class Caspar extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    // NOTE: This can only happen in development (from preview).
+    // New data from props. Treat it as if a "normal" update() occured.
+    if (props.data !== state.data) {
+      const message = `.update(${JSON.stringify(props.data || {}, null, 2)})`
+      console.log(`${props.name || 'caspar'}${message}`)
+      return { data: props.data }
+    }
+
+    return null
+  }
+
   constructor(props) {
     super()
 
@@ -109,12 +121,6 @@ export default class Caspar extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // New data from props (i.e. from dev preview).
-    if (this.props.data !== prevProps.data) {
-      this.update(this.props.data)
-      return
-    }
-
     // Notify listeners about changes in Caspar state.
     if (this.props.onStateChange && prevState.state !== this.state.state) {
       this.props.onStateChange(this.state.state)
