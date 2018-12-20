@@ -125,13 +125,20 @@ export default class Caspar extends React.Component {
     if (this.props.onStateChange && prevState.state !== this.state.state) {
       this.props.onStateChange(this.state.state)
     }
+
+    // HACK: notify clients about the stopping state before starting
+    // the unmounting process (once it's started, no prop updates will
+    // propagate, but cDU is still called with old props).
+    if (this.state.state === States.stopping) {
+      this.setState({ state: States.willStop })
+    }
   }
 
   render() {
     const { template: Template } = this.props
     const { state, data, didError } = this.state
     const shouldRender =
-      !didError && state !== States.stopping && state !== States.stopped
+      !didError && state !== States.willStop && state !== States.stopped
 
     return (
       <div
