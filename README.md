@@ -101,7 +101,7 @@ And you will see the build errors and lint warnings in the console.
 
 Builds your graphics for production to the `dist` folder.<br>
 
-It correctly bundles React in production mode and optimizes the build for the best performance, and then inlines every graphic into itws own HTML file.
+It correctly bundles React in production mode and optimizes the build for the best performance, and then inlines every graphic into its own HTML file.
 
 > **Tip**: use `--include` (shorthand `-i`) or `--exlude` (shorthand `-e`)  to control which graphics get built.
 
@@ -147,7 +147,7 @@ Usually, you only have to care about the states `playing` and `pausing`, since e
 > function
 
 When Caspar sends the `stop()` command, `props.state` will change to `"STOPPING"`. If you don't do anything, your graphic will just be removed.
-Usually though, you'd want to take off your graphic with an animation. The lifceycle method `componentWillLeave` is your chance to just that.
+Usually though, you'd want to take off your graphic with an animation. The lifceycle method `componentWillLeave` is your chance to do just that.
 
 It's important that you call the `onComplete` callback once your out animation is complete, since this is what will actually remove the graphic.
 
