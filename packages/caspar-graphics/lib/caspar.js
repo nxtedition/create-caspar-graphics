@@ -1,4 +1,4 @@
-import React from 'react'
+\import React from 'react'
 import { getQueryData } from './utils/parse'
 import { addCasparMethods, removeCasparMethods } from './utils/caspar-methods'
 import { isProduction, States } from './constants'
@@ -25,7 +25,17 @@ export default class Caspar extends React.Component {
     this.state = {
       state: States.loading,
       data: props.data || getQueryData(),
-      didError: false
+      didError: false,
+      visibleReference: false,
+      referenceImage: null
+    }
+
+    try {
+      this.state.referenceImage = require(`${process.env.DEV_TEMPLATES_DIR}/${
+        props.name
+      }/reference.jpg`)
+    } catch (e) {
+      console.log('No reference image found')
     }
 
     if (this.state.data._fit) {
@@ -47,7 +57,8 @@ export default class Caspar extends React.Component {
       F3: this.load,
       F4: this.pause,
       F6: this.update,
-      F7: this.preview
+      F7: this.preview,
+      F8: this.toggleReference
     }[evt.key]
     fn && fn()
   }
@@ -109,6 +120,18 @@ export default class Caspar extends React.Component {
     this.setState({ state: States.stopping })
   }
 
+  toggleReference = () => {
+    if (!this.state.referenceImage) {
+      return alert(
+        `BEWARE! There\'s no reference image. Set an image findable at 'src/templates/${
+          this.props.name
+        }/reference.jpg' and try again.`
+      )
+    }
+
+    this.setState({ visibleReference: !this.state.visibleReference })
+  }
+
   componentDidLeave = () => {
     this.setState({ state: States.stopped })
     this.remove()
@@ -136,12 +159,19 @@ export default class Caspar extends React.Component {
 
   render() {
     const { template: Template } = this.props
-    const { state, data, didError } = this.state
+    const {
+      state,
+      data,
+      didError,
+      visibleReference,
+      referenceImage
+    } = this.state
     const shouldRender =
       !didError && state !== States.willStop && state !== States.stopped
 
     return (
       <div
+        id="transitionGroupContainer"
         style={{
           background:
             data._bg != null
@@ -159,6 +189,19 @@ export default class Caspar extends React.Component {
         <TransitionGroup component={FirstChild}>
           {shouldRender && <Template data={data} state={state} />}
         </TransitionGroup>
+
+        {referenceImage && (
+          <div
+            id="reference"
+            style={{
+              position: 'absolute',
+              display: visibleReference ? 'flex' : 'none',
+              opacity: 0.5
+            }}
+          >
+            <img src={referenceImage} width="100%" height="100%" />
+          </div>
+        )}
       </div>
     )
   }
