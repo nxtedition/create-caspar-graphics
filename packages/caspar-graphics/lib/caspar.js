@@ -60,7 +60,7 @@ export default class Caspar extends React.Component {
       F4: this.pause,
       F6: this.update,
       F7: this.preview,
-      F8: this.toggleReference
+      F9: this.toggleReference
     }[evt.key]
     fn && fn()
   }
@@ -123,7 +123,6 @@ export default class Caspar extends React.Component {
   }
 
   toggleReference = () => {
-
     if (isProduction) return
 
     if (!this.state.referenceImage) {
@@ -194,17 +193,18 @@ export default class Caspar extends React.Component {
           {shouldRender && <Template data={data} state={state} />}
         </TransitionGroup>
 
-        {(!isProduction && referenceImage) && (
-          <div
-            style={{
-              position: 'absolute',
-              display: visibleReference ? 'flex' : 'none',
-              opacity: 0.5
-            }}
-          >
-            <img src={referenceImage} width="100%" height="100%" />
-          </div>
-        )}
+        {!isProduction &&
+          referenceImage && (
+            <div
+              style={{
+                position: 'absolute',
+                display: visibleReference ? 'flex' : 'none',
+                opacity: 0.5
+              }}
+            >
+              <img src={referenceImage} width="100%" height="100%" />
+            </div>
+          )}
       </div>
     )
   }
