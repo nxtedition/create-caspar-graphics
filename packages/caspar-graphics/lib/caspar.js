@@ -1,4 +1,4 @@
-\import React from 'react'
+import React from 'react'
 import { getQueryData } from './utils/parse'
 import { addCasparMethods, removeCasparMethods } from './utils/caspar-methods'
 import { isProduction, States } from './constants'
@@ -171,7 +171,6 @@ export default class Caspar extends React.Component {
 
     return (
       <div
-        id="transitionGroupContainer"
         style={{
           background:
             data._bg != null
@@ -192,7 +191,6 @@ export default class Caspar extends React.Component {
 
         {referenceImage && (
           <div
-            id="reference"
             style={{
               position: 'absolute',
               display: visibleReference ? 'flex' : 'none',
