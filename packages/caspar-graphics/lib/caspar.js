@@ -30,12 +30,14 @@ export default class Caspar extends React.Component {
       referenceImage: null
     }
 
-    try {
-      this.state.referenceImage = require(`${process.env.DEV_TEMPLATES_DIR}/${
-        props.name
-      }/reference.jpg`)
-    } catch (e) {
-      console.log('No reference image found')
+    if (!isProduction) {
+      try {
+        this.state.referenceImage = require(`${process.env.DEV_TEMPLATES_DIR}/${
+          props.name
+        }/reference.jpg`)
+      } catch (e) {
+        console.log('No reference image found')
+      }
     }
 
     if (this.state.data._fit) {
@@ -121,6 +123,9 @@ export default class Caspar extends React.Component {
   }
 
   toggleReference = () => {
+
+    if (isProduction) return
+
     if (!this.state.referenceImage) {
       return alert(
         `BEWARE! There\'s no reference image. Set an image findable at 'src/templates/${
@@ -189,7 +194,7 @@ export default class Caspar extends React.Component {
           {shouldRender && <Template data={data} state={state} />}
         </TransitionGroup>
 
-        {referenceImage && (
+        {(!isProduction && referenceImage) && (
           <div
             style={{
               position: 'absolute',
