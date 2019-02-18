@@ -31,8 +31,9 @@ export default class Controls extends React.Component {
   componentDidUpdate() {
     // Force editor to remount
     if (
-      JSON.stringify(this.props.data) !==
-      JSON.stringify(this.editor.getContent())
+      this.editor &&
+      JSON.stringify(this.editor.getContent()) !==
+        JSON.stringify(this.props.data)
     ) {
       this.setState(state => ({ updates: state.updates + 1 }))
     }
