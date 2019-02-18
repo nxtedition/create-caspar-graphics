@@ -198,6 +198,7 @@ export default class Caspar extends React.Component {
             <div
               style={{
                 position: 'absolute',
+                pointerEvents: 'none',
                 display: visibleReference ? 'flex' : 'none',
                 opacity: 0.5
               }}
