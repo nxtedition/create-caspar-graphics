@@ -22,10 +22,20 @@ const Tab = ({ children, onClick, isActive }) => (
 )
 
 export default class Controls extends React.Component {
-  state = { view: 'data' }
+  state = { view: 'data', updates: 0 }
 
   onEditorRef = ref => {
     this.editor = ref
+  }
+
+  componentDidUpdate() {
+    // Force editor to remount
+    if (
+      JSON.stringify(this.props.data) !==
+      JSON.stringify(this.editor.getContent())
+    ) {
+      this.setState(state => ({ updates: state.updates + 1 }))
+    }
   }
 
   onUpdate = () => {
@@ -124,6 +134,7 @@ export default class Controls extends React.Component {
           ) : (
             <React.Fragment>
               <Editor
+                key={this.state.updates}
                 ref={this.onEditorRef}
                 value={this.props.data}
                 onSave={this.onUpdate}
@@ -137,6 +148,37 @@ export default class Controls extends React.Component {
               </Button>
             </React.Fragment>
           )}
+        </div>
+        <div
+          style={{
+            alignItems: 'center',
+            color: '#6e6e6e',
+            display: 'flex',
+            fontSize: 12,
+            height: 24,
+            width: '100%',
+            position: 'absolute',
+            bottom: 5,
+            paddingLeft: 10,
+            cursor: 'pointer'
+          }}
+        >
+          {Object.entries(this.props.previewDataList || {}).map((entry, i) => (
+            <div
+              key={i}
+              onClick={() => {
+                this.props.update(entry[1])
+              }}
+              style={{
+                marginRight: 5,
+                padding: 2,
+                border: '1px solid grey',
+                lineHeight: '11px'
+              }}
+            >
+              {entry[0]}
+            </div>
+          ))}
         </div>
       </div>
     )

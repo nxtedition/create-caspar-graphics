@@ -140,37 +140,6 @@ export default class Preview extends React.Component {
                 previewDataList={currentTemplate.component.previewDataList}
               />
             )}
-            <div
-              style={{
-                alignItems: 'center',
-                color: '#6e6e6e',
-                display: 'flex',
-                fontSize: 12,
-                height: 24,
-                width: '100%',
-                position: 'absolute',
-                bottom: 25,
-                paddingLeft: 10,
-                cursor: 'pointer'
-              }}
-            >
-              {Object.entries(
-                currentTemplate.component.previewDataList || {}
-              ).map((entry, i) => (
-                <div
-                  key={i}
-                  onClick={() => this.setState({ data: entry[1] })}
-                  style={{
-                    marginRight: 5,
-                    padding: 2,
-                    border: '1px solid grey',
-                    lineHeight: '11px'
-                  }}
-                >
-                  {entry[0]}
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
