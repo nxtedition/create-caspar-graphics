@@ -22,7 +22,8 @@ export default class Preview extends React.Component {
       ...(getQueryData() || {})
     },
     state: null,
-    screenSize: null
+    screenSize: null,
+    cg: null
   }
 
   onDataChange = data => {
@@ -40,6 +41,10 @@ export default class Preview extends React.Component {
 
   onScreenSizeChange = screenSize => {
     // this.setState({ screenSize })
+  }
+
+  onCasparRef = ref => {
+    this.setState({ cg: ref })
   }
 
   render() {
@@ -69,7 +74,7 @@ export default class Preview extends React.Component {
           <Caspar
             key={currentTemplate.name}
             name={currentTemplate.name}
-            ref={ref => (this.cg = ref)}
+            ref={this.onCasparRef}
             template={currentTemplate.component}
             data={this.state.data}
             onStateChange={this.onStateChange}
@@ -120,11 +125,11 @@ export default class Preview extends React.Component {
             ))}
           </div>
           <div style={{ flex: '0 0 50%', display: 'flex' }}>
-            {this.cg != null && (
+            {this.state.cg != null && (
               <Controls
-                play={this.cg.play}
-                pause={this.cg.pause}
-                stop={this.cg.stop}
+                play={this.state.cg.play}
+                pause={this.state.cg.pause}
+                stop={this.state.cg.stop}
                 update={this.onDataChange}
                 data={this.state.data}
                 isPlaying={state === States.playing}
