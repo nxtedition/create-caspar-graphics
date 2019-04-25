@@ -37,13 +37,14 @@ setPorts()
     const config = createConfig({ templates, appName, dotenv })
     const urls = prepareUrls(protocol, host, port)
     const proxySetting = require(paths.appPackageJson).proxy
-    const compiler = createCompiler(
+    const useYarn = fs.existsSync(paths.yarnLockFile);
+    const compiler = createCompiler({
       webpack,
       config,
       appName,
       urls,
-      paths.useYarn
-    )
+      useYarn
+    })
     const serverConfig = createDevServerConfig(
       config,
       prepareProxy(proxySetting, paths.appPublic),

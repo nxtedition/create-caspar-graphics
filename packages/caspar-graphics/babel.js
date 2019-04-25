@@ -1,1 +1,1 @@
-module.exports = require('babel-preset-caspar-graphics')
+module.exports = require('babel-preset-react-app')

@@ -4,7 +4,7 @@
   "homepage": "https://github.com/nxtedition/create-caspar-graphics#readme",
   "devDependencies": {
     "eslint": "^4.6.1",
-    "husky": "^0.14.3",
+    "husky": "2.1.0",
     "lerna": "2.10.1",
     "lint-staged": "^4.0.0",
     "prettier": "^1.4.4",
