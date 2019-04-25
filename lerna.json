@@ -2,7 +2,6 @@
   "lerna": "2.10.1",
   "packages": [
     "packages/caspar-graphics",
-    "packages/babel-preset-caspar-graphics",
     "packages/create-caspar-graphics"
   ],
   "useWorkspaces": true,
