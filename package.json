@@ -14,8 +14,7 @@
   },
   "scripts": {
     "changelog": "lerna-changelog",
-    "format": "prettier --single-quote --no-semi --write 'packages/*/*.js' 'packages/*/!(node_modules)/**/*.js'",
-    "precommit": "lint-staged"
+    "format": "prettier --single-quote --no-semi --write 'packages/*/*.js' 'packages/*/!(node_modules)/**/*.js'"
   },
   "lint-staged": {
     "*.js": [
@@ -31,5 +30,10 @@
     "packages/caspar-graphics",
     "packages/babel-preset-caspar-graphics",
     "packages/create-caspar-graphics"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
 }
