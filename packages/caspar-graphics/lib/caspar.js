@@ -173,6 +173,10 @@ export default class Caspar extends React.Component {
     const shouldRender =
       !didError && state !== States.willStop && state !== States.stopped
 
+    const mode = process.env.MODE
+    const is720 = mode && mode.startsWith('720')
+    const modeWidth = is720 ? 1280 : 1920
+
     return (
       <div
         style={{
@@ -203,7 +207,7 @@ export default class Caspar extends React.Component {
                 opacity: 0.5
               }}
             >
-              <img src={referenceImage} width="100%" height="100%" />
+              <img src={referenceImage} width={modeWidth} height="100%" />
             </div>
           )}
       </div>
