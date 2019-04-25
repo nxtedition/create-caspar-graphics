@@ -78,7 +78,14 @@ module.exports = ({ templates, appName, dotenv }) => ({
       },
       {
         test: /\.(jpe?g|png|webm|ttf|eot|svg|otf|woff(2)?|mp4)(\?[a-z0-9=&.]+)?$/,
-        loader: require.resolve('url-loader')
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192
+            }
+          }
+        ]
       }
     ]
   },
