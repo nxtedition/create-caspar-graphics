@@ -47,7 +47,7 @@ const createConfig = (template, dotenv) => ({
           {
             loader: 'url-loader',
             options: {
-              limit: 8192
+              limit: 8000000
             }
           }
         ]
