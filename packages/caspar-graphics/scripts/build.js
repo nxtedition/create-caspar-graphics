@@ -34,7 +34,7 @@ const optionDefinitions = [
   { name: 'exclude', alias: 'e', type: String, multiple: true }
 ]
 
-function build() {
+async function build() {
   const options = commandLineArgs(optionDefinitions, { argv: process.argv })
   const allTemplates = fs.readdirSync(paths.appTemplates)
   const templates = allTemplates.filter(junk.not).filter(template => {
@@ -74,50 +74,52 @@ function build() {
     } catch (err) {}
   })
 
-  const dotenv = getClientEnv({ templates, mode })
-  const config = createConfig({ templates, dotenv })
-
   process.noDeprecation = true // turns off that loadQuery clutter.
   console.log(
     `\nBuilding graphics:\n\n${chalk.cyan(' ' + templates.join('\n '))}\n`
   )
 
-  return new Promise((resolve, reject) => {
-    compile(config, (err, stats) => {
-      if (err) {
-        reject(err)
-      }
+  for (const template of templates) {
+    const dotenv = getClientEnv({ templates: [template], mode })
+    const config = createConfig({ templates: [template], dotenv })
 
-      const messages = formatWebpackMessages(stats.toJson({}, true))
-      if (messages.errors.length) {
-        return reject(new Error(messages.errors.join('\n\n')))
-      }
-
-      if (
-        messages.warnings.length &&
-        process.env.CI &&
-        (typeof process.env.CI !== 'string' ||
-          process.env.CI.toLowerCase() !== 'false')
-      ) {
-        console.log(
-          chalk.yellow(
-            '\nTreating warnings as errors because process.env.CI = true.\n' +
-              'Most CI servers set it automatically.\n'
-          )
-        )
-        return reject(new Error(messages.warnings.join('\n\n')))
-      }
-
-      // Remove js files.
-      fs.readdirSync(paths.appBuild).forEach(file => {
-        if (file.match(/.*\.js/gi)) {
-          fs.unlinkSync(path.join(paths.appBuild, file))
+    await new Promise((resolve, reject) => {
+      compile(config, (err, stats) => {
+        if (err) {
+          reject(err)
         }
-      })
 
-      return resolve()
+        const messages = formatWebpackMessages(stats.toJson({}, true))
+        if (messages.errors.length) {
+          return reject(new Error(messages.errors.join('\n\n')))
+        }
+
+        if (
+          messages.warnings.length &&
+          process.env.CI &&
+          (typeof process.env.CI !== 'string' ||
+            process.env.CI.toLowerCase() !== 'false')
+        ) {
+          console.log(
+            chalk.yellow(
+              '\nTreating warnings as errors because process.env.CI = true.\n' +
+                'Most CI servers set it automatically.\n'
+            )
+          )
+          return reject(new Error(messages.warnings.join('\n\n')))
+        }
+
+        // Remove js files.
+        fs.readdirSync(paths.appBuild).forEach(file => {
+          if (file.match(/.*\.js/gi)) {
+            fs.unlinkSync(path.join(paths.appBuild, file))
+          }
+        })
+
+        return resolve()
+      })
     })
-  })
+  }
 }
 
 // Wrap webpack compile in a try catch.
