@@ -30,7 +30,7 @@ export default class Caspar extends React.Component {
       referenceImage: null
     }
 
-    if (!isProduction) {
+    if (process.env.NODE_ENV !== 'production') {
       try {
         this.state.referenceImage = require(`${process.env.DEV_TEMPLATES_DIR}/${
           props.name
