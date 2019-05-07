@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const nodePath = require('./env').nodePath
 const paths = require('./paths')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
