@@ -28,7 +28,6 @@
   "dependencies": {},
   "workspaces": [
     "packages/caspar-graphics",
-    "packages/babel-preset-caspar-graphics",
     "packages/create-caspar-graphics"
   ],
   "husky": {

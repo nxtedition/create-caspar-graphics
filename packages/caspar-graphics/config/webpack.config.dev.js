@@ -1,6 +1,5 @@
 const webpack = require('webpack')
 const path = require('path')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const nodePath = require('./env').nodePath
