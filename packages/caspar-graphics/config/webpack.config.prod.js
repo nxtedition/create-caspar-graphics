@@ -1,10 +1,9 @@
 const webpack = require('webpack')
 const path = require('path')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const paths = require('./paths')
-const getClientEnv = require('./env').getClientEnv
+const CompressionPlugin = require('compression-webpack-plugin')
 
 const createConfig = (template, dotenv) => ({
   mode: 'production',
@@ -47,7 +46,7 @@ const createConfig = (template, dotenv) => ({
           {
             loader: 'url-loader',
             options: {
-              limit: 8000000
+              limit: 80000
             }
           }
         ]
@@ -63,18 +62,9 @@ const createConfig = (template, dotenv) => ({
       inlineSource: '.(js|css)$'
     }),
     new HtmlWebpackInlineSourcePlugin(),
-    new webpack.DefinePlugin(dotenv.stringified)
-  ],
-  optimization: {
-    minimize: true,
-    minimizer: [
-      new UglifyJsPlugin({
-        parallel: true,
-        cache: true,
-        sourceMap: false
-      })
-    ]
-  }
+    new webpack.DefinePlugin(dotenv.stringified),
+    new CompressionPlugin()
+  ]
 })
 
 module.exports = ({ templates, dotenv }) =>
