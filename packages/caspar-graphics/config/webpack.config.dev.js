@@ -69,7 +69,7 @@ module.exports = ({ templates, appName, dotenv }) => ({
             options: {
               babelrc: true,
               cacheDirectory: true,
-              presets: [require.resolve('../babel')]
+              presets: [require('babel-preset-react-app')]
             }
           }
         ]

@@ -1,1 +1,1 @@
-module.exports = require('babel-preset-react-app')
+module.exports = [require('babel-preset-react-app')]
