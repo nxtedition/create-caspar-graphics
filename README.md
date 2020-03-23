@@ -248,6 +248,10 @@ If true, the graphic will be played immediately when mounted.
 **e.g.**
 > http://localhost:8080/example.html?_fit=true&_bg="#ff0000"&_autoPreview=true
 
+#### Graphics background preview
+
+It is possible to put an image called `reference.jpg` in the same folder as the template (next to the index.js file). And then use `f9` to toggle its visibility.
+
 ## Extras
 
 Your new project comes installed with [Prettier](https://prettier.io/) and [lint-staged](https://github.com/okonet/lint-staged).
