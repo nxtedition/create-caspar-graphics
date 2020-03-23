@@ -87,7 +87,7 @@ export default class Settings extends React.Component {
               onChange('autoPreview')(evt.target.checked)
             }}
           />
-          <label htmlFor="autoPreview">Auto Preview</label>
+          <label htmlFor="autoPreview">Auto Play</label>
         </Row>
       </div>
     )

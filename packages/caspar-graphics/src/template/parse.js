@@ -69,8 +69,8 @@ function normalize(data) {
         value && (value.text || value.test) === 'true'
           ? true
           : (value.text || value.test) === 'false'
-            ? false
-            : value.text || value.test
+          ? false
+          : value.text || value.test
     }))
     .reduce((acc, curr) => ({ ...acc, ...curr }), {})
 }

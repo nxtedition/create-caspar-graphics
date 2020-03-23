@@ -4,11 +4,9 @@
   <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
   <title><%= htmlWebpackPlugin.options.title %></title>
   <style>
-    html,
-    body,
-    #app {
+    html, body,
+    #root {
       overflow: hidden;
-      font-family: sans-serif;
       margin: 0px;
       height: 100%;
       width: 100%;
@@ -23,8 +21,9 @@
       color: inherit;
     }
 
-    #app {
+    #root {
       -webkit-font-smoothing: antialiased;
+      font-family: sans-serif;
     }
 
     ::-webkit-scrollbar {
@@ -41,6 +40,6 @@
   </style>
 </head>
 <body>
-  <div id="app" />
+  <div id="root" />
 </body>
 </html>

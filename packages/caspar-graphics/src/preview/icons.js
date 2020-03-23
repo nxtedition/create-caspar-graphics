@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const PlayIcon = ({ props }) => (
-  <svg fill={'currentColor'} height="10px" viewBox="0 0 11 14">
+  <svg fill={'currentColor'} height="11px" viewBox="0 0 11 14">
     <g stroke="none" strokeWidth="1">
       <g transform="translate(-136.000000, -293.000000)">
         <g transform="translate(54.000000, 291.000000)">
@@ -13,7 +13,7 @@ export const PlayIcon = ({ props }) => (
 )
 
 export const PauseIcon = ({ props }) => (
-  <svg fill={'currentColor'} height="10px" viewBox="0 0 13 14">
+  <svg fill={'currentColor'} height="11px" viewBox="0 0 13 14">
     <g stroke="none" strokeWidth="1">
       <g transform="translate(-294.000000, -293.000000)">
         <g transform="translate(54.000000, 291.000000)">
@@ -25,7 +25,7 @@ export const PauseIcon = ({ props }) => (
 )
 
 export const StopIcon = ({ props }) => (
-  <svg fill={'currentColor'} height="9px" viewBox="0 0 12 12">
+  <svg fill={'currentColor'} height="10px" viewBox="0 0 12 12">
     <g stroke="none" strokeWidth="1">
       <g transform="translate(-54.000000, -294.000000)">
         <g transform="translate(54.000000, 291.000000)">
@@ -71,3 +71,20 @@ export const SettingsIcon = ({ props }) => (
     </g>
   </svg>
 )
+
+export const ImageOff = props => {
+  return (
+    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" {...props}>
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M3.395 3.81A1.987 1.987 0 003 5v14c0 1.1.9 2 2 2h14c.445 0 .857-.147 1.19-.395L17.586 18H5l3.5-4.5 2.5 3.01 2.227-2.87-9.832-9.83zm11.362 8.533L14.5 12l-.037.048L5.414 3H19c1.1 0 2 .9 2 2v13.586l-6.243-6.243z"
+        fill="currentColor"
+      />
+      <path
+        d="M1 3.414L2.414 2l19.092 19.092-1.414 1.414L1 3.414z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}

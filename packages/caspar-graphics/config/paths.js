@@ -54,7 +54,7 @@ module.exports = {
   appEslintRc: resolveApp('.eslintrc'),
   nodePaths: nodePaths,
   ownPath: resolveOwn('.'),
-  ownLib: resolveOwn('./lib'),
+  ownLib: resolveOwn('./src'),
   ownNodeModules: resolveOwn('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
