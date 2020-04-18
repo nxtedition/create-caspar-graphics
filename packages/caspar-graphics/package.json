@@ -24,9 +24,9 @@
     "webpack"
   ],
   "dependencies": {
-    "@babel/core": "7.4.3",
+    "@babel/core": "7.9.0",
     "babel-eslint": "^10.0.1",
-    "babel-loader": "8.0.5",
+    "babel-loader": "8.1.0",
     "babel-preset-react-app": "9.1.2",
     "chalk": "2.4.2",
     "command-line-args": "5.0.2",
