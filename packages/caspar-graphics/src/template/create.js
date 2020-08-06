@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { TemplateProvider } from './'
+import { ClassWrapper } from './class-wrapper'
 
 export default (async function() {
   const { default: Template } = await import(
@@ -9,6 +10,15 @@ export default (async function() {
 
   if (!Template) {
     return
+  }
+
+  const isClassComponent = typeof Template.prototype?.render === 'function'
+
+  if (isClassComponent && Template.previewDataList) {
+    console.warn(
+      '[Caspar Graphics] `static previewDataList` will be removed in a future version. Move it to a named export, e.g. `export const previewData = {}`.'
+    )
+    Template.previewData = Template.previewDataList
   }
 
   const size = Template.size || process.env.SIZE
@@ -31,7 +41,7 @@ export default (async function() {
 
   ReactDOM.render(
     <TemplateProvider name={Template.name}>
-      <Template />
+      {isClassComponent ? <ClassWrapper Template={Template} /> : <Template />}
     </TemplateProvider>,
     container
   )
