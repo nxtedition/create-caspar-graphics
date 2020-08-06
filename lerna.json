@@ -3,7 +3,8 @@
   "packages": [
     "packages/caspar-graphics",
     "packages/create-caspar-graphics",
-    "packages/examples"
+    "packages/examples",
+    "packages/graphics-kit"
   ],
   "useWorkspaces": false,
   "npmClient": "yarn",

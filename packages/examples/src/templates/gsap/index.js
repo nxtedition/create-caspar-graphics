@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
-import { useCasparData, useTimeline } from 'caspar-graphics'
+import { useCasparData } from 'caspar-graphics'
+import { useTimeline } from '../../../../graphics-kit'
 import image from './gsap.png'
 
 const GSAP = () => {

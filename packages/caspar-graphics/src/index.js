@@ -24,6 +24,3 @@ export const useCasparState = () => {
 export const useCasparData = () => {
   return React.useContext(TemplateContext).data
 }
-
-// TODO: export as 'caspar-graphics/gsap'
-export * from './lib/gsap'

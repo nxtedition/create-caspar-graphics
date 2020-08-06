@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useLayoutEffect } from 'react'
 import { TimelineMax } from 'gsap'
-import { useCaspar, States } from '../'
+import { useCaspar, States } from 'caspar-graphics'
 
 export const useTimeline = (onLoad, onStop, isReady = true) => {
   const { state, safeToRemove } = useCaspar()

@@ -1,0 +1,12 @@
+{
+  "name": "@nxtedition/graphics-kit",
+  "version": "1.0.0-alpha.1",
+  "license": "MIT",
+  "main": "./src/index.js",
+  "dependencies": {
+    "gsap": "^3.3.0"
+  },
+  "peerDependencies": {
+    "caspar-graphics": "^1.0.0-alpha.1"
+  }
+}
