@@ -32,7 +32,6 @@ export const Controls = ({
   const tabs = isPlainObject(images)
     ? ['data', 'images', 'settings']
     : ['data', 'settings']
-  const [updates, setUpdates] = useState(0)
   const [selectedTab, setSelectedTab] = usePersistentValue('selectedTab')
   const selectedTabIndex = Math.max(0, tabs.indexOf(selectedTab))
   const editorRef = useRef()
@@ -72,7 +71,7 @@ export const Controls = ({
     }
 
     return () => {
-      document.removeEventListener
+      document.removeEventListener('keydown', onKeyDown)
 
       if (templateWindow) {
         templateWindow.document.removeEventListener('keydown', onKeyDown)
@@ -237,7 +236,7 @@ export const Controls = ({
                 position: relative;
               `}
             >
-              <Editor ref={editorRef} value={data} onSave={onUpdate} />
+              <Editor ref={editorRef} value={data} />
             </div>
           </div>
         </TabPanel>
