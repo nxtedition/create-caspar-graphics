@@ -62,7 +62,12 @@ module.exports = ({ templates, appName, dotenv }) => ({
       },
       {
         test: /\.(js|jsx|mjs)$/,
-        include: [paths.appSrc, paths.ownLib, paths.graphicsKit],
+        include: [
+          paths.appSrc,
+          paths.ownLib,
+          paths.graphicsKit,
+          path.join(paths.appNodeModules, '@nxtedition/graphics-kit')
+        ],
         use: [
           {
             loader: require.resolve('babel-loader'),
