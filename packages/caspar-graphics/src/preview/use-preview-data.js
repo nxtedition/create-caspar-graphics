@@ -39,12 +39,10 @@ export function usePreviewData(name, { templateWindow, state }) {
   if (isPlainObject(location?.state?.data)) {
     // Always use the user's own edits if there are any.
     data = location.state.data
-  } else if (
-    hasManyPreviewSets &&
-    isPlainObject(previewData?.[selectedDataKey])
-  ) {
+  } else if (hasManyPreviewSets) {
     // Get the selected preview set.
-    data = previewData[selectedDataKey]
+    const selected = previewData?.[selectedDataKey]
+    data = isPlainObject(selected) ? selected : {}
   } else if (isPlainObject(previewData)) {
     // There's only a single object for the preview data.
     data = previewData

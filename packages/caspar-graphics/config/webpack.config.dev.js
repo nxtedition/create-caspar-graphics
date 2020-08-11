@@ -41,13 +41,13 @@ module.exports = ({ templates, appName, dotenv }) => ({
     alias: {
       // This is required so symlinks work during development.
       // 'webpack/hot/poll': require.resolve('webpack/hot/poll'),
-      react: require.resolve(path.join(paths.ownNodeModules, 'react')),
-      'react-dom': require.resolve(
-        path.join(paths.ownNodeModules, 'react-dom')
-      ),
-      'react-refresh/runtime': require.resolve(
-        path.join(paths.ownNodeModules, 'react-refresh/runtime')
-      )
+      // react: require.resolve(path.join(paths.ownNodeModules, 'react')),
+      // 'react-dom': require.resolve(
+      //   path.join(paths.ownNodeModules, 'react-dom')
+      // ),
+      // 'react-refresh/runtime': require.resolve(
+      //   path.join(paths.ownNodeModules, 'react-refresh/runtime')
+      // )
     }
   },
   resolveLoader: {
