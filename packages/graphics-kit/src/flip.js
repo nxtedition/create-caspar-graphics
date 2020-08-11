@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAnimation, AnimationStates } from 'caspar-graphics'
 
@@ -12,10 +12,10 @@ export const Flip = ({
 
   return (
     <div
-      css={`
-        overflow: hidden;
-        opacity: ${animationState === AnimationStates.hidden ? 0 : 1};
-      `}
+      style={{
+        overflow: 'hidden',
+        opacity: animationState === AnimationStates.hidden ? 0 : 1
+      }}
     >
       <AnimatePresence
         initial={typeof enter === 'string'}
