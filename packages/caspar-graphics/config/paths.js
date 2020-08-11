@@ -53,6 +53,7 @@ module.exports = {
   appBabelRc: resolveApp('.babelrc'),
   appEslintRc: resolveApp('.eslintrc'),
   nodePaths: nodePaths,
+  graphicsKit: resolveOwn('../graphics-kit/src'),
   ownPath: resolveOwn('.'),
   ownLib: resolveOwn('./src'),
   ownNodeModules: resolveOwn('node_modules'),

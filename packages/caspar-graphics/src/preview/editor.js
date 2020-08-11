@@ -42,22 +42,26 @@ export const Editor = React.forwardRef(({ value }, ref) => {
   const editorNodeRef = React.useRef()
 
   // Give parent access to ref.getContent():
-  React.useImperativeHandle(ref, () => ({
-    getContent: () => {
-      try {
-        editorRef.current.updateOptions({
-          renderValidationDecorations: 'off'
-        })
-        return JSON5.parse(editorRef.current.getValue())
-      } catch (err) {
-        console.warn('Invalid JSON', err)
-        editorRef.current.updateOptions({
-          renderValidationDecorations: 'on'
-        })
-        return null
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      getContent: () => {
+        try {
+          editorRef.current.updateOptions({
+            renderValidationDecorations: 'off'
+          })
+          return JSON5.parse(editorRef.current.getValue())
+        } catch (err) {
+          console.warn('Invalid JSON', err)
+          editorRef.current.updateOptions({
+            renderValidationDecorations: 'on'
+          })
+          return null
+        }
       }
-    }
-  }))
+    }),
+    []
+  )
 
   // Setup monaco editor.
   React.useEffect(() => {

@@ -62,7 +62,7 @@ module.exports = ({ templates, appName, dotenv }) => ({
       },
       {
         test: /\.(js|jsx|mjs)$/,
-        include: [paths.appSrc, paths.ownLib],
+        include: [paths.appSrc, paths.ownLib, paths.graphicsKit],
         use: [
           {
             loader: require.resolve('babel-loader'),

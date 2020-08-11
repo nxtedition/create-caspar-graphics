@@ -24,3 +24,5 @@ export const useCasparState = () => {
 export const useCasparData = () => {
   return React.useContext(TemplateContext).data
 }
+
+export * from './template/animate'

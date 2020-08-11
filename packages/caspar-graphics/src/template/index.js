@@ -1,11 +1,14 @@
 import React, {
-  useContext,
+  isValidElement,
+  Children,
+  useRef,
   useEffect,
   useState,
   useCallback,
   useMemo
 } from 'react'
 import { parse } from './parse'
+import { AnimateProvider } from './animate'
 
 export const TemplateContext = React.createContext()
 
@@ -95,11 +98,13 @@ export const TemplateProvider = ({ children, name }) => {
       value={{
         data: memoizedData,
         state,
-        safeToRemove,
-        name
+        name,
+        safeToRemove
       }}
     >
-      {state !== States.removed ? <Template>{children}</Template> : null}
+      <AnimateProvider>
+        {state !== States.removed ? <Template>{children}</Template> : null}
+      </AnimateProvider>
     </TemplateContext.Provider>
   )
 }
