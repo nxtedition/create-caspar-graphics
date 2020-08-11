@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useLayoutEffect } from 'react'
-import { TimelineMax } from 'gsap'
+import { TimelineMax, gsap } from 'gsap'
 import { useCaspar, States, useAnimate } from 'caspar-graphics'
 
-export const useTimeline = (onLoad, onStop, isReady = true) => {
+export const useTimeline = (onLoad, onStop, options) => {
+  const { isReady = true, frames = false, fps = 25 } = options || {}
   const { state, safeToRemove } = useCaspar()
   const timelineRef = useRef()
   const animate = useAnimate()
@@ -10,7 +11,8 @@ export const useTimeline = (onLoad, onStop, isReady = true) => {
 
   useLayoutEffect(() => {
     animate.addTemplate()
-    timelineRef.current = new TimelineMax({ paused: true })
+    gsap.ticker.fps(fps)
+    timelineRef.current = new TimelineMax({ paused: true, frames })
 
     if (onLoad) {
       onLoad(timelineRef.current)
