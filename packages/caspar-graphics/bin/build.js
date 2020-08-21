@@ -20,13 +20,10 @@ const path = require('path')
 const paths = require('../config/paths')
 const getClientEnv = require('../config/env').getClientEnv
 const packageJson = require(paths.appPackageJson)
-const { mode = '1080p' } = packageJson['caspar-graphics'] || {}
+const { mode = '1080p', gzip = 'both' } = packageJson['caspar-graphics'] || {}
 const createConfig = require('../config/webpack.config.prod')
 const printErrors = require('../utils/printErrors')
-const logger = require('../utils/logger')
-const FileSizeReporter = require('react-dev-utils/FileSizeReporter')
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages')
-const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild
 const junk = require('junk')
 const commandLineArgs = require('command-line-args')
 const optionDefinitions = [
@@ -79,42 +76,64 @@ async function build() {
     `\nBuilding graphics:\n\n${chalk.cyan(' ' + templates.join('\n '))}\n`
   )
 
+  // Check if `caspar-graphics` is linked (e.g. yarn link).
+  const isSymbolic = fs
+    .lstatSync(path.join(paths.appNodeModules, 'caspar-graphics'))
+    .isSymbolicLink()
+
   for (const template of templates) {
     const dotenv = getClientEnv({ templates: [template], mode })
-    const config = createConfig({ templates: [template], dotenv })
+    const config = createConfig({
+      templates: [template],
+      dotenv,
+      isSymbolic,
+      gzip
+    })
 
     await new Promise((resolve, reject) => {
       compile(config, (err, stats) => {
-        if (err) {
-          reject(err)
-        }
+        let messages
 
-        const messages = formatWebpackMessages(stats.toJson({}, true))
+        if (err) {
+          if (!err.message) {
+            return reject(err)
+          }
+
+          let errMessage = err.message
+
+          // Add additional information for postcss errors
+          if (Object.prototype.hasOwnProperty.call(err, 'postcssNode')) {
+            errMessage +=
+              '\nCompileError: Begins at CSS selector ' +
+              err['postcssNode'].selector
+          }
+
+          messages = formatWebpackMessages({
+            errors: [errMessage],
+            warnings: []
+          })
+        } else {
+          messages = formatWebpackMessages(
+            stats.toJson({ all: false, warnings: true, errors: true })
+          )
+        }
         if (messages.errors.length) {
+          // Only keep the first error. Others are often indicative
+          // of the same problem, but confuse the reader with noise.
+          if (messages.errors.length > 1) {
+            messages.errors.length = 1
+          }
           return reject(new Error(messages.errors.join('\n\n')))
         }
 
-        if (
-          messages.warnings.length &&
-          process.env.CI &&
-          (typeof process.env.CI !== 'string' ||
-            process.env.CI.toLowerCase() !== 'false')
-        ) {
-          console.log(
-            chalk.yellow(
-              '\nTreating warnings as errors because process.env.CI = true.\n' +
-                'Most CI servers set it automatically.\n'
-            )
-          )
-          return reject(new Error(messages.warnings.join('\n\n')))
+        // Remove html files.
+        if (gzip === true) {
+          fs.readdirSync(paths.appBuild).forEach(file => {
+            if (file.match(/.*\.html$/gi)) {
+              fs.unlinkSync(path.join(paths.appBuild, file))
+            }
+          })
         }
-
-        // Remove js files.
-        fs.readdirSync(paths.appBuild).forEach(file => {
-          if (file.match(/.*\.js/gi)) {
-            fs.unlinkSync(path.join(paths.appBuild, file))
-          }
-        })
 
         return resolve()
       })
@@ -141,8 +160,6 @@ function compile(config, cb) {
 build().then(
   () => {
     console.log(chalk.green('Built successfully.\n'))
-    // console.log('File sizes after gzip:\n');
-    // printFileSizesAfterBuild(stats, previousFileSizes, paths.appBuild);
     console.log()
   },
   err => {

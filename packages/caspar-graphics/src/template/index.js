@@ -1,12 +1,4 @@
-import React, {
-  isValidElement,
-  Children,
-  useRef,
-  useEffect,
-  useState,
-  useCallback,
-  useMemo
-} from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { parse } from './parse'
 import { AnimateProvider } from './animate'
 

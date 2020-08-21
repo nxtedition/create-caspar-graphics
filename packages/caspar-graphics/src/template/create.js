@@ -1,13 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { TemplateProvider } from './'
+import { TemplateProvider } from '.'
 import { ClassWrapper } from './class-wrapper'
 
-export default (async function() {
-  const { default: Template } = await import(
-    process.env.DEV_TEMPLATES_DIR + '/' + document.title
-  )
-
+export function createTemplate(Template) {
   if (!Template) {
     return
   }
@@ -18,7 +14,7 @@ export default (async function() {
     console.warn(
       '[Caspar Graphics] `static previewDataList` will be removed in a future version. Move it to a named export, e.g. `export const previewData = {}`.'
     )
-    Template.previewData = Template.previewDataList
+    window.previewData = Template.previewDataList
   }
 
   const size = Template.size || process.env.SIZE
@@ -27,9 +23,6 @@ export default (async function() {
   const html = document.documentElement
   const body = document.body
   const container = document.getElementById('root')
-
-  window.previewData = Template.previewData
-  window.previewImages = Template.previewImages
 
   if (width) {
     html.style.height = body.style.height = container.style.height = `${height}px`
@@ -45,4 +38,4 @@ export default (async function() {
     </TemplateProvider>,
     container
   )
-})()
+}

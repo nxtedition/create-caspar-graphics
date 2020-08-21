@@ -5,7 +5,6 @@ const program = require('commander')
 const lib = require('..')
 const pkg = require('../package.json')
 
-const messages = lib.messages
 const createCasparGraphics = lib.createCasparGraphics
 
 let projectName

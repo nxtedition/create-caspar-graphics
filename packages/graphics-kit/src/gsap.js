@@ -1,46 +1,77 @@
 import React, { useEffect, useRef, useLayoutEffect } from 'react'
-import { TimelineMax, gsap } from 'gsap'
-import { useCaspar, States, useAnimate } from 'caspar-graphics'
+import { gsap } from 'gsap'
+import { useCasparState, States, useAnimate } from 'caspar-graphics'
+
+// TODO: Check if this can be added back. Currently it has problems with
+// timeline.from() animations flickering before actually disappearing.
+// gsap.ticker.fps(25)
 
 export const useTimeline = (onLoad, onStop, options) => {
-  const { isReady = true, frames = false, fps = 25 } = options || {}
-  const { state, safeToRemove } = useCaspar()
+  const { isReady = true } = options || {}
+  const state = useCasparState()
   const timelineRef = useRef()
-  const animate = useAnimate()
-  const { animationsDidFinish } = animate
+  const timelineIdRef = useRef()
+  const {
+    addTimeline,
+    removeTimeline,
+    onTimelineReady,
+    onTimelineEntered,
+    onTimelineExited,
+    animationsDidFinish
+  } = useAnimate()
 
   useLayoutEffect(() => {
-    animate.addTemplate()
-    gsap.ticker.fps(fps)
-    timelineRef.current = new TimelineMax({ paused: true, frames })
+    timelineRef.current = gsap.timeline({ paused: true })
+    let id = addTimeline()
+    timelineIdRef.current = id
+
+    return () => {
+      removeTimeline(id)
+    }
+  }, [addTimeline, removeTimeline])
+
+  useLayoutEffect(() => {
+    if (!isReady) {
+      return
+    }
 
     if (onLoad) {
       onLoad(timelineRef.current)
+      onTimelineReady(timelineIdRef.current)
     }
-  }, [])
+  }, [isReady, onTimelineReady])
 
   useEffect(() => {
     if (isReady === false) {
       return
     }
 
+    const timeline = timelineRef.current
+
     if (state === States.playing) {
-      timelineRef.current.eventCallback('onComplete', animate.onEntered).play()
+      timeline
+        .eventCallback('onComplete', () => {
+          onTimelineEntered(timelineIdRef.current)
+        })
+        .play()
     }
 
     if (state === States.paused) {
-      timelineRef.current.pause()
+      timeline.pause()
     }
 
-    if (state === States.stopped && animationsDidFinish) {
+    if (state === States.stopped) {
       if (onStop) {
-        onStop(timelineRef.current, pause)
-        timelineRef.current.eventCallback('onComplete', safeToRemove)
+        onStop(timeline)
+
+        timeline.eventCallback('onComplete', () => {
+          onTimelineExited(timelineIdRef.current)
+        })
       } else {
-        safeToRemove()
+        onTimelineExited(timelineIdRef.current)
       }
     }
-  }, [state, safeToRemove, isReady, animationsDidFinish])
+  }, [state, isReady, animationsDidFinish, onTimelineExited])
 
   return timelineRef
 }

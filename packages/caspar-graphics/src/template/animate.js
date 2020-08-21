@@ -1,8 +1,11 @@
 import React, { useRef, useReducer, useCallback, useContext } from 'react'
-import { useCasparState, States } from '../'
+import { useCasparState, useCaspar, States } from '../'
+
+// NOTE: All this is considered WIP.
 
 export const AnimationStates = {
   hidden: 'HIDDEN',
+  ready: 'READY',
   enter: 'ENTER',
   entered: 'ENTERED',
   exit: 'EXIT',
@@ -11,8 +14,30 @@ export const AnimationStates = {
 
 const reducer = (state, event) => {
   switch (event.type) {
-    case 'ADD_TEMPLATE': {
-      return { ...state, template: true, state: 'did-init' }
+    case 'ADD_TIMELINE': {
+      const timelines = { ...state.timelines }
+      timelines[event.id] = AnimationStates.hidden
+      return { ...state, timelines, state: 'did-init' }
+    }
+    case 'REMOVE_TIMELINE': {
+      const timelines = { ...state.timelines }
+      delete timelines[event.id]
+      return { ...state, timelines }
+    }
+    case 'TIMELINE_READY': {
+      const timelines = { ...state.timelines }
+      timelines[event.id] = AnimationStates.ready
+      return { ...state, timelines }
+    }
+    case 'TIMELINE_ENTERED': {
+      const timelines = { ...state.timelines }
+      timelines[event.id] = AnimationStates.entered
+      return { ...state, timelines }
+    }
+    case 'TIMELINE_EXITED': {
+      const timelines = { ...state.timelines }
+      timelines[event.id] = AnimationStates.exited
+      return { ...state, timelines }
     }
     case 'ADD_REF': {
       const refs = { ...state.refs }
@@ -42,7 +67,7 @@ const reducer = (state, event) => {
       return { ...state, state: 'did-enter' }
     }
     default: {
-      console.log(`Unknown type: ${event.type}`)
+      console.warn(`Unknown type: ${event.type}`)
       return state
     }
   }
@@ -52,20 +77,41 @@ const AnimateContext = React.createContext()
 
 export const AnimateProvider = ({ children }) => {
   const idRef = useRef(0)
-  const [state, dispatch] = useReducer(reducer, { didInit: false })
+  const [state, dispatch] = useReducer(reducer, {
+    didInit: false,
+    timelineRefs: React.useRef({})
+  })
 
   const addChild = useCallback(() => {
     const id = idRef.current++
     dispatch({ type: 'ADD_REF', id })
     return id
-  }, [idRef])
+  }, [])
 
   const removeChild = useCallback(id => {
     dispatch({ type: 'REMOVE_REF', id })
   }, [])
 
-  const addTemplate = useCallback(() => {
-    dispatch({ type: 'ADD_TEMPLATE' })
+  const addTimeline = useCallback(() => {
+    const id = idRef.current++
+    dispatch({ type: 'ADD_TIMELINE', id })
+    return id
+  }, [])
+
+  const removeTimeline = useCallback(id => {
+    dispatch({ type: 'REMOVE_TIMELINE', id })
+  }, [])
+
+  const onTimelineReady = useCallback(id => {
+    dispatch({ type: 'TIMELINE_READY', id })
+  }, [])
+
+  const onTimelineEntered = useCallback(id => {
+    dispatch({ type: 'TIMELINE_ENTERED', id })
+  }, [])
+
+  const onTimelineExited = useCallback(id => {
+    dispatch({ type: 'TIMELINE_EXITED', id })
   }, [])
 
   const onEntered = useCallback(() => {
@@ -80,15 +126,39 @@ export const AnimateProvider = ({ children }) => {
     dispatch({ type: 'CHILD_EXITED', id })
   }, [])
 
+  const { safeToRemove } = useCaspar()
+
+  React.useEffect(() => {
+    const timelines = Object.values(state.timelines || {})
+
+    if (timelines.length === 0) {
+      return
+    }
+
+    if (timelines.every(state => state === AnimationStates.exited)) {
+      safeToRemove()
+    }
+  }, [safeToRemove, state.timelines])
+
   const animationsDidFinish =
     state.refs == null ||
     Object.values(state.refs).every(state => state === AnimationStates.exited)
+
+  const isReady =
+    state.timelines != null &&
+    Object.values(state.timelines).every(
+      state => state === AnimationStates.ready
+    )
 
   return (
     <AnimateContext.Provider
       value={{
         state: state.state,
-        addTemplate,
+        addTimeline,
+        removeTimeline,
+        onTimelineReady,
+        onTimelineEntered,
+        onTimelineExited,
         onEntered,
         addChild,
         removeChild,
@@ -110,7 +180,6 @@ export const useAnimation = () => {
   const animate = useContext(AnimateContext)
   const animateRef = useRef()
   const casparState = useCasparState()
-  console.log(animate.state, casparState)
 
   let animationState = AnimationStates.hidden
 

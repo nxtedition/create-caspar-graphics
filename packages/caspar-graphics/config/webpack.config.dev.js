@@ -6,20 +6,13 @@ const paths = require('./paths')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
-module.exports = ({ templates, appName, dotenv }) => ({
+module.exports = ({ templates, appName, dotenv, isSymbolic }) => ({
   mode: 'development',
   context: process.cwd(),
   target: 'web',
   devtool: 'cheap-module-source-map',
   entry: {
-    create: path.join(paths.ownLib, 'template', 'create'),
-    ...templates.reduce(
-      (acc, name) => ({
-        ...acc,
-        [name]: [path.join(paths.appTemplates, name)]
-      }),
-      {}
-    ),
+    create: path.join(paths.ownLib, 'template', 'create.dev'),
     preview: [path.join(paths.ownLib, 'preview')]
   },
   output: {
@@ -38,17 +31,19 @@ module.exports = ({ templates, appName, dotenv }) => ({
       nodePath.split(path.delimiter).filter(Boolean)
     ),
     extensions: ['.js'],
-    alias: {
-      // This is required so symlinks work during development.
-      // 'webpack/hot/poll': require.resolve('webpack/hot/poll'),
-      // react: require.resolve(path.join(paths.ownNodeModules, 'react')),
-      // 'react-dom': require.resolve(
-      //   path.join(paths.ownNodeModules, 'react-dom')
-      // ),
-      // 'react-refresh/runtime': require.resolve(
-      //   path.join(paths.ownNodeModules, 'react-refresh/runtime')
-      // )
-    }
+    alias: isSymbolic
+      ? {
+          // When running yarn link caspar-graphics react complains
+          // about multiple instances.
+          react: require.resolve(path.join(paths.ownNodeModules, 'react')),
+          'react-dom': require.resolve(
+            path.join(paths.ownNodeModules, 'react-dom')
+          ),
+          'react-refresh/runtime': require.resolve(
+            path.join(paths.ownNodeModules, 'react-refresh/runtime')
+          )
+        }
+      : {}
   },
   resolveLoader: {
     modules: [paths.appNodeModules, paths.ownNodeModules]
@@ -111,14 +106,13 @@ module.exports = ({ templates, appName, dotenv }) => ({
           title: name,
           filename: `${name}.html`,
           template: path.join(paths.ownLib, 'template', 'index.html'),
-          chunks: ['create'],
-          chunksSortMode: 'manual' // Keep the order as defined above.
+          chunks: ['create']
         })
     ),
-    // new webpack.WatchIgnorePlugin([
-    //   path.join(paths.ownLib, 'preview'),
-    //   path.join(paths.ownLib, 'lib')
-    // ]),
+    new webpack.WatchIgnorePlugin([
+      path.join(paths.ownLib, 'preview'),
+      path.join(paths.ownLib, 'lib')
+    ]),
     new webpack.DefinePlugin(dotenv.stringified),
     new ReactRefreshWebpackPlugin()
   ]
