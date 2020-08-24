@@ -1,6 +1,6 @@
 {
   "name": "create-caspar-graphics",
-  "version": "1.0.0-alpha.6",
+  "version": "1.0.0-alpha.7",
   "description": "CLI tool to bootstrap CasparCG graphics with no configuration",
   "main": "index.js",
   "license": "MIT",
@@ -35,6 +35,6 @@
     "webpack"
   ],
   "devDependencies": {
-    "caspar-graphics": "^1.0.0-alpha.6"
+    "caspar-graphics": "^1.0.0-alpha.7"
   }
 }
