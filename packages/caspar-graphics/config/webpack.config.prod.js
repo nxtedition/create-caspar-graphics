@@ -28,16 +28,18 @@ const createConfig = (template, { dotenv, isSymbolic, gzip }) => ({
       nodePath.split(path.delimiter).filter(Boolean)
     ),
     extensions: ['.js'],
-    alias: isSymbolic
-      ? {
-          // We need this when running `yarn link`
-          react: require.resolve(path.join(paths.ownNodeModules, 'react')),
-          'react-dom': require.resolve(
-            path.join(paths.ownNodeModules, 'react-dom')
-          ),
-          template: path.join(paths.appTemplates, template)
-        }
-      : {}
+    alias: {
+      template: path.join(paths.appTemplates, template),
+      ...(isSymbolic
+        ? {
+            // We need this when running `yarn link`
+            react: require.resolve(path.join(paths.ownNodeModules, 'react')),
+            'react-dom': require.resolve(
+              path.join(paths.ownNodeModules, 'react-dom')
+            )
+          }
+        : {})
+    }
   },
   resolveLoader: {
     modules: [paths.appNodeModules, paths.ownNodeModules]
