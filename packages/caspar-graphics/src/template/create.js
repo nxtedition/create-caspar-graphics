@@ -33,7 +33,7 @@ export function createTemplate(Template) {
   }
 
   ReactDOM.render(
-    <TemplateProvider name={Template.name}>
+    <TemplateProvider name={document.title}>
       {isClassComponent ? <ClassWrapper Template={Template} /> : <Template />}
     </TemplateProvider>,
     container
