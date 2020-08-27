@@ -109,10 +109,14 @@ module.exports = ({ templates, appName, dotenv, isSymbolic }) => ({
           chunks: ['create']
         })
     ),
-    new webpack.WatchIgnorePlugin([
-      path.join(paths.ownLib, 'preview'),
-      path.join(paths.ownLib, 'lib')
-    ]),
+    ...(!isSymbolic
+      ? [
+          new webpack.WatchIgnorePlugin([
+            path.join(paths.ownLib, 'preview'),
+            path.join(paths.ownLib, 'lib')
+          ])
+        ]
+      : []),
     new webpack.DefinePlugin(dotenv.stringified),
     new ReactRefreshWebpackPlugin()
   ]
