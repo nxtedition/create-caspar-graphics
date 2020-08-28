@@ -21,7 +21,8 @@ export const Preview = ({ template }) => {
   const [settings, setSettings] = usePersistentValue('settings', {
     autoPreview: false,
     background: '#ffffff',
-    showImage: false
+    showImage: false,
+    imageOpacity: 0.5
   })
   const iframeRef = useRef()
   const templateWindow =
@@ -55,7 +56,10 @@ export const Preview = ({ template }) => {
         template={template}
         background={settings.background}
         iframeRef={iframeRef}
-        image={previewData?.image}
+        image={{
+          opacity: settings.imageOpacity,
+          src: previewData?.image
+        }}
         state={state}
         onLoad={() => {
           // HACK: wait for update window.update to be set.

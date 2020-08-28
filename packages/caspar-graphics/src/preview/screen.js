@@ -33,21 +33,6 @@ export const Screen = ({ template, background, iframeRef, onLoad, image }) => {
           transform-origin: top left;
         `}
       >
-        {image != null ? (
-          <img
-            src={image}
-            css={`
-              background: transparent;
-              object-fit: contain;
-              border: none;
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-            `}
-          />
-        ) : null}
         <iframe
           ref={iframeRef}
           src={`/${template}.html`}
@@ -69,6 +54,23 @@ export const Screen = ({ template, background, iframeRef, onLoad, image }) => {
             height: 100%;
           `}
         />
+        {image.src != null ? (
+          <img
+            src={image.src}
+            css={`
+              pointer-events: none;
+              opacity: ${image.opacity};
+              background: transparent;
+              object-fit: contain;
+              border: none;
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+            `}
+          />
+        ) : null}
       </div>
     </div>
   )
