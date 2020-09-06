@@ -4,7 +4,6 @@ import { useTimeline } from './gsap'
 
 export const Image = ({ src, animateOnStop, animateOnLoad, ...props }) => {
   const prevSrc = usePrevious(src)
-  console.log({ src, prevSrc })
 
   return (
     <>
