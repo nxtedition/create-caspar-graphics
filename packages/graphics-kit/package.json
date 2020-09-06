@@ -4,7 +4,8 @@
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
-    "gsap": "^3.3.0"
+    "gsap": "^3.3.0",
+    "rss-parser": "^3.9.0"
   },
   "peerDependencies": {
     "caspar-graphics": "^1.0.0-alpha.1"
