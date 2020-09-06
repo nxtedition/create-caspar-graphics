@@ -33,7 +33,7 @@ export const Preview = ({ template }) => {
     autoPreview: settings.autoPreview
   })
 
-  const previewData = usePreviewData(template, {
+  const previewData = usePreviewData({
     templateWindow,
     state
   })

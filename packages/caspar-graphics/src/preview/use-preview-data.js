@@ -4,7 +4,7 @@ import isPlainObject from 'lodash/isPlainObject'
 import queryString from 'query-string'
 import { States } from '..'
 
-export function usePreviewData(name, { templateWindow, state }) {
+export function usePreviewData({ templateWindow, state }) {
   const [previewData, setPreviewData] = useState(null)
   const [previewImages, setPreviewImages] = useState(null)
   const history = useHistory()
@@ -12,9 +12,19 @@ export function usePreviewData(name, { templateWindow, state }) {
   const params = queryString.parse(location.search)
   const selectedDataKey = params.dataKey
 
+  // HACK: We use this to force updates when a template is reloaded.
+  // There're definitely better ways to do this, but I feel lazy...
+  const [reloads, setReloads] = useState(0)
+
   // Get preview data for the current template.
   useEffect(() => {
-    if (state === States.loaded && templateWindow?.previewData) {
+    if (state !== States.loaded) {
+      return
+    }
+
+    setReloads(curr => curr + 1)
+
+    if (templateWindow?.previewData) {
       setPreviewData(templateWindow.previewData)
       setPreviewImages(templateWindow.previewImages)
     }
@@ -53,7 +63,7 @@ export function usePreviewData(name, { templateWindow, state }) {
     if (templateWindow?.update) {
       templateWindow.update(data || {})
     }
-  }, [templateWindow, data])
+  }, [templateWindow, data, reloads])
 
   return {
     selectedDataKey,

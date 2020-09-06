@@ -144,10 +144,10 @@ export const AnimateProvider = ({ children }) => {
     state.refs == null ||
     Object.values(state.refs).every(state => state === AnimationStates.exited)
 
-  const isReady =
+  const timelinesDidEnter =
     state.timelines != null &&
     Object.values(state.timelines).every(
-      state => state === AnimationStates.ready
+      state => state === AnimationStates.entered
     )
 
   return (
@@ -164,7 +164,8 @@ export const AnimateProvider = ({ children }) => {
         removeChild,
         onChildEntered,
         onChildExited,
-        animationsDidFinish
+        animationsDidFinish,
+        timelinesDidEnter
       }}
     >
       {children}
@@ -181,11 +182,13 @@ export const useAnimation = () => {
   const animateRef = useRef()
   const casparState = useCasparState()
 
+  console.log({ animate })
+
   let animationState = AnimationStates.hidden
 
   if (casparState === States.stopped) {
     animationState = AnimationStates.exit
-  } else if (animate.state === 'did-enter') {
+  } else if (animate.timelinesDidEnter) {
     animationState = AnimationStates.enter
   } else if (animate.state == null && casparState === States.playing) {
     animationState = AnimationStates.enter
