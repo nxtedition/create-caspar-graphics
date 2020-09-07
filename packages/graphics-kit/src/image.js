@@ -2,6 +2,8 @@ import React from 'react'
 import { usePrevious } from './use-previous'
 import { useTimeline } from './gsap'
 
+// TODO: rewrite using useAnimtedChange()
+
 export const Image = ({ src, animateOnStop, animateOnLoad, ...props }) => {
   const prevSrc = usePrevious(src)
 
