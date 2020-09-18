@@ -26,6 +26,9 @@ export function usePreviewData({ templateWindow, state }) {
 
     if (templateWindow?.previewData) {
       setPreviewData(templateWindow.previewData)
+    }
+
+    if (templateWindow?.previewImages) {
       setPreviewImages(templateWindow.previewImages)
     }
   }, [state])
