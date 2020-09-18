@@ -1,7 +1,7 @@
 import React from 'react'
 import Parser from 'rss-parser'
 
-export const useRssFeed = url => {
+export const useRssFeed = (url, transformFn) => {
   const [data, setData] = React.useState(null)
 
   React.useEffect(() => {
@@ -31,5 +31,5 @@ export const useRssFeed = url => {
     }
   }, [url])
 
-  return data
+  return transformFn ? transformFn(data) : data
 }
