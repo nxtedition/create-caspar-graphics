@@ -23,7 +23,7 @@ export const useAnimatedChange = (nextValue, outTween, inTween) => {
         }
       })
       .to(currRef.current, outTween)
-      .to(nextRef.current, inTween, '<')
+      .to(nextRef.current, inTween, 0)
 
     return () => {
       if (timeline) {
