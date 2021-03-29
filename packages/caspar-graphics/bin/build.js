@@ -81,8 +81,12 @@ async function build() {
     .lstatSync(path.join(paths.appNodeModules, 'caspar-graphics'))
     .isSymbolicLink()
 
+  const size = mode.startsWith('720p')
+    ? { width: 1280, height: 720 }
+    : { width: 1920, height: 1080 }
+
   for (const template of templates) {
-    const dotenv = getClientEnv({ templates: [template], mode })
+    const dotenv = getClientEnv({ templates: [template], mode, size })
     const config = createConfig({
       templates: [template],
       dotenv,
