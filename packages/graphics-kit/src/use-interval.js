@@ -1,4 +1,4 @@
-import React from 'react '
+import React from 'react'
 
 export const useInterval = (callback, delay) => {
   const savedCallback = React.useRef()
