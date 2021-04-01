@@ -79,7 +79,7 @@ module.exports = ({ templates, appName, dotenv, isSymbolic }) => ({
         ]
       },
       {
-        test: /\.(jpe?g|png|webm|ttf|eot|svg|otf|woff(2)?|mp4)(\?[a-z0-9=&.]+)?$/,
+        test: /\.(jpe?g|png|webm|webp|ttf|eot|svg|otf|woff(2)?|mp4)(\?[a-z0-9=&.]+)?$/,
         use: [
           {
             loader: 'url-loader',
