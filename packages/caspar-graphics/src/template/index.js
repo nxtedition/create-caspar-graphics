@@ -68,13 +68,7 @@ export const TemplateProvider = ({ children, name }) => {
   useEffect(() => {
     if (state === States.removed) {
       logger('.remove()')
-
-      // TODO: Remove when caspar can handle it.
-      if (process.env.NODE_ENV === 'production') {
-        return
-      }
-
-      window.remove()
+      window.remove?.()
     }
   }, [state])
 
