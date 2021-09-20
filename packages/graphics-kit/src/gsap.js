@@ -64,9 +64,13 @@ export const useTimeline = (onLoad, onStop, options) => {
       if (onStop) {
         onStop(timeline)
 
-        timeline.eventCallback('onComplete', () => {
+        const onComplete = () => {
           onTimelineExited(timelineIdRef.current)
-        })
+        }
+
+        timeline
+          .eventCallback('onComplete', onComplete)
+          .eventCallback('onReverseComplete', onComplete)
       } else {
         onTimelineExited(timelineIdRef.current)
       }
