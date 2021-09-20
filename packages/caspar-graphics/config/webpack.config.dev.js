@@ -30,7 +30,7 @@ module.exports = ({ templates, appName, dotenv, isSymbolic }) => ({
       // It is guaranteed to exist because we tweak it in `env.js`
       nodePath.split(path.delimiter).filter(Boolean)
     ),
-    extensions: ['.js'],
+    extensions: ['.js', '.jsx'],
     alias: isSymbolic
       ? {
           // When running yarn link caspar-graphics react complains
