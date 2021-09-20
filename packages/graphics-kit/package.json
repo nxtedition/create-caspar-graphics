@@ -1,6 +1,6 @@
 {
   "name": "@nxtedition/graphics-kit",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.16.0",
   "license": "MIT",
   "main": "./src/index.js",
   "dependencies": {
