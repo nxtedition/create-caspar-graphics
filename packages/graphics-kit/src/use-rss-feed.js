@@ -1,5 +1,5 @@
 import React from 'react'
-import Parser from 'rss-parser'
+import { parseFeed } from 'htmlparser2'
 
 export const useRssFeed = (url, transformFn) => {
   const [data, setData] = React.useState(null)
@@ -14,7 +14,9 @@ export const useRssFeed = (url, transformFn) => {
 
     async function fetchData() {
       try {
-        const data = await new Parser().parseURL(url)
+        const data = await fetch(url)
+          .then(res => res.text())
+          .then(text => parseFeed(text))
 
         if (!isDisposed) {
           setData(data)
