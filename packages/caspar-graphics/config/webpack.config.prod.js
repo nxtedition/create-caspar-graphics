@@ -27,7 +27,7 @@ const createConfig = (template, { dotenv, isSymbolic, gzip }) => ({
       // It is guaranteed to exist because we tweak it in `env.js`
       nodePath.split(path.delimiter).filter(Boolean)
     ),
-    extensions: ['.js'],
+    extensions: ['.js', '.jsx'],
     alias: {
       template: path.join(paths.appTemplates, template),
       ...(isSymbolic
