@@ -18,26 +18,27 @@ export const Crawl = React.memo((props) => {
   return <CrawlPrimitive {...props} />
 })
 
-let count = 0
+let key = 0
 
 const CrawlPrimitive = ({ items, renderItem, pixelsPerFrame = 5, frameRate = 25, play }) => {
   const ref = React.createRef()
   const [rect, setRect] = React.useState()
-  const [visibleItems, setVisibleItems] = React.useState([[count, items[0]]])
+  const [visibleEntries, setVisibleEntries] = React.useState([[key, items[0]]])
 
   React.useLayoutEffect(() => {
     setRect(ref.current.getBoundingClientRect())
   }, [])
 
   const onEntered = (item) => {
+    // NOTE: this expects each item to have an id, which probably isn't ideal.
     const index = items.findIndex(({ id }) => id === item.id)
     const nextIndex = (index + 1) % items.length
     let nextItem = items[nextIndex]
-    setVisibleItems(items => [...items, [count++, nextItem]])
+    setVisibleEntries(items => [...items, [++key, nextItem]])
   }
 
   const onExited = () => {
-    setVisibleItems((items) => items.slice(1))
+    setVisibleEntries((items) => items.slice(1))
   }
 
   return (
@@ -50,9 +51,9 @@ const CrawlPrimitive = ({ items, renderItem, pixelsPerFrame = 5, frameRate = 25,
       }}
     >
       {rect != null &&
-        visibleItems.map(([count, item]) => (
+        visibleEntries.map(([key, item]) => (
           <Item
-            key={`${count}-${item.id}`}
+            key={key}
             item={item}
             offset={rect.width}
             pixelsPerSecond={pixelsPerFrame * frameRate}
