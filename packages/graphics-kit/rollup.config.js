@@ -15,7 +15,10 @@ const external = [
 const plugins = [
   resolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
   commonjs(),
-  babel({ presets: ['@babel/preset-react'], babelHelpers: 'bundled' })
+  babel({
+    presets: ['@babel/preset-env', '@babel/preset-react'],
+    babelHelpers: 'bundled'
+  })
 ]
 
 const cjs = Object.assign({}, config, {
