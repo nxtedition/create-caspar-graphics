@@ -1,6 +1,6 @@
 {
   "name": "examples",
-  "version": "1.0.0-next.9.1",
+  "version": "1.0.0-next.9.2",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -11,7 +11,7 @@
     "mode": "1080p"
   },
   "devDependencies": {
-    "caspar-graphics": "^1.0.0-next.9.1"
+    "caspar-graphics": "^1.0.0-next.9.2"
   },
   "dependencies": {
     "framer-motion": "^1.10.3",
