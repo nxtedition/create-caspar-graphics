@@ -39,30 +39,6 @@ const reducer = (state, event) => {
       timelines[event.id] = AnimationStates.exited
       return { ...state, timelines }
     }
-    case 'ADD_REF': {
-      const refs = { ...state.refs }
-      refs[event.id] = true
-      return { ...state, refs }
-    }
-    case 'REMOVE_REF': {
-      if (!state.refs) {
-        return state
-      }
-
-      const refs = { ...state.refs }
-      delete refs[event.id]
-      return { ...state, refs }
-    }
-    case 'CHILD_ENTERED': {
-      const refs = { ...state.refs }
-      refs[event.id] = AnimationStates.entered
-      return { ...state, refs }
-    }
-    case 'CHILD_EXITED': {
-      const refs = { ...state.refs }
-      refs[event.id] = AnimationStates.exited
-      return { ...state, refs }
-    }
     case 'ENTERED': {
       return { ...state, state: 'did-enter' }
     }
@@ -81,16 +57,6 @@ export const AnimateProvider = ({ children }) => {
     didInit: false,
     timelineRefs: React.useRef({})
   })
-
-  const addChild = useCallback(() => {
-    const id = idRef.current++
-    dispatch({ type: 'ADD_REF', id })
-    return id
-  }, [])
-
-  const removeChild = useCallback(id => {
-    dispatch({ type: 'REMOVE_REF', id })
-  }, [])
 
   const addTimeline = useCallback(() => {
     const id = idRef.current++
@@ -112,18 +78,6 @@ export const AnimateProvider = ({ children }) => {
 
   const onTimelineExited = useCallback(id => {
     dispatch({ type: 'TIMELINE_EXITED', id })
-  }, [])
-
-  const onEntered = useCallback(() => {
-    dispatch({ type: 'ENTERED' })
-  }, [])
-
-  const onChildEntered = useCallback(id => {
-    dispatch({ type: 'CHILD_ENTERED', id })
-  }, [])
-
-  const onChildExited = useCallback(id => {
-    dispatch({ type: 'CHILD_EXITED', id })
   }, [])
 
   const { safeToRemove } = useCaspar()
@@ -159,11 +113,6 @@ export const AnimateProvider = ({ children }) => {
         onTimelineReady,
         onTimelineEntered,
         onTimelineExited,
-        onEntered,
-        addChild,
-        removeChild,
-        onChildEntered,
-        onChildExited,
         animationsDidFinish,
         timelinesDidEnter
       }}
@@ -175,40 +124,4 @@ export const AnimateProvider = ({ children }) => {
 
 export const useAnimate = () => {
   return useContext(AnimateContext)
-}
-
-export const useAnimation = () => {
-  const animate = useContext(AnimateContext)
-  const animateRef = useRef()
-  const casparState = useCasparState()
-
-  console.log({ animate })
-
-  let animationState = AnimationStates.hidden
-
-  if (casparState === States.stopped) {
-    animationState = AnimationStates.exit
-  } else if (animate.timelinesDidEnter) {
-    animationState = AnimationStates.enter
-  } else if (animate.state == null && casparState === States.playing) {
-    animationState = AnimationStates.enter
-  }
-
-  React.useEffect(() => {
-    animateRef.current = animate.addChild()
-
-    return () => {
-      animate.removeChild(animateRef.current)
-    }
-  }, [])
-
-  const onAnimationComplete = () => {
-    if (animationState === AnimationStates.enter) {
-      animate.onChildEntered(animateRef.current)
-    } else if (animationState === AnimationStates.exit) {
-      animate.onChildExited(animateRef.current)
-    }
-  }
-
-  return [animationState, onAnimationComplete]
 }
