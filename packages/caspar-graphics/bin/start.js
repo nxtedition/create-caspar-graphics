@@ -48,11 +48,13 @@ choosePort(HOST, DEFAULT_PORT)
     const protocol = process.env.HTTPS === 'true' ? 'https' : 'http'
     const packageJson = require(paths.appPackageJson)
     const { appName } = packageJson
-    const { mode = '1080p' } = packageJson['caspar-graphics'] || {}
+    let { mode = '1080p', size } = packageJson['caspar-graphics'] || {}
 
-    const size = mode.startsWith('720p')
-      ? { width: 1280, height: 720 }
-      : { width: 1920, height: 1080 }
+    if (!size) {
+      size = mode.startsWith('720p')
+        ? { width: 1280, height: 720 }
+        : { width: 1920, height: 1080 }
+    }
 
     // Check if `caspar-graphics` is linked (e.g. yarn link).
     const isSymbolic = fs

@@ -20,7 +20,8 @@ const path = require('path')
 const paths = require('../config/paths')
 const getClientEnv = require('../config/env').getClientEnv
 const packageJson = require(paths.appPackageJson)
-const { mode = '1080p', gzip = 'both' } = packageJson['caspar-graphics'] || {}
+let { mode = '1080p', gzip = 'both', size } =
+  packageJson['caspar-graphics'] || {}
 const createConfig = require('../config/webpack.config.prod')
 const printErrors = require('../utils/printErrors')
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages')
@@ -81,9 +82,11 @@ async function build() {
     .lstatSync(path.join(paths.appNodeModules, 'caspar-graphics'))
     .isSymbolicLink()
 
-  const size = mode.startsWith('720p')
-    ? { width: 1280, height: 720 }
-    : { width: 1920, height: 1080 }
+  if (!size) {
+    size = mode.startsWith('720p')
+      ? { width: 1280, height: 720 }
+      : { width: 1920, height: 1080 }
+  }
 
   for (const template of templates) {
     const dotenv = getClientEnv({ templates: [template], mode, size })
