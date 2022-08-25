@@ -16,7 +16,17 @@ const plugins = [
   resolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
   commonjs(),
   babel({
-    presets: ['@babel/preset-env', '@babel/preset-react'],
+    presets: [
+      [
+        '@babel/preset-env',
+        {
+          targets: {
+            esmodules: true
+          }
+        }
+      ],
+      '@babel/preset-react'
+    ],
     babelHelpers: 'bundled'
   })
 ]
