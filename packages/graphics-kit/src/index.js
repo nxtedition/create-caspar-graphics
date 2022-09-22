@@ -1,4 +1,6 @@
 export * from './gsap'
+export * from './FitText'
+export * from './SplitText'
 export * from './use-previous'
 export * from './use-rss-feed'
 export * from './use-clock'
