@@ -7,7 +7,6 @@ import React, {
   createElement
 } from 'react'
 import { createRoot } from 'react-dom/client'
-import isPlainObject from 'lodash/isPlainObject'
 import { Screen } from './Screen'
 import { Sidebar } from './Sidebar'
 import { usePersistentValue } from './use-persistent-value'
