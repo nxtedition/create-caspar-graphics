@@ -4,34 +4,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const nodePath = require('./env').nodePath
 const paths = require('./paths')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
-module.exports = ({ templates, appName, dotenv }) => ({
+module.exports = ({ templates, appName, dotenv, isSymbolic }) => ({
   mode: 'development',
   context: process.cwd(),
   target: 'web',
   devtool: 'cheap-module-source-map',
   entry: {
-    ...templates.reduce(
-      (acc, name) => ({
-        ...acc,
-        [name]: [
-          require.resolve('react-dev-utils/webpackHotDevClient'),
-          path.join(paths.appTemplates, name)
-        ]
-      }),
-      {}
-    ),
-    preview: [
-      require.resolve('react-dev-utils/webpackHotDevClient'),
-      path.join(paths.ownLib, 'preview')
-    ],
-    lib: paths.ownLib
+    create: path.join(paths.ownLib, 'template', 'create.dev'),
+    preview: [path.join(paths.ownLib, 'preview')]
   },
   output: {
     pathinfo: true,
     filename: '[name].js',
-    library: 'template',
-    libraryTarget: 'window',
     publicPath: '/',
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
@@ -44,11 +30,20 @@ module.exports = ({ templates, appName, dotenv }) => ({
       // It is guaranteed to exist because we tweak it in `env.js`
       nodePath.split(path.delimiter).filter(Boolean)
     ),
-    extensions: ['.js'],
-    alias: {
-      // This is required so symlinks work during development.
-      'webpack/hot/poll': require.resolve('webpack/hot/poll')
-    }
+    extensions: ['.js', '.jsx'],
+    alias: isSymbolic
+      ? {
+          // When running yarn link caspar-graphics react complains
+          // about multiple instances.
+          react: require.resolve(path.join(paths.ownNodeModules, 'react')),
+          'react-dom': require.resolve(
+            path.join(paths.ownNodeModules, 'react-dom')
+          ),
+          'react-refresh/runtime': require.resolve(
+            path.join(paths.ownNodeModules, 'react-refresh/runtime')
+          )
+        }
+      : {}
   },
   resolveLoader: {
     modules: [paths.appNodeModules, paths.ownNodeModules]
@@ -67,9 +62,13 @@ module.exports = ({ templates, appName, dotenv }) => ({
           {
             loader: require.resolve('babel-loader'),
             options: {
-              babelrc: true,
+              babelrc: false,
               cacheDirectory: true,
-              presets: [require('babel-preset-react-app')]
+              presets: [require.resolve('babel-preset-react-app')],
+              plugins: [
+                require.resolve('babel-plugin-styled-components'),
+                require.resolve('react-refresh/babel')
+              ]
             }
           }
         ]
@@ -93,7 +92,7 @@ module.exports = ({ templates, appName, dotenv }) => ({
       inject: true,
       title: appName,
       filename: 'index.html',
-      template: path.join(paths.ownLib, 'index.html'),
+      template: path.join(paths.ownLib, 'preview', 'index.html'),
       chunks: ['preview']
     }),
     ...templates.map(
@@ -101,12 +100,19 @@ module.exports = ({ templates, appName, dotenv }) => ({
         new HtmlWebpackPlugin({
           title: name,
           filename: `${name}.html`,
-          template: path.join(paths.ownLib, 'index.html'),
-          chunks: ['lib', name],
-          chunksSortMode: (a, b) => (a.names[0] === name ? -1 : 1)
+          template: path.join(paths.ownLib, 'template', 'index.html'),
+          chunks: ['create']
         })
     ),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin(dotenv.stringified)
+    ...(!isSymbolic
+      ? [
+          new webpack.WatchIgnorePlugin([
+            path.join(paths.ownLib, 'preview'),
+            path.join(paths.ownLib, 'lib')
+          ])
+        ]
+      : []),
+    new webpack.DefinePlugin(dotenv.stringified),
+    new ReactRefreshWebpackPlugin()
   ]
 })

@@ -71,7 +71,7 @@ function getClientEnvironment(options) {
         PUBLIC_PATH: process.env.PUBLIC_PATH || '/',
         DEV_TEMPLATES_DIR: path.join(paths.appTemplates),
         GRAPHIC_TEMPLATES: options.templates,
-        MODE: options.mode
+        SIZE: options.size
       }
     )
   // Stringify all values so we can feed into Webpack DefinePlugin

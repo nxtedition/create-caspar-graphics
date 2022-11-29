@@ -1,17 +1,13 @@
 {
-  "lerna": "2.10.1",
+  "lerna": "3.20.2",
   "packages": [
     "packages/caspar-graphics",
-    "packages/create-caspar-graphics"
+    "packages/create-caspar-graphics",
+    "packages/examples",
+    "packages/graphics-kit"
   ],
-  "useWorkspaces": true,
+  "useWorkspaces": false,
   "npmClient": "yarn",
-  "commands": {
-    "bootstrap": {
-      "hoist": true,
-      "nohoist": "express"
-    }
-  },
   "changelog": {
     "repo": "nxtedition/caspar-graphics",
     "labels": {

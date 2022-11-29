@@ -11,7 +11,7 @@ if (script !== 'build' && script !== 'start') {
 
 const result = spawn.sync(
   'node',
-  [require.resolve('../scripts/' + script)].concat(args),
+  [require.resolve('./' + script)].concat(args),
   { stdio: 'inherit' }
 )
 

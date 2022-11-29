@@ -37,6 +37,7 @@ function installWithMessageFactory(opts) {
     version: '0.1.0',
     private: true,
     license: 'UNLICENSED',
+    sideEffects: ['**/*.css'],
     scripts: {
       start: 'caspar-graphics start',
       dev: 'caspar-graphics start',

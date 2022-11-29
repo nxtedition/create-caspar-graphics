@@ -1,23 +1,48 @@
 const webpack = require('webpack')
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const paths = require('./paths')
+const nodePath = require('./env').nodePath
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 
-const createConfig = (template, dotenv) => ({
+const createConfig = (template, { dotenv, isSymbolic, gzip }) => ({
   mode: 'production',
   bail: true,
   devtool: false,
+  optimization: {
+    minimize: true
+  },
   entry: {
-    lib: path.join(paths.ownPath, 'lib', 'index.js'),
-    template: path.join(paths.appTemplates, template)
+    create: path.join(paths.ownLib, 'template', 'create.prod')
   },
   output: {
     filename: '[name].js',
-    library: 'template',
-    libraryTarget: 'window',
     path: path.join(paths.appBuild)
+  },
+  // We need to tell webpack how to resolve both create-caspar-graphics'
+  // node_modules and the user's, so we use resolve and resolveLoader.
+  resolve: {
+    modules: ['node_modules', paths.appNodeModules].concat(
+      // It is guaranteed to exist because we tweak it in `env.js`
+      nodePath.split(path.delimiter).filter(Boolean)
+    ),
+    extensions: ['.js', '.jsx'],
+    alias: {
+      template: path.join(paths.appTemplates, template),
+      ...(isSymbolic
+        ? {
+            // We need this when running `yarn link`
+            react: require.resolve(path.join(paths.ownNodeModules, 'react')),
+            'react-dom': require.resolve(
+              path.join(paths.ownNodeModules, 'react-dom')
+            )
+          }
+        : {})
+    }
+  },
+  resolveLoader: {
+    modules: [paths.appNodeModules, paths.ownNodeModules]
   },
   module: {
     strictExportPresence: true,
@@ -28,14 +53,15 @@ const createConfig = (template, dotenv) => ({
       },
       {
         test: /\.(js|jsx|mjs)$/,
-        include: [paths.appSrc, path.join(paths.ownPath, 'lib')],
+        include: [paths.appSrc, paths.ownLib],
         use: [
           {
             loader: require.resolve('babel-loader'),
             options: {
-              babelrc: true,
+              babelrc: false,
               cacheDirectory: true,
-              presets: [require('babel-preset-react-app')]
+              presets: [require.resolve('babel-preset-react-app')],
+              plugins: [require.resolve('babel-plugin-styled-components')]
             }
           }
         ]
@@ -46,7 +72,7 @@ const createConfig = (template, dotenv) => ({
           {
             loader: 'url-loader',
             options: {
-              limit: 80000
+              limit: 8e6
             }
           }
         ]
@@ -57,15 +83,20 @@ const createConfig = (template, dotenv) => ({
     new HtmlWebpackPlugin({
       title: template,
       filename: `${template}.html`,
-      template: path.join(paths.ownPath, 'lib', 'index.html'),
-      chunksSortMode: (a, b) => (a.names[0] === 'template' ? -1 : 1),
-      inlineSource: '.(js|css)$'
+      template: path.join(paths.ownLib, 'template', 'index.html')
     }),
-    new HtmlWebpackInlineSourcePlugin(),
+    new ScriptExtHtmlWebpackPlugin({
+      inline: /\.js$/
+    }),
     new webpack.DefinePlugin(dotenv.stringified),
-    new CompressionPlugin()
+    new webpack.DefinePlugin({
+      'process.env.TEMPLATE_PATH': JSON.stringify(
+        path.join(paths.appTemplates, template)
+      )
+    }),
+    ...(gzip ? [new CompressionPlugin()] : [])
   ]
 })
 
-module.exports = ({ templates, dotenv }) =>
-  templates.map(template => createConfig(template, dotenv))
+module.exports = ({ templates, ...args }) =>
+  templates.map(template => createConfig(template, args))

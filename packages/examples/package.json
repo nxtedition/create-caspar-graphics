@@ -1,0 +1,24 @@
+{
+  "name": "examples",
+  "version": "1.0.0-next.9.3",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "caspar-graphics start",
+    "dev": "caspar-graphics start"
+  },
+  "caspar-graphics": {
+    "mode": "1080p"
+  },
+  "devDependencies": {
+    "caspar-graphics": "^1.0.0-next.9.3"
+  },
+  "dependencies": {
+    "framer-motion": "^1.10.3",
+    "gsap": "^3.3.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "styled-components": "^5.1.1"
+  }
+}
