@@ -10,6 +10,10 @@
   width: 41px;
 }
 
+.sidebar[data-show="false"] {
+  width: 300px;
+}
+
 .sidebar[data-show="false"] .templates {
   display: none;
 }
