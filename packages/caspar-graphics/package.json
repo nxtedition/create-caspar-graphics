@@ -56,7 +56,7 @@
     "react": "^16.13.1",
     "react-addons-transition-group": "15.6.2",
     "react-color": "2.18.0",
-    "react-dev-utils": "10.2.1",
+    "react-dev-utils": "11.0.4",
     "react-dom": "^16.13.1",
     "react-error-overlay": "^6.0.7",
     "react-icons": "^3.9.0",
