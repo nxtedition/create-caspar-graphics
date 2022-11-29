@@ -10,7 +10,7 @@
   width: 41px;
 }
 
-.sidebar[data-show="false"] {
+.sidebar[data-show="true"] {
   width: 300px;
 }
 
