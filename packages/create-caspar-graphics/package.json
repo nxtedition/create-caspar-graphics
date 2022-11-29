@@ -36,5 +36,6 @@
   ],
   "devDependencies": {
     "caspar-graphics": "^1.0.0-next.9.3"
-  }
+  },
+  "gitHead": "64d813899006614f9131a0ab897ec5603c489f8e"
 }

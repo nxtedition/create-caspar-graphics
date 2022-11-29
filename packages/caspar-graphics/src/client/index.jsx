@@ -3,8 +3,10 @@ import React, {
   useReducer,
   useRef,
   useEffect,
-  useLayoutEffect
+  useLayoutEffect,
+  createElement
 } from 'react'
+import { createRoot } from 'react-dom/client'
 import isPlainObject from 'lodash/isPlainObject'
 import { Screen } from './Screen'
 import { Sidebar } from './Sidebar'
@@ -282,3 +284,4 @@ const TemplatePreview = ({ name, show, dispatch, layer, data, ...props }) => {
   )
 }
 
+createRoot(document.getElementById('root')).render(createElement(App))
