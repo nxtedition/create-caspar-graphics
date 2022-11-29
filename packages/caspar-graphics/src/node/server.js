@@ -52,6 +52,12 @@ export async function createServer({ name, host }) {
           target: `http://localhost:${templatesPort}`
         }
       }
+    },
+    resolve: {
+      alias: {
+        'react-dom': path.resolve(paths.appNodeModules, 'react-dom'),
+        react: path.resolve(paths.appNodeModules, 'react')
+      }
     }
   })
 
