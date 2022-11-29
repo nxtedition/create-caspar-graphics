@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "fontfaceobserver": "^2.1.0",
-    "gsap": "^3.3.0",
+    "gsap": "^3.6.0",
     "htmlparser2": "^7.1.2"
   },
   "peerDependencies": {

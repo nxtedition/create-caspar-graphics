@@ -1271,10 +1271,10 @@ globals@^11.1.0:
   resolved "https://registry.yarnpkg.com/globals/-/globals-11.12.0.tgz#ab8795338868a0babd8525758018c2a7eb95c42e"
   integrity sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==
 
-gsap@^3.3.0:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.4.2.tgz#2cd85c5792050642f89d5d4e2775d690d7131a37"
-  integrity sha512-2DMG5x9IeQ7csnVaGxmhN4v06sJ4MklqYETMBjfmPQoPel4O4yTvpnINKLDYz7D22xNRwwyd1YWWxpkKgYkuiw==
+gsap@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/gsap/-/gsap-3.6.0.tgz#925f25370c698ce0f6ea563522da8f6b5ed21b0a"
+  integrity sha512-0P3syv1TmYr+A/VZ8UMFzw+s0XoaKSzzDFs8NqkXiJTXI4E/VTi0zRjPgxaPBpiUPPycgRnFjLDe0Tb4dRRf+w==
 
 has-flag@^3.0.0:
   version "3.0.0"
