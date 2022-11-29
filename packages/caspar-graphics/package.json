@@ -45,7 +45,6 @@
     "framer-motion": "^7.6.9",
     "get-port": "^6.1.2",
     "json5": "^2.2.1",
-    "lodash": "^4.17.21",
     "monaco-editor": "^0.34.1",
     "prop-types": "^15.8.1",
     "react-colorful": "^5.6.1",

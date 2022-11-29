@@ -124,11 +124,7 @@ export function getPresets(data) {
     return null
   }
 
-  if (Object.values(data).every(value => isPlainObject(value))) {
-    return Object.entries(data)
-  }
-
-  return [['DEFAULT_KEY', data]]
+  return Object.entries(data)
 }
 
 function getInitialState(templates, snapshot) {
