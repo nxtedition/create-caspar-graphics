@@ -1,6 +1,6 @@
 {
   "name": "examples",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "dev": "caspar-graphics start"
   },
   "devDependencies": {
-    "@nxtedition/caspar-graphics": "^1.0.0-alpha.3"
+    "@nxtedition/caspar-graphics": "^1.0.0-alpha.4"
   },
   "dependencies": {
     "react": "^18.2.0",
