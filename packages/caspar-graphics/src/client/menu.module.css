@@ -1,0 +1,66 @@
+.content {
+  min-width: 200px;
+  background: var(--neutral1);
+  border: 1px solid var(--neutral6);
+  border-radius: 6px;
+  padding: 5px;
+  box-shadow: 0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+}
+
+.item {
+  all: unset;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--neutral11);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  padding: 0 5px;
+  user-select: none;
+}
+.item[data-disabled] {
+  color: var(--neutral8);
+  pointer-events: none;
+}
+
+.item[data-highlighted] {
+  background-color: var(--neutral5);
+  color: var(--primary12);
+}
+
+.rightSlot {
+  margin-left: auto;
+  paddingleft: 20px;
+  color: var(--neutral11);
+}
+
+.item[data-highlighted] > .rightSlot {
+  color: white;
+}
+
+.radioItem {
+  padding-left: 18px;
+  position: relative;
+}
+
+.radioItem > span {
+  position: absolute;
+  left: 0;
+  top: 5px;
+}
+
+.label {
+  color: var(--neutral10);
+  padding: 0 5px;
+  height: 25px;
+  line-height: 25px;
+  font-size: 12px;
+}
+
+.separator {
+  height: 1px;
+  background-color: var(--neutral5);
+  margin: 5px;
+}

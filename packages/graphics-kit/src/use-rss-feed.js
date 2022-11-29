@@ -22,7 +22,7 @@ export const useRssFeed = (url, transformFn) => {
           setData(data)
         }
       } catch (err) {
-        console.error(`Unabel to get data from ${url}`, err)
+        console.error(`Unable to get data from ${url}`, err)
       }
     }
 

@@ -1,0 +1,73 @@
+.root {
+  all: unset;
+  color: var(--neutral11);
+  width: 78px;
+  height: 28px;
+  position: relative;
+  display: flex;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--neutral1);
+  box-shadow: var(--shadow-inset);
+  border: 1px solid var(--neutral5);
+  box-sizing: border-box;
+  transition: 0.2s color ease-in-out;
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--neutral7);
+}
+
+.root[disabled] {
+  opacity: 0.5;
+}
+
+.root [data-label] {
+  position: relative;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+  isolation: isolate;
+  box-sizing: border-box;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+[data-label] > span {
+  isolation: isolate;
+}
+
+.thumb {
+  display: block;
+  position: absolute;
+  width: calc(50% - 2px);
+  height: calc(100% - 4px);
+  left: 2px;
+  top: 2px;
+  border-radius: 2px;
+  transition: background 0.2s ease;
+}
+
+[data-state='unchecked'] .thumb {
+  background: var(--neutral8);
+}
+
+[data-state='checked'] .thumb {
+  background: var(--red9);
+}
+
+.root[data-state='checked'] [data-label='on'],
+.root[data-state='unchecked'] [data-label='off'] {
+  color: white;
+}
+
+.root [data-label='on'] {
+  transform: translateX(-1px);
+}

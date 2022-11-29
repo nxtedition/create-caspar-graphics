@@ -1,5 +1,5 @@
 import React from 'react'
-import { useCasparData } from 'caspar-graphics'
+import { useCasparData } from './TemplateProvider'
 
 export const useMergedData = () => {
   const ref = React.useRef({})

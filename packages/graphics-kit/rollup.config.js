@@ -13,7 +13,9 @@ const external = [
 ]
 
 const plugins = [
-  resolve({ extensions: ['.mjs', '.js', '.jsx', '.json', '.node'] }),
+  resolve({
+    extensions: ['.mjs', '.js', '.jsx', '.tsx', '.ts', '.json', '.node']
+  }),
   commonjs(),
   babel({
     presets: [

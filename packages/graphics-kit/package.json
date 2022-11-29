@@ -3,12 +3,12 @@
   "version": "1.0.0-alpha.17.3",
   "license": "MIT",
   "main": "dist/@nxtedition/graphics-kit.cjs.js",
-  "module": "dist/es/index.js",
+  "module": "dist/es/src/index.js",
   "exports": {
     "package.json": "./package.json",
     "require": "./dist/@nxtedition/graphics-kit.cjs.js",
-    "import": "./dist/es/index.js",
-    "default": "./dist/es/index.js"
+    "import": "./dist/es/src/index.js",
+    "default": "./dist/es/src/index.js"
   },
   "author": "nxtedition",
   "repository": "https://github.com/nxtedition/create-caspar-graphics",
@@ -19,12 +19,14 @@
   },
   "dependencies": {
     "fontfaceobserver": "^2.1.0",
-    "gsap": "^3.3.0",
-    "htmlparser2": "^7.1.2"
+    "framer-motion": "^7.6.12",
+    "gsap": "^3.11.3",
+    "htmlparser2": "^7.1.2",
+    "js-base64": "^3.7.3"
   },
   "peerDependencies": {
-    "caspar-graphics": "^1.0.0-alpha.1",
-    "react": ">=16.8 || ^17.0.0"
+    "react": ">=16.8 || ^17.0.0 || ^18.0.0",
+    "react-dom": ">=16.8 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

@@ -1,0 +1,16 @@
+.editor {
+  position: relative;
+  border: 1px solid var(--neutral5);
+  background: var(--neutral3);
+  border-radius: 2px;
+  color: var(--neutral12);
+}
+
+.editor:focus {
+  border-color: var(--primary9);
+  outline: none;
+}
+
+.editor > p {
+  margin: 10px;
+}

@@ -1,0 +1,243 @@
+.sidebar {
+  background: var(--neutral2);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+  border-right: 1px solid var(--neutral4);
+}
+
+.sidebar[data-show="false"] {
+  width: 41px;
+}
+
+.sidebar[data-show="false"] .templates {
+  display: none;
+}
+
+.templates {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
+  overflow-y: scroll;
+}
+
+.templates::-webkit-scrollbar-track {
+  background-color: var(--neutral1);
+  border-left: 1px solid var(--neutral3);
+  width: 5px;
+}
+
+.templates::-webkit-scrollbar-thumb {
+  background-color: var(--neutral6);
+  border-radius: 20px;
+}
+
+.templates::-webkit-scrollbar {
+  width: 10px;
+}
+
+.template[data-state='open'] {
+  border-bottom: 1px solid var(--neutral5);
+}
+
+.content {
+  background: var(--neutral1);
+}
+
+.template[data-state='open'] .trigger > svg {
+  transform: rotate(90deg);
+  transition: 0.2s ease transform;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  border-bottom: 1px solid var(--neutral5);
+  padding: 10px 20px;
+  margin-left: -6px;
+}
+
+.trigger {
+  all: unset;
+  color: var(--neutral12);
+  font-weight: 500;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.header[data-state='disabled'] > .trigger {
+  color: var(--neutral10);
+}
+
+.data {
+  padding: 10px 20px;
+  box-sizing: border-box;
+  /* border-left: 1px solid var(--neutral6); */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.button {
+  all: unset;
+  background-color: var(--primary2);
+  border: 1px solid var(--primary6);
+  color: var(--primary11);
+  font-size: 12px;
+  padding: 0 8px;
+  height: 24px;
+  font-weight: 500;
+  border-radius: 2px;
+  width: auto;
+  transition: 0.2s ease background;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:has(svg:only-child) {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.button > svg {
+  font-size: 16px;
+}
+
+.button:not([disabled]):hover {
+  background-color: var(--primary3);
+}
+
+.button:not([disabled]):active {
+  transform: translateY(1px);
+}
+
+.button:focus-visible {
+  box-shadow: 0 0 0 2px var(--primary11);
+}
+
+.button[disabled] {
+  opacity: 0.7;
+}
+
+.splitButton {
+  display: flex;
+  margin-left: auto;
+}
+
+.splitButton .button:has(+ .button) {
+  border-radius: 2px 0 0 2px;
+  border-right: 1px solid var(--primary8);
+}
+
+.splitButton .button + .button {
+  border-radius: 0 2px 2px 0;
+  margin-left: -1px;
+  padding: 0 4px;
+}
+
+.jsonToggle {
+  all: unset;
+  color: var(--neutral11);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.images {
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.imageToggle {
+  width: 100%;
+  border-radius: 2px;
+  border: 1px solid var(--neutral8);
+  background: none;
+  padding: 0;
+  opacity: 0.5;
+}
+
+.imageToggle[data-active] {
+  border-color: var(--primary11);
+  box-shadow: 0 0 0 1px var(--primary11);
+  opacity: 1;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tabList {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--neutral5);
+  height: 39px;
+}
+
+.tabTrigger {
+  color: var(--neutral10);
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+}
+
+.tabTrigger[data-state='active'] {
+  color: var(--neutral11);
+  font-weight: 600;
+}
+
+.presets {
+  display: flex;
+  flex-direction: column;
+}
+
+.preset {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  color: var(--neutral11);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+  transition: color 0.2s ease-in-out;
+}
+
+.preset > svg {
+  font-size: 16px;
+  color: var(--neutral9);
+  transition: 0.2s ease-in-out;
+  transition-property: transform, color;
+}
+
+.preset:hover {
+  color: var(--neutral12);
+}
+
+.preset:hover > svg {
+  color: var(--primary11);
+  transform: translateX(2px);
+}
+
+.preset:active > svg {
+  color: var(--primary10);
+  transform: translateX(4px);
+}
+
+.preset + .preset {
+  border-top: 1px solid var(--neutral5);
+}
+
+.preset[data-active] {
+  color: var(--neutral12);
+}

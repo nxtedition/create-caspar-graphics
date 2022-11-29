@@ -1,0 +1,110 @@
+.container {
+  background: var(--neutral3);
+  color: var(--neutral11);
+  padding: 7px var(--space-ui);
+  box-sizing: border-box;
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+}
+
+.container:first-child {
+  border-bottom: 1px solid var(--neutral5);
+}
+
+.container ~ .container {
+  border-top: 1px solid var(--neutral5);
+  justify-content: space-between;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.control > label {
+  user-select: none;
+}
+
+.switch {
+  width: 40px;
+  height: 24px;
+}
+
+.switch[data-state='checked'] > span[data-state='checked'] {
+  background: var(--primary9);
+}
+
+.button {
+  all: unset;
+  color: var(--neutral11);
+  font-size: 16px;
+  padding: 2px 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.button:hover {
+  color: var(--neutral12);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.menuButton {
+  font-size: 22px;
+  margin-left: auto;
+}
+
+.settingsButton {
+  font-size: 18px;
+  margin-left: -7px;
+}
+
+.colorPicker {
+  background: var(--neutral1);
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--neutral5);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.colorPicker > span {
+  height: 18px;
+  width: 18px;
+  border-radius: 2px;
+}
+
+.settingsContent {
+  background: var(--neutral3);
+  width: 230px;
+  border-radius: 4px;
+  padding: var(--space-ui);
+  box-shadow: var(--shadow);
+  margin-top: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.settingsContent h2 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neutral11);
+  margin: 0;
+  border-bottom: 1px solid var(--neutral5);
+  padding-bottom: 8px;
+  line-height: 1;
+}

@@ -1,0 +1,49 @@
+.container {
+  background: var(--neutral1);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+  z-index: 0;
+}
+
+.empty {
+  background: var(--neutral1);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  grid-gap: 20px;
+  height: 100vh;
+}
+
+.empty svg {
+  font-size: 28px;
+}
+
+.empty > div {
+  display: flex;
+  align-items: center;
+}
+
+.empty > div:first-of-type {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.empty > div:last-of-type {
+  color: #666;
+}
+
+.empty span {
+  background: #ccc;
+  border-radius: 2px;
+  padding: 2px;
+  margin: 0 5px;
+  color: #222;
+  font-weight: 600;
+}

@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.container > label {
+  color: var(--neutral11);
+  font-size: 13px;
+}
+
+.input {
+  background: var(--neutral5);
+  border: 1px solid var(--neutral7);
+  border-radius: 2px;
+  height: 28px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  color: var(--neutral12);
+}
+
+.input:hover {
+  border-color: var(--neutral8);
+}
+
+.input:focus {
+  border-color: var(--primary10);
+  outline: none;
+}
