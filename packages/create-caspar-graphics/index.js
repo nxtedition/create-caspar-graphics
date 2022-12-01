@@ -1,7 +1,3 @@
-const createCasparGraphics = require('./lib')
-const messages = require('./lib/messages')
+#!/usr/bin/env node
 
-module.exports = {
-  messages,
-  createCasparGraphics
-}
+import('./src/index.js')

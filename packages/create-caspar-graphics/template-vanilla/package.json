@@ -1,0 +1,13 @@
+{
+  "name": "caspar-graphics-vanilla-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "caspar-graphics dev",
+    "build": "caspar-graphics build"
+  },
+  "devDependencies": {
+    "@nxtedition/caspar-graphics": "1.0.0-alpha.9"
+  }
+}

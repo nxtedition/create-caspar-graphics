@@ -1,0 +1,29 @@
+{
+  "name": "Custom Font",
+  "schema": {
+    "name": {
+      "type": "string",
+      "label": "Name"
+    },
+    "title": {
+      "type": "string",
+      "label": "Title"
+    },
+    "goals": {
+      "type": "number",
+      "label": "Goals"
+    }
+  },
+  "previewData": {
+    "Thierry Henry": {
+      "name": "Thierry Henry",
+      "title": "Arsenal Legend",
+      "goals": 228
+    },
+    "Dennis Bergkamp": {
+      "name": "Dennis Bergkamp",
+      "title": "Arsenal Legend",
+      "goals": 87
+    }
+  }
+}

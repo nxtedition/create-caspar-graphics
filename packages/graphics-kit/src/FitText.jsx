@@ -1,42 +1,40 @@
 import React, { useRef, useLayoutEffect, useState } from 'react'
 
 export const FitText = ({
-  fontSize,
+  text,
+  preferredSize,
   minSize = 0,
-  children,
-  onReady,
+  step = 1,
+  unit = 'px',
   style,
   ...props
 }) => {
-  const fitProps = useFitText({ fontSize, minSize, onReady })
-
-  return (
-    <div ref={fitProps.ref} style={{ ...style, ...fitProps.style }} {...props}>
-      {children}
-    </div>
-  )
-}
-
-export function useFitText({
-  fontSize: preferredSize,
-  minSize = 0,
-  onReady,
-  ...props
-}) {
   const ref = useRef()
-  const [fontSize, setFontSize] = useState(preferredSize)
+  const [fontSize, setFontSize] = useState(`${preferredSize}${unit}`)
 
   useLayoutEffect(() => {
-    if (
-      ref.current.scrollWidth > ref.current.clientWidth &&
-      fontSize > minSize
-    ) {
-      setFontSize(fontSize - 1)
-    } else {
-      onReady?.(true)
-    }
-  })
+    const el = ref.current
+    let size = preferredSize
 
-  const style = { fontSize, overflow: 'hidden' }
-  return { ref, style }
+    while (el.scrollWidth > el.clientWidth && size > minSize) {
+      size -= step
+      el.style.fontSize = `${size}${unit}`
+    }
+
+    setFontSize(el.style.fontSize)
+  }, [preferredSize, minSize, step, unit])
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        ...style,
+        fontSize,
+        overflow: 'hidden'
+      }}
+      {...props}
+    >
+      {text}
+    </div>
+  )
 }

@@ -8,7 +8,8 @@
     "dev": "caspar-graphics start"
   },
   "devDependencies": {
-    "@nxtedition/caspar-graphics": "^1.0.0-alpha.9"
+    "@nxtedition/caspar-graphics": "*",
+    "@nxtedition/graphics-kit": "*"
   },
   "dependencies": {
     "react": "^18.2.0",

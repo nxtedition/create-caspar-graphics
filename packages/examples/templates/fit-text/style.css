@@ -1,0 +1,13 @@
+.container {
+  position: absolute;
+  bottom: 80px;
+  left: 266px;
+  width: 1388px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 6px;
+  font-family: Arial;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}

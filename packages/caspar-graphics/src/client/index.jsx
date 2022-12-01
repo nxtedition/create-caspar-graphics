@@ -31,7 +31,7 @@ export default function App() {
           projectName: projectName ?? data?.projectName,
           templates
         }))
-        
+
         if (projectName) {
           document.title = `${projectName} | Caspar Graphics`
         }
@@ -89,7 +89,10 @@ function reducer(state, action) {
     case 'hide':
       return updateTemplate({ show: false })
     case 'removed':
-      return updateTemplate({ state: States.loading, removed: (template.removed ?? 0) + 1 })
+      return updateTemplate({
+        state: States.loading,
+        removed: (template.removed ?? 0) + 1
+      })
     case 'preset-change':
       const payload = { preset: action.preset }
 
@@ -174,7 +177,7 @@ function Preview({
       autoPlay: false,
       background: '#21ECAF',
       imageOpacity: 0.5,
-      colorScheme: 'system'
+      colorScheme: 'dark'
     }
   )
   const initialState = getInitialState(templates, persistedState)
@@ -183,14 +186,7 @@ function Preview({
   useEffect(() => {
     const templates = {}
 
-    for (const {
-      name,
-      enabled,
-      open,
-      data,
-      preset,
-      tab
-    } of state?.templates) {
+    for (const { name, enabled, open, data, preset, tab } of state?.templates) {
       templates[name] = { enabled, open, data, preset, tab }
     }
 
@@ -230,9 +226,7 @@ const TemplatePreview = ({ name, show, dispatch, layer, data, ...props }) => {
 
   // Data Updates
   useEffect(() => {
-    // TODO: in nxt we often start by sending an empty object.
-    // Should we have a mode (setting?) to do the same here?
-    if (templateWindow) {
+    if (templateWindow?.update) {
       templateWindow.update(data || {})
     }
   }, [templateWindow, data])
@@ -246,7 +240,11 @@ const TemplatePreview = ({ name, show, dispatch, layer, data, ...props }) => {
     if (show) {
       templateWindow.play()
     } else if (didShow) {
-      templateWindow.stop()
+      if (templateWindow.stop) {
+        templateWindow.stop()
+      } else {
+        console.error('No window.stop found')
+      }
     }
   }, [templateWindow, show, didShow])
 
@@ -257,23 +255,29 @@ const TemplatePreview = ({ name, show, dispatch, layer, data, ...props }) => {
       onLoad={evt => {
         const { contentWindow } = evt.target
 
-        contentWindow.onReady = () => {
-          setTemplateWindow(contentWindow)
-          dispatch({
-            type: 'caspar-state',
-            template: name,
-            state: States.loaded
-          })
-        }
-
         // Once the template has animated off, we want to reload it.
         // This is to imitate Caspar's remove method.
         contentWindow.remove = () => {
-          console.log('REMOVED')
           contentWindow.location.reload()
           setTemplateWindow(null)
           dispatch({ type: 'removed', template: name })
         }
+
+        // The play command might not be ready on load, so here we basically poll the template
+        // to see if it has exposed a play command.
+        let retries = 0
+
+        function checkIfReady() {
+          if (contentWindow.play) {
+            setTemplateWindow(contentWindow)
+          } else if (retries < 20) {
+            setTimeout(checkIfReady, (++retries) ** 2 * 10)
+          } else {
+            console.error('No window.play found')
+          }
+        }
+
+        checkIfReady()
       }}
     />
   )

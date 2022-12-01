@@ -1,11 +1,61 @@
 import React, { useEffect, useState } from 'react'
+import Editor, { useMonaco } from '@monaco-editor/react'
 import styles from './json-editor.module.css'
 import JSON5 from 'json5'
 
 export function JsonEditor({ value, onChange }) {
+  const monaco = useMonaco()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    if (monaco) {
+      monaco.editor.defineTheme('custom', theme)
+      monaco.editor.setTheme('custom')
+      setReady(true)
+    }
+  }, [monaco])
+
+  const stringified = JSON.stringify(value, null, 2)
 
   return (
     <div style={{ opacity: ready ? 1 : 0 }}>
+      <Editor
+        height={20 + stringified.split('\n').length * 18}
+        language="json"
+        theme="custom"
+        defaultValue={stringified}
+        onChange={value => {
+           try {
+            const parsed = JSON5.parse(value)
+            onChange(parsed)
+          } catch (err) {
+            console.error(err)
+          }
+        }}
+        options={{
+          folding: false,
+          lineNumbers: 'off',
+          lineDecorationsWidth: 0,
+          glyphMargin: false,
+          renderValidationDecorations: 'off',
+          hideCursorInOverviewRuler: true,
+          highlightActiveIndentGuide: false,
+          iconsInSuggestions: false,
+          overviewRulerBorder: false,
+          quickSuggestions: false,
+          parameterHints: false,
+          renderLineHighlight: 'none',
+          scrollBeyondLastLine: false,
+          scrollBeyondLastColumn: false,
+          snippetSuggestions: 'none',
+          lightbulb: {
+            enabled: false
+          },
+          minimap: {
+            enabled: false
+          }
+        }}
+      />
     </div>
   )
 }

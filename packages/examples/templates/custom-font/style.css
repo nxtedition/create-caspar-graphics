@@ -1,0 +1,36 @@
+.container {
+  position: absolute;
+  bottom: 80px;
+  left: 266px;
+  width: 1388px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 6px;
+  font-size: 70px;
+  font-family: sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.name {
+  font-weight: 800;
+}
+
+.title {
+  font-weight: 500;
+}
+
+.goals {
+  display: flex;
+}
+
+.goals div:first-child {
+  font-weight: 400;
+}
+
+.goals div:last-child {
+  font-weight: 700;
+}

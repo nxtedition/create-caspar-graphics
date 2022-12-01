@@ -1,12 +1,12 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { gsap } from 'gsap'
-import { useCaspar, States } from './TemplateProvider'
+import { useCaspar, States } from './'
 
 export const GsapTimeline = ({ children, hide, onPlay, onStop }) => {
   const [timeline] = useState(gsap.timeline({ paused: true }))
   const { state, isPlaying, isStopped, safeToRemove } = useCaspar()
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isPlaying && onPlay) {
       onPlay(timeline)
       timeline.play()

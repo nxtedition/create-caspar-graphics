@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 import FontFaceObserver from 'fontfaceobserver'
-import { useDelayPlay } from './TemplateProvider'
+import { useDelayPlay } from './'
 
 export const useFontObserver = (...args) => {
   const [loaded, setLoaded] = React.useState(false)
@@ -41,7 +41,7 @@ export function useFont({ src, weight, style }) {
   useLayoutEffect(() => {
     const fonts = Array.isArray(src) ? src : [{ path: src, weight, style }]
 
-    if (!Array.isArray(fonts) || !fonts.length) {
+    if (!Array.isArray(fonts)) {
       return
     }
 
@@ -51,13 +51,12 @@ export function useFont({ src, weight, style }) {
         ?.slice(-1)[0]
         ?.split('.')[0]
       const fontFaces = await Promise.all(
-        fonts.map(font => {
-          const fontFile = new FontFace(name, `url(${src})`, { weight, style })
+        fonts.map(({ path, weight, style }) => {
+          const fontFile = new FontFace(name, `url(${path})`, { weight, style })
           document.fonts.add(fontFile)
           return fontFile.load()
         })
       )
-
       resume(fontFaces[0].family)
     }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDelayPlay } from './TemplateProvider'
+import { useDelayPlay } from './'
 
 export function Image({ src }) {
   const image = useImage({ src })

@@ -1,56 +1,23 @@
 import React, {
   useEffect,
-  useLayoutEffect,
   useState,
   useCallback,
-  useMemo,
-  useRef
+  memo,
 } from 'react'
-import * as ReactDOM from 'react-dom/client'
 import { parse } from './utils/parse'
 
 export const TemplateContext = React.createContext()
 
-let root = null
-
-export const render = (Template, options) => {
-  let {
-    container = document.getElementById('root'),
-    cssReset = true,
-    name = Template.name
-  } = options || {}
-
-  if (!container) {
-    container = document.createElement('div')
-    container.id = 'root'
-    document.body.appendChild(container)
-  }
-
-  if (cssReset) {
-    const reset = ` 
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      margin: 0;
-    `
-    document.body.style.cssText = reset
-    container.style.cssText = reset
-  }
-
-  if (!root) {
-    root = ReactDOM.createRoot(container)
-  }
-
-  root.render(
-    React.createElement(
-      TemplateProvider,
-      { name },
-      React.createElement(Template)
-    )
-  )
+export const States = {
+  loading: 0,
+  loaded: 1,
+  playing: 2,
+  paused: 3,
+  stopped: 4,
+  removed: 5
 }
 
-const TemplateProvider = ({ children, name }) => {
+export const TemplateProvider = ({ children, name }) => {
   const [state, setState] = useState(States.loading)
   const [data, setData] = useState({})
   const [delays, setDelays] = useState([])
@@ -111,7 +78,7 @@ const TemplateProvider = ({ children, name }) => {
       }
     }
 
-    // Let the preview app know that we're all set up.
+    // // Let the preview app know that we're all set up.
     window.onReady?.(window)
 
     return () => {
@@ -165,70 +132,4 @@ const TemplateProvider = ({ children, name }) => {
   )
 }
 
-const TemplateWrapper = React.memo(({ children }) => children)
-
-export const States = {
-  loading: 0,
-  loaded: 1,
-  playing: 2,
-  paused: 3,
-  stopped: 4,
-  removed: 5
-}
-
-export const useCaspar = () => {
-  const { state, ...context } = React.useContext(TemplateContext)
-
-  return {
-    ...context,
-    state,
-    isLoading: state === States.loading,
-    isLoaded: state === States.loaded,
-    isPlaying: state === States.playing,
-    isPaused: state === States.paused,
-    isStopped: state === States.stopped
-  }
-}
-
-export const useCasparState = () => {
-  return React.useContext(TemplateContext).state
-}
-
-export const useCasparData = () => {
-  return React.useContext(TemplateContext).data
-}
-
-export const useDelayPlay = ({ key }) => {
-  const [delayedValue, setDelayedValue] = useState()
-  const { delayPlay } = React.useContext(TemplateContext)
-  const resumeRef = useRef()
-
-  // Reset when key changes
-  useEffect(() => {
-    setDelayedValue(null)
-  }, [key])
-
-  useLayoutEffect(() => {
-    if (!key) {
-      return
-    }
-
-    const resume = delayPlay(key)
-    resumeRef.current = resume
-
-    return () => {
-      resumeRef.current = null
-      resume()
-    }
-  }, [delayPlay, key])
-
-  const resume = useCallback(
-    value => {
-      setDelayedValue(value)
-      resumeRef.current?.()
-    },
-    [key]
-  )
-
-  return [delayedValue, resume]
-}
+const TemplateWrapper = memo(({ children }) => children)

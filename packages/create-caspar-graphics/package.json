@@ -2,40 +2,26 @@
   "name": "create-caspar-graphics",
   "version": "1.0.0-next.9.5",
   "description": "CLI tool to bootstrap CasparCG graphics with no configuration",
+  "type": "module",
   "main": "index.js",
   "license": "MIT",
-  "author": "Boffins Technologies",
-  "engines": {
-    "node": ">=6"
-  },
+  "author": "nxtedition",
   "repository": "github:nxtedition/create-caspar-graphics",
   "bugs": {
-    "url": "https://github.com/nxtedition/caspar-graphics/issues"
+    "url": "https://github.com/nxtedition/create-caspar-graphics/issues"
   },
   "bin": {
-    "create-caspar-graphics": "./bin/create-caspar-graphics.js"
+    "create-caspar-graphics": "index.js"
   },
   "dependencies": {
-    "ansi-escapes": "^2.0.0",
-    "chalk": "^2.4.2",
-    "commander": "^2.9.0",
-    "cross-spawn": "^5.1.0",
-    "execa": "^0.6.3",
-    "fs-extra": "^3.0.0",
-    "mkdirp-then": "^1.2.0",
-    "ms": "^1.0.0",
-    "mz": "^2.6.0",
-    "ora": "^1.2.0",
-    "promise": "^7.1.1",
-    "react": "^16.13.1"
+    "cross-spawn": "^7.0.3",
+    "kolorist": "^1.6.0",
+    "minimist": "^1.2.7",
+    "prompts": "^2.4.2"
   },
   "keywords": [
-    "caspar",
-    "react",
-    "webpack"
-  ],
-  "devDependencies": {
-    "caspar-graphics": "^1.0.0-next.9.3"
-  },
-  "gitHead": "64d813899006614f9131a0ab897ec5603c489f8e"
+    "CasparCG",
+    "graphics",
+    "HTML graphics"
+  ]
 }

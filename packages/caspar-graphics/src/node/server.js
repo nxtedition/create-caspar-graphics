@@ -73,7 +73,7 @@ export async function createServer({ name, host }) {
   })
 
   return {
-    listen: async () => {
+    listen: () => {
       return Promise.all([templatesServer.listen(), previewServer.listen()])
     },
     printUrls: previewServer.printUrls

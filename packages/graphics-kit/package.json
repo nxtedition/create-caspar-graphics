@@ -19,12 +19,12 @@
   },
   "dependencies": {
     "fontfaceobserver": "^2.1.0",
-    "framer-motion": "^7.6.12",
-    "gsap": "^3.11.3",
     "htmlparser2": "^7.1.2",
     "js-base64": "^3.7.3"
   },
   "peerDependencies": {
+    "framer-motion": ">=7.0.0",
+    "gsap": ">=3.0.0",
     "react": ">=16.8 || ^17.0.0 || ^18.0.0",
     "react-dom": ">=16.8 || ^17.0.0 || ^18.0.0"
   },

@@ -1,0 +1,17 @@
+{
+  "name": "Example",
+  "schema": {
+    "text": {
+      "type": "string",
+      "label": "Text"
+    }
+  },
+  "previewData": {
+    "Example 1": {
+      "text": "Example 1"
+    },
+    "Example 2": {
+      "text": "Example 2"
+    }
+  }
+}
