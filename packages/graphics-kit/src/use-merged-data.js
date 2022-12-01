@@ -1,5 +1,5 @@
 import React from 'react'
-import { useCasparData } from './'
+import { useCasparData } from './use-caspar'
 
 export const useMergedData = () => {
   const ref = React.useRef({})

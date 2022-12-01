@@ -5,7 +5,8 @@ import React, {
   useCallback,
   useRef
 } from 'react'
-import { TemplateContext, States } from './TemplateProvider'
+import { TemplateContext } from './TemplateProvider'
+import { States } from './constants'
 
 export const useCaspar = () => {
   const { state, ...context } = React.useContext(TemplateContext)

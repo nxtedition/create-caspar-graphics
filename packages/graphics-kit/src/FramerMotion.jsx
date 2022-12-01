@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useCaspar } from './'
+import { useCaspar } from './use-caspar'
 
 export const FramerMotion = ({ children, hide, mode = 'wait' }) => {
   const { isPlaying, safeToRemove } = useCaspar()

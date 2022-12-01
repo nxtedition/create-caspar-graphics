@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { gsap } from 'gsap'
-import { useCaspar, States } from './'
+import { States } from './constants'
+import { useCaspar } from './use-caspar'
 
 export const GsapTimeline = ({ children, hide, onPlay, onStop }) => {
   const [timeline] = useState(gsap.timeline({ paused: true }))

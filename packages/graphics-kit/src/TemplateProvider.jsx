@@ -5,17 +5,9 @@ import React, {
   memo,
 } from 'react'
 import { parse } from './utils/parse'
+import { States } from './constants'
 
 export const TemplateContext = React.createContext()
-
-export const States = {
-  loading: 0,
-  loaded: 1,
-  playing: 2,
-  paused: 3,
-  stopped: 4,
-  removed: 5
-}
 
 export const TemplateProvider = ({ children, name }) => {
   const [state, setState] = useState(States.loading)
@@ -62,7 +54,7 @@ export const TemplateProvider = ({ children, name }) => {
     }
 
     window.update = payload => {
-      const data = typeof payload === 'string' ? parse(payload) : payload
+      const data = parse(payload)
 
       if (data) {
         logger(

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDelayPlay } from './'
+import { useDelayPlay } from './use-caspar'
 
 export function Image({ src }) {
   const image = useImage({ src })

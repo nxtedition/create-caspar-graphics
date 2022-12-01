@@ -48,6 +48,7 @@ const es = Object.assign({}, config, {
     format: 'es',
     exports: 'named',
     preserveModules: true,
+    preserveModulesRoot: 'src',
     dir: 'dist/es'
   },
   plugins,

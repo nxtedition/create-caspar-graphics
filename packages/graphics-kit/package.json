@@ -3,12 +3,12 @@
   "version": "2.0.0-alpha.2",
   "license": "MIT",
   "main": "dist/@nxtedition/graphics-kit.cjs.js",
-  "module": "dist/es/src/index.js",
+  "module": "dist/es/index.js",
   "exports": {
     "package.json": "./package.json",
     "require": "./dist/@nxtedition/graphics-kit.cjs.js",
-    "import": "./dist/es/src/index.js",
-    "default": "./dist/es/src/index.js"
+    "import": "./dist/es/index.js",
+    "default": "./dist/es/index.js"
   },
   "author": "nxtedition",
   "repository": "https://github.com/nxtedition/create-caspar-graphics",

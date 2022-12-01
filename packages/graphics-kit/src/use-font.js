@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 import FontFaceObserver from 'fontfaceobserver'
-import { useDelayPlay } from './'
+import { useDelayPlay } from './use-caspar'
 
 export const useFontObserver = (...args) => {
   const [loaded, setLoaded] = React.useState(false)
