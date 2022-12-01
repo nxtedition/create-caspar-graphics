@@ -1,5 +1,5 @@
 {
-  "name": "caspar-graphics-graphics-kit-starter",
+  "name": "caspar-graphics-react-gsap-starter",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,11 +8,12 @@
     "build": "caspar-graphics build"
   },
   "dependencies": {
-    "@nxtedition/graphics-kit": "2.0.0-alpha.0",
+    "@nxtedition/graphics-kit": "^2.0.0-alpha.0",
+    "gsap": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@nxtedition/caspar-graphics": "1.0.0-alpha.9"
+    "@nxtedition/caspar-graphics": "^1.0.0-alpha.9"
   }
 }

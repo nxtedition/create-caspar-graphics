@@ -28,8 +28,18 @@ const FRAMEWORKS = [
     color: cyan,
     variants: [
       {
-        name: 'graphics-kit',
-        display: 'Graphics Kit',
+        name: 'react-framer-motion',
+        display: 'Framer Motion',
+        color: magenta
+      },
+      {
+        name: 'react-gsap',
+        display: 'GSAP (Greensock)',
+        color: lightGreen
+      },
+      {
+        name: 'react-bare',
+        display: 'Bare',
         color: yellow
       }
     ]

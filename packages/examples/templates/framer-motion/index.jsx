@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, FramerMotion, useCasparData } from '@nxtedition/graphics-kit'
+import { render, useCasparData, FramerMotion } from '@nxtedition/graphics-kit'
 import { motion } from 'framer-motion'
 import './style.css'
 
