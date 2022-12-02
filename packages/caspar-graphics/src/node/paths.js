@@ -17,7 +17,7 @@ export default {
   appBuild: resolveApp('dist'),
   appPackageJson: resolveApp('package.json'),
   appTemplates: resolveApp('templates'),
-  ownClient: resolveOwn('./src/client'),
   ownPackageJson: resolveOwn('package.json'),
-  ownBuild: path.join(appNodeModules, '.caspar-graphics')
+  ownClientSrc: resolveOwn('./src/client'),
+  ownClientDist: resolveOwn('dist')
 }

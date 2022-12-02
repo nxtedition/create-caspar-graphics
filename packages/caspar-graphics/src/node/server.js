@@ -3,8 +3,9 @@ import path from 'path'
 import chokidar from 'chokidar'
 import react from '@vitejs/plugin-react'
 import getPort from 'get-port'
-import { createServer as createViteServer } from 'vite'
+import { createServer as createViteServer, preview } from 'vite'
 import paths from './paths.js'
+import { WebSocketServer } from 'ws'
 
 const watcher = chokidar.watch(
   paths.appTemplates + '/**/(index.html|manifest.json)',
@@ -17,18 +18,19 @@ const watcher = chokidar.watch(
   }
 )
 
-export async function createServer({ name, host }) {
+export async function createServer({ name, host = 'localhost' }) {
+  // Start a vite server for the user's templates.
   const templatesPort = await getPort({ port: 5173 })
   const templatesServer = await createViteServer({
     root: paths.appTemplates,
     clearScreen: false,
     base: '/templates/',
-    resolve: {
-      alias: {
-        // NOTE: this is required when graphics-kit is linked.
-        'react-dom': path.resolve(paths.appNodeModules, 'react-dom')
-      }
-    },
+    // resolve: {
+    //   alias: {
+    //     // NOTE: this is required when graphics-kit is linked.
+    //     'react-dom': path.resolve(paths.appNodeModules, 'react-dom')
+    //   }
+    // },
     server: {
       port: templatesPort,
       fs: {
@@ -40,8 +42,14 @@ export async function createServer({ name, host }) {
     },
     plugins: [react()]
   })
+
+  // Start a WebSocket server so that we can send information about the templates.
+  const wssPort = await getPort()
+  const wss = new WebSocketServer({ port: wssPort })
+
+  // Start another vite server for our client UI.
   const previewServer = await createViteServer({
-    root: paths.ownClient,
+    root: paths.ownClientDist,
     clearScreen: false,
     server: {
       open: '/',
@@ -49,34 +57,58 @@ export async function createServer({ name, host }) {
       port: 8080,
       proxy: {
         '^/templates/.+': {
-          target: `http://localhost:${templatesPort}`
+          target: `http://${host}:${templatesPort}`
+        },
+        '/updates': {
+          target: `ws://${host}:${wssPort}`,
+          ws: true
         }
       }
-    },
-    resolve: {
-      alias: {
-        'react-dom': path.resolve(paths.appNodeModules, 'react-dom'),
-        react: path.resolve(paths.appNodeModules, 'react')
-      }
     }
+    // resolve: {
+    //   alias: {
+    //     'react-dom': path.resolve(paths.appNodeModules, 'react-dom'),
+    //     react: path.resolve(paths.appNodeModules, 'react')
+    //   }
+    // }
   })
 
-  previewServer.ws.on('cg:preview-ready', (data, client) => {
-    client.send('cg:update', {
-      projectName: name,
-      templates: getTemplates()
-    })
+  // Once the client has connected we send information about the project.
+  wss.on('connection', function connection(client) {
+    client.send(
+      JSON.stringify({
+        type: 'init',
+        payload: {
+          projectName: name,
+          templates: getTemplates()
+        }
+      })
+    )
 
+    // Notify the client about changes.
     watcher.on('all', (...args) => {
-      client.send('cg:update', { templates: getTemplates() })
+      client.send(
+        JSON.stringify({
+          type: 'update',
+          payload: { templates: getTemplates() }
+        })
+      )
     })
   })
 
   return {
+    printUrls: previewServer.printUrls,
     listen: () => {
       return Promise.all([templatesServer.listen(), previewServer.listen()])
     },
-    printUrls: previewServer.printUrls
+    close: () => {
+      return Promise.all([
+        watcher.close(),
+        templatesServer.close(),
+        previewServer.close(),
+        wss.close()
+      ])
+    }
   }
 }
 

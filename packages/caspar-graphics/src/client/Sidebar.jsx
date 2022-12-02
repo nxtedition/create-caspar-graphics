@@ -52,7 +52,7 @@ export const Sidebar = ({ state, dispatch, settings, onSettingsChange }) => {
       {settings.showSidebar && (
         <>
           <div className={styles.templates}>
-            {templates.map(template => (
+            {templates?.map(template => (
               <Template
                 key={template.name}
                 showJson={settings.showJson}

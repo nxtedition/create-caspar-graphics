@@ -1,4 +1,5 @@
-import fs from 'fs'
+import fs from 'node:fs'
+import process from 'node:process'
 import chalk from 'chalk'
 import { cac } from 'cac'
 import paths from './paths.js'
@@ -28,6 +29,15 @@ cli
         chalk.green(`${chalk.bold('Caspar Graphics')} v${ownPkg.version}`)
       )
       server.printUrls()
+
+      async function onExit() {
+        await server.close()
+        process.exit()
+      }
+
+      process.on('SIGINT', onExit)
+      process.on('SIGUSR1', onExit)
+      process.on('SIGUSR2', onExit)
     } catch (err) {
       console.error(err)
       process.exit(1)

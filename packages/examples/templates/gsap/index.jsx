@@ -15,10 +15,7 @@ const GsapExample = () => {
         timeline.to('#name', { y: 50, opacity: 0 })
       }}
     >
-      <div
-        key={name}
-        id="name"
-      >
+      <div key={name} id="name">
         {name}
       </div>
     </GsapTimeline>

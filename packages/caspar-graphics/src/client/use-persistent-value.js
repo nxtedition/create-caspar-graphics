@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react'
 
 export function usePersistentValue(key, defaultValue) {
-  const [value, setValue] = useState(() => {
-    const stickyValue = window.localStorage.getItem(key)
+  const [value, setValue] = useState(defaultValue)
 
-    try {
-      return stickyValue !== null ? JSON.parse(stickyValue) : defaultValue
-    } catch (err) {
-      return null
-    }
-  })
+  if (value === undefined && key) {
+    const stored = window.localStorage.getItem(key)
+    setValue(stored !== null ? JSON.parse(stored) : defaultValue ?? null)
+  }
 
   useEffect(() => {
-    window.localStorage.setItem(key, JSON.stringify(value))
+    if (key) {
+      window.localStorage.setItem(key, JSON.stringify(value))
+    }
   }, [key, value])
 
-  return [value, setValue]
+  return [key ? value : null, setValue]
 }

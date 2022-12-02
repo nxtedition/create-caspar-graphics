@@ -20,41 +20,105 @@ const States = {
   stopped: 3
 }
 
-export default function App() {
-  const [data, setData] = useState()
+function App() {
+  const [state, dispatch] = useReducer(reducer, {})
+  const [settings, setSettings] = usePersistentValue(`caspar-graphics`, {
+    showSidebar: true,
+    autoPlay: false,
+    background: '#21ECAF',
+    imageOpacity: 0.5,
+    colorScheme: 'dark'
+  })
+  const { projectName } = state
+  const [persistedState, setPersistedState] = usePersistentValue(
+    projectName ? `caspar-graphics.${projectName}` : null,
+    {
+      background: '#21ECAF',
+      size: { width: 1920, height: 1080 },
+      image: null
+    }
+  )
 
   useEffect(() => {
-    if (import.meta.hot) {
-      import.meta.hot.send('cg:preview-ready')
-      import.meta.hot.on('cg:update', ({ projectName, templates }) => {
-        setData(data => ({
-          projectName: projectName ?? data?.projectName,
-          templates
-        }))
+    const protocol = location.protocol === 'https:' ? 'wss' : 'ws'
+    const socket = new WebSocket(`${protocol}://${location.host}/updates`)
 
-        if (projectName) {
-          document.title = `${projectName} | Caspar Graphics`
-        }
-      })
-    }
+    socket.addEventListener('message', async (evt) => {
+      try {
+        const { type, payload } = JSON.parse(evt.data)
+        const { projectName, templates } = payload
+        document.title = `${projectName} | Caspar Graphics`
+
+        let snapshot
+
+        try {
+          snapshot = JSON.parse(
+            window.localStorage.getItem(`caspar-graphics.${projectName}`)
+          )
+        } catch (err) {}
+
+        dispatch({
+          type: 'init',
+          projectName,
+          templates: getInitialState(templates, snapshot || {})
+        })
+      } catch (err) {
+        console.error('Unable to get templates:', err)
+      }
+    })
   }, [])
 
-  if (!data) {
-    return null
-  }
+  useEffect(() => {
+    if (!Array.isArray(state.templates)) {
+      return
+    }
 
-  if (!data.templates?.length) {
-    return (
-      <div className={styles.empty}>
-        <div>No templates found</div>
-      </div>
-    )
-  }
+    const templates = {}
 
-  return <Preview {...data} />
+    for (const { name, enabled, open, data, preset, tab } of state.templates) {
+      templates[name] = { enabled, open, data, preset, tab }
+    }
+
+    setPersistedState(persisted => ({ ...persisted, templates }))
+  }, [state])
+
+  return (
+    <div className={styles.container}>
+      <Sidebar
+        state={state}
+        dispatch={dispatch}
+        settings={settings}
+        onSettingsChange={setSettings}
+      />
+      <Screen
+        settings={settings}
+        size={persistedState?.size}
+        background={persistedState?.background || settings.background}
+        image={persistedState?.image}
+      >
+        {state.templates
+          ?.filter(template => template.enabled)
+          .map(template => (
+            <TemplatePreview
+              key={template.name + template.removed}
+              dispatch={dispatch}
+              {...template}
+            />
+          ))}
+      </Screen>
+    </div>
+  )
 }
 
 function reducer(state, action) {
+  if (action.type === 'init') {
+    return {
+      ...state,
+      projectName: action.projectName,
+      templates: action.templates
+    }
+  }
+
   if (!action.template) {
     console.warn('The action you just dispatched is missing template:', action)
     return state
@@ -131,89 +195,35 @@ export function getPresets(data) {
 
 function getInitialState(templates, snapshot) {
   if (!Array.isArray(templates)) {
-    return {}
+    return []
   }
 
-  return {
-    templates: templates
-      .map(({ name, manifest }, index) => {
-        const { previewData, previewImages, schema } = manifest || {}
-        const presets = getPresets(previewData)
-        const templateSnapshot = snapshot?.templates?.[name]
+  return templates
+    .map(({ name, manifest }, index) => {
+      const { previewData, previewImages, schema, layer } = manifest || {}
+      const presets = getPresets(previewData)
+      const templateSnapshot = snapshot.templates?.[name]
 
-        return {
-          name,
-          manifest,
-          schema,
-          previewImages,
-          previewData,
-          presets,
-          preset:
-            presets?.find(([key]) => key === templateSnapshot?.preset)?.[0] ||
-            presets?.[0]?.[0],
-          enabled: templateSnapshot?.enabled ?? true,
-          open: Boolean(templateSnapshot?.open),
-          data: templateSnapshot?.data || presets?.[0]?.[1],
-          show: Boolean(snapshot.autoPlay),
-          tab: templateSnapshot?.tab,
-          state: States.loading,
-          layer: index
-        }
-      })
-      .sort((a, b) => a.layer - b.layer)
-  }
-}
-
-function Preview({
-  templates,
-  templatePreviews = [],
-  projectName = '',
-  size = { width: 1920, height: 1080 }
-}) {
-  const [persistedState, setPersistetState] = usePersistentValue(
-    `cg.${projectName}`,
-    {
-      showSidebar: true,
-      autoPlay: false,
-      background: '#21ECAF',
-      imageOpacity: 0.5,
-      colorScheme: 'dark'
-    }
-  )
-  const initialState = getInitialState(templates, persistedState)
-  const [state, dispatch] = useReducer(reducer, initialState)
-
-  useEffect(() => {
-    const templates = {}
-
-    for (const { name, enabled, open, data, preset, tab } of state?.templates) {
-      templates[name] = { enabled, open, data, preset, tab }
-    }
-
-    setPersistetState(persisted => ({ ...persisted, templates }))
-  }, [state])
-
-  return (
-    <div className={styles.container}>
-      <Sidebar
-        state={state}
-        dispatch={dispatch}
-        settings={persistedState}
-        onSettingsChange={setPersistetState}
-      />
-      <Screen settings={persistedState} size={size}>
-        {state.templates
-          .filter(template => template.enabled)
-          .map(template => (
-            <TemplatePreview
-              key={template.name + template.removed}
-              dispatch={dispatch}
-              {...template}
-            />
-          ))}
-      </Screen>
-    </div>
-  )
+      return {
+        name,
+        manifest,
+        schema,
+        previewImages,
+        previewData,
+        presets,
+        preset:
+          presets?.find(([key]) => key === templateSnapshot?.preset)?.[0] ||
+          presets?.[0]?.[0],
+        enabled: templateSnapshot?.enabled ?? true,
+        open: Boolean(templateSnapshot?.open),
+        data: templateSnapshot?.data || presets?.[0]?.[1],
+        show: Boolean(snapshot.autoPlay),
+        tab: templateSnapshot?.tab,
+        state: States.loading,
+        layer: layer ?? index
+      }
+    })
+    .sort((a, b) => a.layer - b.layer)
 }
 
 const TemplatePreview = ({ name, show, dispatch, layer, data, ...props }) => {
@@ -283,4 +293,8 @@ const TemplatePreview = ({ name, show, dispatch, layer, data, ...props }) => {
   )
 }
 
-createRoot(document.getElementById('root')).render(createElement(App))
+if (!window.reactRoot) {
+  window.reactRoot = createRoot(document.getElementById('root'))
+}
+
+window.reactRoot.render(createElement(App))

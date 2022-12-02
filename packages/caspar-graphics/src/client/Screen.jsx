@@ -2,7 +2,12 @@ import React, { useState } from 'react'
 import { useSize } from '@radix-ui/react-use-size'
 import styles from './screen.module.css'
 
-export const Screen = ({ size, children, settings, image }) => {
+export const Screen = ({
+  children,
+  background,
+  size = { width: 1920, height: 1080 },
+  image
+}) => {
   const [ref, setRef] = useState()
   const containerSize = useSize(ref)
 
@@ -11,7 +16,7 @@ export const Screen = ({ size, children, settings, image }) => {
       <div
         className={styles.screen}
         style={{
-          background: settings.background,
+          background,
           width: size?.width || 0,
           height: size?.height || 0,
           transform: `scale(${calcScale(containerSize, size)})
@@ -19,11 +24,11 @@ export const Screen = ({ size, children, settings, image }) => {
         }}
       >
         {children}
-        {settings.image ? (
+        {image ? (
           <img
-            src={settings.image.url}
+            src={image.url}
             className={styles.image}
-            style={{ opacity: settings.image.opacity ?? 0.3 }}
+            style={{ opacity: image.opacity ?? 0.3 }}
           />
         ) : null}
       </div>

@@ -1,12 +1,5 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useRef
-} from 'react'
-import * as ReactDOM from 'react-dom/client'
+import { createElement } from 'react'
+import { createRoot } from 'react-dom/client'
 import { TemplateProvider } from './TemplateProvider'
 
 let root = null
@@ -36,14 +29,10 @@ export const render = (Template, options) => {
   }
 
   if (!root) {
-    root = ReactDOM.createRoot(container)
+    root = createRoot(container)
   }
 
   root.render(
-    React.createElement(
-      TemplateProvider,
-      { name },
-      React.createElement(Template)
-    )
+    createElement(TemplateProvider, { name }, createElement(Template))
   )
 }
