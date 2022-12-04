@@ -13,6 +13,10 @@
   "bin": {
     "create-caspar-graphics": "index.js"
   },
+  "files": [
+    "index.js",
+    "template-*"
+  ],
   "dependencies": {
     "kolorist": "^1.6.0",
     "minimist": "^1.2.7",
