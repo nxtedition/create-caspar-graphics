@@ -3,7 +3,7 @@
   "schema": {
     "name": {
       "type": "string",
-      "label": "Text"
+      "label": "Name"
     }
   },
   "previewData": {

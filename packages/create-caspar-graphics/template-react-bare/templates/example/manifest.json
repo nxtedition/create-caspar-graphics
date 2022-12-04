@@ -1,17 +1,17 @@
 {
-  "name": "Example",
+  "name": "React Example",
   "schema": {
-    "text": {
+    "name": {
       "type": "string",
-      "label": "Text"
+      "label": "Name"
     }
   },
   "previewData": {
-    "Example 1": {
-      "text": "Example 1"
+    "Thierry Henry": {
+      "name": "Thierry Henry"
     },
-    "Example 2": {
-      "text": "Example 2"
+    "Dennis Bergkamp": {
+      "name": "Dennis Bergkamp"
     }
   }
 }
