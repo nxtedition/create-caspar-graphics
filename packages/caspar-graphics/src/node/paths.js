@@ -8,16 +8,14 @@ const resolveApp = relativePath => path.resolve(appDirectory, relativePath)
 const resolveOwn = relativePath =>
   path.resolve(__dirname, '../../', relativePath)
 
-const appPath = resolveApp('.')
-const appNodeModules = resolveApp('node_modules')
-
 export default {
-  appPath,
-  appNodeModules,
+  appPath: resolveApp('.'),
   appBuild: resolveApp('dist'),
   appPackageJson: resolveApp('package.json'),
   appTemplates: resolveApp('templates'),
   ownPackageJson: resolveOwn('package.json'),
   ownClientSrc: resolveOwn('./src/client'),
-  ownClientDist: resolveOwn('dist')
+  ownClientDist: resolveOwn('dist'),
+  ownNodeModules: resolveOwn('../../node_modules/'),
+  examplesPath: resolveOwn('../examples')
 }

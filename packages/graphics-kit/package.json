@@ -13,7 +13,7 @@
   "author": "nxtedition",
   "repository": "https://github.com/nxtedition/create-caspar-graphics",
   "scripts": {
-    "watch": "rollup --config --watch",
+    "dev": "rollup --config --watch",
     "build": "rollup --config",
     "prepublishOnly": "rollup --config"
   },

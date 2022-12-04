@@ -14,7 +14,6 @@
     "create-caspar-graphics": "index.js"
   },
   "dependencies": {
-    "cross-spawn": "^7.0.3",
     "kolorist": "^1.6.0",
     "minimist": "^1.2.7",
     "prompts": "^2.4.2"

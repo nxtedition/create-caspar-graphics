@@ -70,6 +70,14 @@
   display: flex;
   align-items: center;
   gap: 3px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.trigger > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .header[data-state='disabled'] > .trigger {
@@ -79,7 +87,6 @@
 .data {
   padding: 10px 20px;
   box-sizing: border-box;
-  /* border-left: 1px solid var(--neutral6); */
   display: flex;
   flex-direction: column;
   gap: 12px;

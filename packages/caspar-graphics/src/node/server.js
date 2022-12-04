@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import chokidar from 'chokidar'
 import react from '@vitejs/plugin-react'
 import getPort from 'get-port'
@@ -18,19 +18,22 @@ const watcher = chokidar.watch(
   }
 )
 
-export async function createServer({ name, host = 'localhost' }) {
+export async function createServer({ name, mode, host = 'localhost' }) {
   // Start a vite server for the user's templates.
   const templatesPort = await getPort({ port: 5173 })
   const templatesServer = await createViteServer({
     root: paths.appTemplates,
     clearScreen: false,
     base: '/templates/',
-    // resolve: {
-    //   alias: {
-    //     // NOTE: this is required when graphics-kit is linked.
-    //     'react-dom': path.resolve(paths.appNodeModules, 'react-dom')
-    //   }
-    // },
+    // HACK: this is required when running our examples
+    resolve:
+      paths.appPath === paths.examplesPath
+        ? {
+            alias: {
+              'react-dom': path.resolve(paths.ownNodeModules, 'react-dom')
+            }
+          }
+        : {},
     server: {
       port: templatesPort,
       fs: {
@@ -48,13 +51,16 @@ export async function createServer({ name, host = 'localhost' }) {
   const wss = new WebSocketServer({ port: wssPort })
 
   // Start another vite server for our client UI.
-  const previewServer = await createViteServer({
-    root: paths.ownClientDist,
+  const previewConfig = {
+    root: paths.ownClientSrc,
     clearScreen: false,
-    server: {
-      open: '/',
+    build: {
+      outDir: paths.ownClientDist
+    },
+    [mode === 'dev' ? 'server' : 'preview']: {
       host,
       port: 8080,
+      open: '/',
       proxy: {
         '^/templates/.+': {
           target: `http://${host}:${templatesPort}`
@@ -65,13 +71,10 @@ export async function createServer({ name, host = 'localhost' }) {
         }
       }
     }
-    // resolve: {
-    //   alias: {
-    //     'react-dom': path.resolve(paths.appNodeModules, 'react-dom'),
-    //     react: path.resolve(paths.appNodeModules, 'react')
-    //   }
-    // }
-  })
+  }
+
+  const createPreviewServer = mode === 'dev' ? createViteServer : preview
+  const previewServer = await createPreviewServer(previewConfig)
 
   // Once the client has connected we send information about the project.
   wss.on('connection', function connection(client) {
@@ -97,15 +100,17 @@ export async function createServer({ name, host = 'localhost' }) {
   })
 
   return {
-    printUrls: previewServer.printUrls,
+    printUrls: () => {
+      previewServer.printUrls()
+    },
     listen: () => {
-      return Promise.all([templatesServer.listen(), previewServer.listen()])
+      return Promise.all([templatesServer.listen(), previewServer.listen?.()])
     },
     close: () => {
       return Promise.all([
-        watcher.close(),
         templatesServer.close(),
-        previewServer.close(),
+        previewServer.close?.(),
+        watcher.close(),
         wss.close()
       ])
     }

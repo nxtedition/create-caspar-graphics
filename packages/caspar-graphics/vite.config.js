@@ -8,5 +8,8 @@ export default defineConfig({
     outDir: paths.ownClientDist,
     emptyOutDir: true
   },
+  server: {
+    open: false
+  },
   plugins: [react()]
 })

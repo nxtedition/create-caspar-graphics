@@ -18,8 +18,12 @@ const getOptions = clOptions => ({
 // Start
 cli
   .command('[root]', 'start dev server')
-  .option('--port', 'specify which port the server should listen on.')
-  .option('--host', 'specify which IP addresses the server should listen on.')
+  .option('--port <port>', 'specify which port the server should listen on.')
+  .option(
+    '--host <host>',
+    'specify which IP addresses the server should listen on.'
+  )
+  .option('--mode <mode>', 'specify which mode to run the preview server in.')
   .action(async (root, options) => {
     try {
       const { createServer } = await import('./server.js')

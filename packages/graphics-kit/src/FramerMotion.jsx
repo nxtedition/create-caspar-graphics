@@ -1,5 +1,5 @@
 import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { useCaspar } from './use-caspar'
 
 export const FramerMotion = ({ children, hide, mode = 'wait' }) => {

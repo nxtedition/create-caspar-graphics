@@ -4,8 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "caspar-graphics start",
-    "dev": "caspar-graphics start"
+    "dev": "caspar-graphics start --mode dev",
+    "examples": "caspar-graphics start"
   },
   "dependencies": {
     "@nxtedition/caspar-graphics": "*",
