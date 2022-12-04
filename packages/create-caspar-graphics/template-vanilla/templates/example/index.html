@@ -2,15 +2,49 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <style>
+      #name {
+        position: absolute;
+        bottom: 80px;
+        left: 266px;
+        width: 1388px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 6px;
+        font-size: 70px;
+        font-family: Arial;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 300ms ease-in-out;
+      }
+    </style>
   </head>
   <body>
     <script type="module">
-      window.update = data => {}
+      import { parse } from '@nxtedition/graphics-kit'
 
-      window.play = () => {}
+      window.update = raw => {
+        const data = parse(raw)
 
-      window.stop = () => {}
+        if (data?.name) {
+          document.getElementById('name').textContent = data.name
+        }
+      }
+
+      window.play = () => {
+        document.getElementById('name').style.opacity = 1
+      }
+
+      window.stop = () => {
+        document.getElementById('name').style.opacity = 0
+
+        setTimeout(() => {
+          window.remove?.()
+        }, 300)
+      }
     </script>
-    <div id="text">Example Text</div>
+    <div id="name" />
   </body>
 </html>

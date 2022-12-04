@@ -1,13 +1,19 @@
-import React from 'react'
-import { render, useCaspar } from '@nxtedition/graphics-kit'
+import React, { useRef } from 'react'
+import { render, useCaspar, States } from '@nxtedition/graphics-kit'
 
 function Example() {
-  const { data, isPlaying } = useCasparData()
+  const { data, state, safeToRemove } = useCaspar()
+
+  React.useEffect(() => {
+    if (state === States.stopped) {
+      setTimeout(safeToRemove, 300)
+    }
+  }, [state, safeToRemove])
 
   return (
     <div
       style={{
-        opacity: isPlaying ? 1 : 0,
+        opacity: state === States.playing ? 1 : 0,
         position: 'absolute',
         bottom: 80,
         left: 266,
