@@ -11,7 +11,7 @@
       "text": "Some text that should flip in on a single line"
     },
     "Two Lines": {
-      "text": "Some text that should flip in on two lines because it can't fit on one"
+      "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore."
     }
   }
 }

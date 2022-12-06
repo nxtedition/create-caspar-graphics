@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState, useLayoutEffect } from 'react'
+import React, { memo, useRef, useLayoutEffect } from 'react'
 
 export const SplitText = ({ value, ...props }) => {
   return value ? <SplitPrimitive key={value} value={value} {...props} /> : null
@@ -12,7 +12,7 @@ const SplitPrimitive = memo(
       const lines = [[]]
       let top
 
-      ref.current.childNodes?.forEach((el, index) => {
+      ref.current.childNodes?.forEach(el => {
         if (el.offsetTop > top) {
           lines.push([el.innerText])
         } else {
@@ -28,7 +28,14 @@ const SplitPrimitive = memo(
         const lineEl = document.createElement('div')
         lineEl.className = lineClass
 
-        for (const char of line) {
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i]
+
+          // If the last character of a line is a space we don't want to render it.
+          if (i === line.length - 1 && char === ' ') {
+            continue
+          }
+
           const charEl = document.createElement('div')
           charEl.className = charClass
           charEl.style.display = 'inline-block'
