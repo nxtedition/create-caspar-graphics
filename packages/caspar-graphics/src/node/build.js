@@ -14,10 +14,6 @@ export async function build({
   manifest = false,
   gzip = false
 }) {
-  if (!fs.existsSync(paths.ownBuild)) {
-    fs.mkdirSync(paths.ownBuild)
-  }
-
   const getConfig = (name, path) => ({
     root: path,
     clearScreen: false,
