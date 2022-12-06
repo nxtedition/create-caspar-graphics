@@ -7,7 +7,7 @@ export const GsapTimeline = ({ children, hide, onPlay, onStop }) => {
   const [timeline] = useState(gsap.timeline({ paused: true }))
   const { state, isPlaying, isStopped, safeToRemove } = useCaspar()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isPlaying && onPlay) {
       onPlay(timeline)
       timeline.play()
