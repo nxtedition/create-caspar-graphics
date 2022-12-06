@@ -21,8 +21,8 @@ function parseTemplateData(string) {
   const xmlDoc = new window.DOMParser().parseFromString(string, 'text/xml')
   const componentData = xmlDoc.getElementsByTagName('componentData')
 
-  if (!componentData) {
-    const base64String = str.match(/<templateData>(.*)<\/templateData>/)?.[1]
+  if (!componentData.length) {
+    const base64String = string.match(/<templateData>(.*)<\/templateData>/)?.[1]
     return JSON.parse(Base64.decode(base64String))
   }
 
