@@ -10,27 +10,25 @@ export function parse(raw) {
   }
 
   try {
-    if (raw.startsWith('<')) {
-      return parseXml(raw)
-    }
-
-    if (raw.startsWith('{')) {
-      return JSON.parse(raw)
-    }
-
-    const base64String = str.match(/<templateData>(.*)<\/templateData>/)?.[1]
-    return JSON.parse(Base64.decode(base64String))
+    return raw.startsWith('{') ? JSON.parse(raw) : parseTemplateData(raw)
   } catch (err) {
     console.log('parse failed:' + err.message)
     return null
   }
 }
 
-function parseXml(xmlString) {
-  const xmldDoc = new window.DOMParser().parseFromString(xmlString, 'text/xml')
+function parseTemplateData(string) {
+  const xmlDoc = new window.DOMParser().parseFromString(string, 'text/xml')
+  const componentData = xmlDoc.getElementsByTagName('componentData')
+
+  if (!componentData) {
+    const base64String = str.match(/<templateData>(.*)<\/templateData>/)?.[1]
+    return JSON.parse(Base64.decode(base64String))
+  }
+
   const result = {}
 
-  for (const element of xmlDoc.getElementsByTagName('componentData')) {
+  for (const element of componentData) {
     const obj = {}
 
     for (const data of el.getElementsByTagName('data') || []) {
