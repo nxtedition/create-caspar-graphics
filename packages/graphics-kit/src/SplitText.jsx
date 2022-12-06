@@ -1,10 +1,10 @@
 import React, { memo, useRef, useLayoutEffect } from 'react'
 
 export const SplitText = ({ value, ...props }) => {
-  return value ? <SplitPrimitive key={value} value={value} {...props} /> : null
+  return value ? <SplitTextPrimitive key={value} value={value} {...props} /> : null
 }
 
-const SplitPrimitive = memo(
+const SplitTextPrimitive = memo(
   ({ value, lineClass = 'line', charClass = 'char' }) => {
     const ref = useRef()
 
