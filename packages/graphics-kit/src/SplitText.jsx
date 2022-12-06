@@ -7,8 +7,6 @@ export const SplitText = ({ value, ...props }) => {
 const SplitPrimitive = memo(
   ({ value, lineClass = 'line', charClass = 'char' }) => {
     const ref = useRef()
-    const [lines, setLines] = useState()
-    const [chars, setChars] = useState()
 
     useLayoutEffect(() => {
       const lines = [[]]
