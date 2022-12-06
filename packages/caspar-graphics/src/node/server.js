@@ -20,7 +20,7 @@ const watcher = chokidar.watch(
 
 export async function createServer({ name, mode, host = 'localhost' }) {
   // Start a vite server for the user's templates.
-  const templatesPort = await getPort({ port: 5173 })
+  const templatesPort = await getPort({ port: 5174 })
   const templatesServer = await createViteServer({
     root: paths.appTemplates,
     clearScreen: false,
