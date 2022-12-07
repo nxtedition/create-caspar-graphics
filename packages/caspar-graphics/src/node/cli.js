@@ -34,14 +34,10 @@ cli
       )
       server.printUrls()
 
-      async function onExit() {
+      process.on('SIGINT', async () => {
         await server.close()
         process.exit()
-      }
-
-      process.on('SIGINT', onExit)
-      process.on('SIGUSR1', onExit)
-      process.on('SIGUSR2', onExit)
+      })
     } catch (err) {
       console.error(err)
       process.exit(1)

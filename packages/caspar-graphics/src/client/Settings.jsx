@@ -106,8 +106,9 @@ export const TopSettings = ({ value, onChange }) => {
   )
 }
 
-export const BottomSettings = ({ value, onChange, colorMode }) => {
-  const { background, colorScheme } = value
+export const BottomSettings = ({ settings, onSettingsChange, projectState, onProjectStateChange, colorMode }) => {
+  const { colorScheme } = settings
+  const { background } = projectState || {}
 
   return (
     <div className={styles.container}>
@@ -121,7 +122,7 @@ export const BottomSettings = ({ value, onChange, colorMode }) => {
             <HexColorPicker
               color={background}
               onChange={background => {
-                onChange(value => ({ ...value, background }))
+                onProjectStateChange(value => ({ ...value, background }))
               }}
             />
           </PopoverContent>
@@ -135,7 +136,7 @@ export const BottomSettings = ({ value, onChange, colorMode }) => {
           <MenuRadioGroup
             value={colorScheme || 'system'}
             onValueChange={colorScheme => {
-              onChange(value => ({ ...value, colorScheme }))
+              onSettingsChange(value => ({ ...value, colorScheme }))
             }}
           >
             <MenuRadioItem value="system">System</MenuRadioItem>

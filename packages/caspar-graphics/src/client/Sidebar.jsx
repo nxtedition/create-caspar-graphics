@@ -25,7 +25,7 @@ import { TopSettings, BottomSettings } from './Settings'
 import { JsonEditor } from './JsonEditor'
 import * as Tabs from '@radix-ui/react-tabs'
 
-export const Sidebar = ({ state, dispatch, settings, onSettingsChange }) => {
+export const Sidebar = ({ state, dispatch, settings, onSettingsChange, projectState, onProjectStateChange }) => {
   const { templates } = state
 
   // TODO:
@@ -59,14 +59,18 @@ export const Sidebar = ({ state, dispatch, settings, onSettingsChange }) => {
                 dispatch={dispatch}
                 settings={settings}
                 onSettingsChange={onSettingsChange}
+                projectState={projectState}
+                onProjectStateChange={onProjectStateChange}
                 {...template}
               />
             ))}
           </div>
           <BottomSettings
-            value={settings}
-            onChange={onSettingsChange}
             colorMode={colorMode}
+            settings={settings}
+            onSettingsChange={onSettingsChange}
+            projectState={projectState}
+            onProjectStateChange={onProjectStateChange}
           />
         </>
       )}
@@ -88,6 +92,8 @@ const Template = ({
   presets,
   settings,
   onSettingsChange,
+  projectState,
+  onProjectStateChange,
   enabled,
   open,
   tab = 'data'
@@ -288,11 +294,11 @@ const Template = ({
                   <button
                     key={url}
                     className={styles.imageToggle}
-                    data-active={settings.image?.url === url ? true : undefined}
+                    data-active={projectState.image?.url === url ? true : undefined}
                     onClick={() => {
-                      onSettingsChange(settings => ({
-                        ...settings,
-                        image: settings.image?.url === url ? null : { url }
+                      onProjectStateChange(state => ({
+                        ...state,
+                        image: state.image?.url === url ? null : { url }
                       }))
                     }}
                   >

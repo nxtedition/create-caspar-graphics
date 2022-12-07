@@ -43,24 +43,29 @@ function App() {
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws'
     const socket = new WebSocket(`${protocol}://${location.host}/updates`)
 
-    socket.addEventListener('message', async (evt) => {
+    socket.addEventListener('message', async evt => {
       try {
         const { type, payload } = JSON.parse(evt.data)
         const { projectName, templates } = payload
         document.title = `${projectName} | Caspar Graphics`
 
         let snapshot
+        let settings
 
         try {
+          settings = JSON.parse(window.localStorage.getItem('caspar-graphics'))
           snapshot = JSON.parse(
             window.localStorage.getItem(`caspar-graphics.${projectName}`)
           )
-        } catch (err) {}
+        } catch (err) { }
 
         dispatch({
           type: 'init',
           projectName,
-          templates: getInitialState(templates, snapshot || {})
+          templates: getInitialState(templates, {
+            ...(snapshot || {}),
+            ...(settings || {})
+          })
         })
       } catch (err) {
         console.error('Unable to get templates:', err)
@@ -89,6 +94,8 @@ function App() {
         dispatch={dispatch}
         settings={settings}
         onSettingsChange={setSettings}
+        projectState={persistedState}
+        onProjectStateChange={setPersistedState}
       />
       <Screen
         settings={settings}
