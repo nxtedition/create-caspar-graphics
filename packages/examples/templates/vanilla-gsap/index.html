@@ -29,7 +29,7 @@
       window.update = raw => {
         const data = parse(raw)
 
-        if (data?.name) {
+        if (data && data.name) {
           document.getElementById('name').textContent = data.name
         }
       }

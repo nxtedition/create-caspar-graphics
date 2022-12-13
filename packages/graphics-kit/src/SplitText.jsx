@@ -16,7 +16,7 @@ const SplitTextPrimitive = memo(
         if (el.offsetTop > top) {
           lines.push([el.innerText])
         } else {
-          lines.at(-1).push(el.innerText)
+          lines[lines.length - 1].push(el.innerText)
         }
 
         top = el.offsetTop

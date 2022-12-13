@@ -6,6 +6,40 @@ import getPort from 'get-port'
 import { createServer as createViteServer, preview } from 'vite'
 import paths from './paths.js'
 import { WebSocketServer } from 'ws'
+import net from 'node:net'
+
+class AMCPConnection {
+  constructor(url, { onConnect, onClose, onError }) {
+    url = new URL(url)
+    this.url = url.href
+    this.host = url.hostname
+    this.port = url.port || 5250
+
+    if (!this.host || !this.port) {
+      throw new Error(`Invalid argument url=${url}`)
+    }
+
+    this.channel = parseInt(url.pathname.slice(1)) || 0
+
+    this.socket = net
+      .connect(this.port, this.host)
+      .on('connect', () => {
+        onConnect()
+      })
+      .on('error', err => {
+        console.log('err', err)
+      })
+      .on('close', () => {
+        console.log('close')
+      })
+      .setEncoding('utf8')
+
+    this.send = (...args) => {
+      const cmd = args.join(' ')
+      this.socket.write(cmd + '\r\n')
+    }
+  }
+}
 
 const watcher = chokidar.watch(
   paths.appTemplates + '/**/(index.html|manifest.json)',
@@ -34,7 +68,11 @@ export async function createServer({ name, mode, host = 'localhost' }) {
             }
           }
         : {},
+    esbuild: {
+      target: 'chrome71'
+    },
     server: {
+      host: true,
       port: templatesPort,
       fs: {
         strict: false
@@ -58,7 +96,7 @@ export async function createServer({ name, mode, host = 'localhost' }) {
       outDir: paths.ownClientDist
     },
     [mode === 'dev' ? 'server' : 'preview']: {
-      host,
+      host: true,
       port: 8080,
       open: '/',
       proxy: {
@@ -75,9 +113,10 @@ export async function createServer({ name, mode, host = 'localhost' }) {
 
   const createPreviewServer = mode === 'dev' ? createViteServer : preview
   const previewServer = await createPreviewServer(previewConfig)
+  let connection
 
   // Once the client has connected we send information about the project.
-  wss.on('connection', function connection(client) {
+  wss.on('connection', client => {
     client.send(
       JSON.stringify({
         type: 'init',
@@ -87,6 +126,89 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         }
       })
     )
+
+    function onConnect() {
+      client.send(JSON.stringify({ type: 'connected' }))
+    }
+
+    function onClose() {
+      console.log('close')
+    }
+
+    function onError(err) {
+      console.log('error:', err)
+    }
+
+    function connect(data) {
+      console.log('connect', data)
+
+      if (!connection || connection.url !== data.url) {
+        connection = new AMCPConnection(data.url, {
+          onConnect,
+          onClose,
+          onError
+        })
+      }
+    }
+
+    function load(data) {
+      console.log('load', data)
+      const baseUrl = templatesServer.resolvedUrls.network[0]?.replace(
+        '/templates/',
+        ''
+      )
+      const { channel = 2, layer, source } = data
+      connection.send(
+        `CG`,
+        `${channel}-${layer}`,
+        `ADD`,
+        1,
+        baseUrl + source,
+        0
+      )
+    }
+
+    function update(payload) {
+      console.log('update', payload)
+      const { channel = 2, layer, data = {} } = payload
+      connection.send(
+        `CG`,
+        `${channel}-${layer}`,
+        `UPDATE`,
+        1,
+        '"<templateData>' +
+          Buffer.from(JSON.stringify(data)).toString('base64') +
+          '</templateData>"'
+      )
+    }
+
+    function play(data) {
+      console.log('play', data)
+      const { channel = 2, layer } = data
+      connection.send(`CG`, `${channel}-${layer}`, `PLAY`, 1)
+    }
+
+    function stop(data) {
+      console.log('stop', data)
+      const { channel = 2, layer } = data
+      connection.send(`CG`, `${channel}-${layer}`, `STOP`, 1)
+    }
+
+    client.on('message', message => {
+      const { type, ...data } = JSON.parse(message)
+
+      const fn = {
+        connect,
+        load,
+        update,
+        play,
+        stop
+      }[type]
+
+      if (fn) {
+        fn(data)
+      }
+    })
 
     // Notify the client about changes.
     watcher.on('all', (...args) => {

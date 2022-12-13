@@ -11,6 +11,7 @@ import { Screen } from './Screen'
 import { Sidebar } from './Sidebar'
 import { usePersistentValue } from './use-persistent-value'
 import styles from './index.module.css'
+import { TemplatePreview, ServerTemplate } from './TemplatePreview'
 import './global.css'
 
 const States = {
@@ -21,6 +22,7 @@ const States = {
 }
 
 function App() {
+  const [serverState, setServerState] = useState()
   const [state, dispatch] = useReducer(reducer, {})
   const [settings, setSettings] = usePersistentValue(`caspar-graphics`, {
     showSidebar: true,
@@ -29,7 +31,7 @@ function App() {
     imageOpacity: 0.5,
     colorScheme: 'dark'
   })
-  const { projectName } = state
+  const { projectName, socket } = state
   const [persistedState, setPersistedState] = usePersistentValue(
     projectName ? `caspar-graphics.${projectName}` : null,
     {
@@ -43,36 +45,48 @@ function App() {
     const protocol = location.protocol === 'https:' ? 'wss' : 'ws'
     const socket = new WebSocket(`${protocol}://${location.host}/updates`)
 
-    socket.addEventListener('message', async evt => {
+    function init(payload) {
+      const { projectName, templates } = payload
+      document.title = `${projectName} | Caspar Graphics`
+
+      let snapshot
+      let settings
+
       try {
-        const { type, payload } = JSON.parse(evt.data)
-        const { projectName, templates } = payload
-        document.title = `${projectName} | Caspar Graphics`
+        settings = JSON.parse(window.localStorage.getItem('caspar-graphics'))
+        snapshot = JSON.parse(
+          window.localStorage.getItem(`caspar-graphics.${projectName}`)
+        )
+      } catch (err) {}
 
-        let snapshot
-        let settings
-
-        try {
-          settings = JSON.parse(window.localStorage.getItem('caspar-graphics'))
-          snapshot = JSON.parse(
-            window.localStorage.getItem(`caspar-graphics.${projectName}`)
-          )
-        } catch (err) { }
-
-        dispatch({
-          type: 'init',
-          projectName,
-          templates: getInitialState(templates, {
-            ...(snapshot || {}),
-            ...(settings || {})
-          })
+      dispatch({
+        type: 'init',
+        projectName,
+        socket,
+        templates: getInitialState(templates, {
+          ...(snapshot || {}),
+          ...(settings || {})
         })
-      } catch (err) {
-        console.error('Unable to get templates:', err)
+      })
+    }
+
+    socket.addEventListener('message', evt => {
+      const { type, payload } = JSON.parse(evt.data)
+
+      console.log('message', { type, payload })
+
+      switch (type) {
+        case 'init':
+          init(payload)
+          break
+        case 'connected':
+          setServerState('connected')
+          break
       }
     })
   }, [])
 
+  // Persist project state.
   useEffect(() => {
     if (!Array.isArray(state.templates)) {
       return
@@ -86,6 +100,18 @@ function App() {
 
     setPersistedState(persisted => ({ ...persisted, templates }))
   }, [state])
+
+  const { serverUrl, serverChannel } = settings
+
+  // Connect to CasparCG server.
+  useEffect(() => {
+    if (!socket || !serverUrl) {
+      return
+    }
+
+    console.log('connect', serverUrl)
+    socket.send(JSON.stringify({ type: 'connect', url: serverUrl }))
+  }, [socket, serverUrl])
 
   return (
     <div className={styles.container}>
@@ -106,11 +132,17 @@ function App() {
         {state.templates
           ?.filter(template => template.enabled)
           .map(template => (
-            <TemplatePreview
-              key={template.name + template.removed}
-              dispatch={dispatch}
-              {...template}
-            />
+            <>
+              <TemplatePreview
+                key={template.name + template.removed}
+                dispatch={dispatch}
+                settings={settings}
+                {...template}
+              />
+              {serverState === 'connected' && (
+                <ServerTemplate key={template.name} socket={socket} {...template} />
+              )}
+            </>
           ))}
       </Screen>
     </div>
@@ -121,6 +153,7 @@ function reducer(state, action) {
   if (action.type === 'init') {
     return {
       ...state,
+      socket: action.socket,
       projectName: action.projectName,
       templates: action.templates
     }
@@ -231,73 +264,6 @@ function getInitialState(templates, snapshot) {
       }
     })
     .sort((a, b) => a.layer - b.layer)
-}
-
-const TemplatePreview = ({ name, show, dispatch, layer, data, ...props }) => {
-  const [templateWindow, setTemplateWindow] = useState()
-  const [didShow, setDidShow] = useState(false)
-
-  if (show && !didShow) {
-    setDidShow(true)
-  }
-
-  // Data Updates
-  useEffect(() => {
-    if (templateWindow?.update) {
-      templateWindow.update(data || {})
-    }
-  }, [templateWindow, data])
-
-  // State Updates
-  useEffect(() => {
-    if (!templateWindow) {
-      return
-    }
-
-    if (show) {
-      templateWindow.play()
-    } else if (didShow) {
-      if (templateWindow.stop) {
-        templateWindow.stop()
-      } else {
-        console.error('No window.stop found')
-      }
-    }
-  }, [templateWindow, show, didShow])
-
-  return (
-    <iframe
-      src={`/templates/${name}/index.html`}
-      style={{ pointerEvents: show ? 'initial' : 'none' }}
-      onLoad={evt => {
-        const { contentWindow } = evt.target
-
-        // Once the template has animated off, we want to reload it.
-        // This is to imitate Caspar's remove method.
-        contentWindow.remove = () => {
-          contentWindow.location.reload()
-          setTemplateWindow(null)
-          dispatch({ type: 'removed', template: name })
-        }
-
-        // The play command might not be ready on load, so here we basically poll the template
-        // to see if it has exposed a play command.
-        let retries = 0
-
-        function checkIfReady() {
-          if (contentWindow.play) {
-            setTemplateWindow(contentWindow)
-          } else if (retries < 20) {
-            setTimeout(checkIfReady, (++retries) ** 2 * 10)
-          } else {
-            console.error('No window.play found')
-          }
-        }
-
-        checkIfReady()
-      }}
-    />
-  )
 }
 
 if (!window.reactRoot) {

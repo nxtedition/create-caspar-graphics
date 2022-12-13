@@ -70,9 +70,6 @@ export const TemplateProvider = ({ children, name }) => {
       }
     }
 
-    // // Let the preview app know that we're all set up.
-    window.onReady?.(window)
-
     return () => {
       delete window.load
       delete window.play
