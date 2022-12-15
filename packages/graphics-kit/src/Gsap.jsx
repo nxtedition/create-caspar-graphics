@@ -27,6 +27,7 @@ export const GsapTimeline = ({ children, hide, onPlay, onStop }) => {
       timeline
         .eventCallback('onComplete', safeToRemove)
         .eventCallback('onReverseComplete', safeToRemove)
+        .play()
     }
   }, [isStopped, safeToRemove])
 
