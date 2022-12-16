@@ -3,16 +3,24 @@ import { gsap } from 'gsap'
 import { States } from './constants'
 import { useCaspar } from './use-caspar'
 
-export const GsapTimeline = ({ children, hide, onPlay, onStop }) => {
+export const GsapTimeline = ({ children, hide, wait = hide, onPlay, onStop }) => {
   const [timeline] = useState(gsap.timeline({ paused: true }))
-  const { state, isPlaying, isStopped, safeToRemove } = useCaspar()
+  const { state, isStopped, safeToRemove } = useCaspar()
+  const [didShow, setDidShow] = useState(false)
+  const readyToShow = state >= States.playing && !wait
 
   useLayoutEffect(() => {
-    if (isPlaying && onPlay) {
+    if (!readyToShow) {
+      return
+    }
+
+    if (onPlay) {
       onPlay(timeline)
       timeline.play()
     }
-  }, [isPlaying])
+
+    setDidShow(true)
+  }, [readyToShow])
 
   useEffect(() => {
     if (!isStopped) {
@@ -31,5 +39,5 @@ export const GsapTimeline = ({ children, hide, onPlay, onStop }) => {
     }
   }, [isStopped, safeToRemove])
 
-  return !hide && state >= States.playing ? children : null
+  return readyToShow || didShow ? children : null
 }

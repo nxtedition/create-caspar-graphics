@@ -7,7 +7,7 @@ const GsapExample = () => {
 
   return (
     <GsapTimeline
-      hide={!name}
+      wait={!name}
       onPlay={timeline => {
         timeline.from('#name', { y: 50, opacity: 0 })
       }}
