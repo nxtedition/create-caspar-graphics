@@ -268,7 +268,9 @@ function getTemplates() {
             }
 
             for (const preset of Object.values(manifest.previewData)) {
-              preset[key] = property.default
+              if (!preset[key]) {
+                preset[key] = property.default
+              }
             }
           }
         }
