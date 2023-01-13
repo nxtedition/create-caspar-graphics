@@ -9,11 +9,13 @@ import React, {
 import { TemplateContext } from './TemplateProvider'
 import { States } from './constants'
 
-export const useCaspar = () => {
+export const useCaspar = opts => {
   const { state, ...context } = React.useContext(TemplateContext)
+  const data = useCasparData(opts)
 
   return {
     ...context,
+    data,
     state,
     isLoading: state === States.loading,
     isLoaded: state === States.loaded,
@@ -29,7 +31,7 @@ export const useCasparState = () => {
 
 export const useCasparData = opts => {
   const { data } = React.useContext(TemplateContext)
-  const { trim } = opts || {}
+  const { trim = true } = opts || {}
 
   return useMemo(() => {
     if (!trim) {
@@ -47,8 +49,8 @@ export const useCasparData = opts => {
 }
 
 export const useMergedData = opts => {
-  const ref = useRef({})
   const data = useCasparData(opts)
+  const ref = useRef({})
 
   React.useEffect(() => {
     ref.current = { ...ref.current, ...data }
