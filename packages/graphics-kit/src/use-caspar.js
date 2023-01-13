@@ -3,7 +3,8 @@ import React, {
   useLayoutEffect,
   useState,
   useCallback,
-  useRef
+  useRef,
+  useMemo
 } from 'react'
 import { TemplateContext } from './TemplateProvider'
 import { States } from './constants'
@@ -26,8 +27,34 @@ export const useCasparState = () => {
   return React.useContext(TemplateContext).state
 }
 
-export const useCasparData = () => {
-  return React.useContext(TemplateContext).data
+export const useCasparData = opts => {
+  const { data } = React.useContext(TemplateContext)
+  const { trim } = opts || {}
+
+  return useMemo(() => {
+    if (!trim) {
+      return data
+    }
+
+    const trimmed = {}
+
+    for (const [key, value] of Object.entries(data)) {
+      trimmed[key] = typeof value === 'string' ? value.trim() : value
+    }
+
+    return trimmed
+  }, [data, trim])
+}
+
+export const useMergedData = opts => {
+  const ref = useRef({})
+  const data = useCasparData(opts)
+
+  React.useEffect(() => {
+    ref.current = { ...ref.current, ...data }
+  }, [data])
+
+  return { ...ref.current, ...data }
 }
 
 export const useDelayPlay = ({ key }) => {
