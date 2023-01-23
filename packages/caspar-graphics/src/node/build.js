@@ -4,6 +4,7 @@ import { resolve, join } from 'path'
 import chokidar from 'chokidar'
 import paths from './paths.js'
 import chalk from 'chalk'
+import react from '@vitejs/plugin-react'
 
 export async function build({
   version,
@@ -31,7 +32,8 @@ export async function build({
       manifest: false,
       outDir: join(paths.appPath, outDir, name),
       emptyOutDir: true
-    }
+    },
+    plugins: [react()]
   })
 
   let templates = await getTemplates()
