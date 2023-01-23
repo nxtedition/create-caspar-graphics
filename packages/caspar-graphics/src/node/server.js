@@ -55,7 +55,7 @@ const watcher = chokidar.watch(
 export async function createServer({ name, mode, host = 'localhost' }) {
   // Start a vite server for the user's templates.
   const templatesPort = await getPort()
-  const templatesServer = await createViteServer({
+  const templatesConfig = {
     root: paths.appTemplates,
     clearScreen: false,
     base: '/templates/',
@@ -82,7 +82,9 @@ export async function createServer({ name, mode, host = 'localhost' }) {
       }
     },
     plugins: [react()]
-  })
+  }
+  const createTemplatesServer = mode === 'preview' ? preview : createViteServer
+  const templatesServer = await createTemplatesServer(templatesConfig)
 
   // Start a WebSocket server so that we can send information about the templates.
   const wssPort = await getPort()
