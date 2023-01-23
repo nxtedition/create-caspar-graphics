@@ -228,11 +228,11 @@ export async function createServer({ name, mode, host = 'localhost' }) {
       previewServer.printUrls()
     },
     listen: () => {
-      return Promise.all([templatesServer.listen(), previewServer.listen?.()])
+      return Promise.all([templatesServer.listen?.(), previewServer.listen?.()])
     },
     close: () => {
       return Promise.all([
-        templatesServer.close(),
+        templatesServer.close?.(),
         previewServer.close?.(),
         watcher.close(),
         wss.close()
