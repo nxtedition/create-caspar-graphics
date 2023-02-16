@@ -136,12 +136,12 @@ The current Caspar state. All available states are exported under the `States` n
 
 ```js
 States = {
-  loading: "LOADING",
-  loaded: "LOADED",
-  playing: "PLAYING",
-  paused: "PAUSED",
-  stopping: "STOPPING",
-  stopped: "STOPPED",
+  loading: 'LOADING',
+  loaded: 'LOADED',
+  playing: 'PLAYING',
+  paused: 'PAUSED',
+  stopping: 'STOPPING',
+  stopped: 'STOPPED',
 };
 ```
 
@@ -164,19 +164,19 @@ We've made this easy for you — simply specify a static property called `previe
 ### Example (using GSAP)
 
 ```js
-import React, { Component } from "react";
-import { TimelineMax } from "gsap";
-import { States } from "caspar-graphics";
+import React, { Component } from 'react';
+import { TimelineMax } from 'gsap';
+import { States } from 'caspar-graphics';
 
 export default class Example extends Component {
   static previewData = {
-    leftText: "Live",
-    rightText: "nxtedition demo",
+    leftText: 'Live',
+    rightText: 'nxtedition demo',
   };
 
   componentDidMount() {
     this.timeline = new TimelineMax({ paused: true }).from(this.element, 0.6, {
-      x: "100%",
+      x: '100%',
       opacity: 0,
     });
 
@@ -199,7 +199,7 @@ export default class Example extends Component {
 
   componentWillLeave(onComplete) {
     this.timeline
-      .eventCallback("onReverseComplete", onComplete)
+      .eventCallback('onReverseComplete', onComplete)
       .timeScale(2)
       .reverse();
   }
@@ -212,7 +212,7 @@ export default class Example extends Component {
     const { leftText, rightText } = this.props.data;
 
     return (
-      <div ref={(ref) => (this.element = ref)}>
+      <div ref={ref => (this.element = ref)}>
         <div>{leftText}</div>
         <div>{rightText}</div>
       </div>
