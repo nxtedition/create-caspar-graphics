@@ -1,35 +1,36 @@
-Table of Contents
-=================
-
-   * [Create Caspar Graphics](#create-caspar-graphics)
-      * [Creating a Graphics Project](#creating-a-graphics-project)
-         * [npx](#npx)
-         * [npm](#npm)
-         * [Yarn](#yarn)
-         * [npm start or <code>yarn start</code>](#npm-start-or-yarn-start)
-         * [npm run build or <code>yarn build</code>](#npm-run-build-or-yarn-build)
-      * [Developing Graphics](#developing-graphics)
-         * [Props](#props)
-            * [data](#data)
-            * [state](#state)
-         * [componentWillLeave(onComplete)](#componentwillleaveoncomplete)
-         * [static previewData](#static-previewdata)
-         * [Example (using GSAP)](#example-using-gsap)
-         * [Viewing Your Graphic](#viewing-your-graphic)
-            * [With Development UI](#with-development-ui)
-            * [Without Development UI](#without-development-ui)
-            * [Query Parameters](#query-parameters)
-      * [Extras](#extras)
-
 # Create Caspar Graphics
 
 Create graphics for [CasparCG](https://www.casparcg.com/) using [React](https://reactjs.org/) — with no build configuration.
 
-* [Creating a Graphics Project](#creating-a-graphics-project) – How to create a new graphics project.
-* [Developing Graphics](#developing-graphics) – How to develop graphics for a project bootstrapped with Create Caspar Graphics.
+- [Creating a Graphics Project](#creating-a-graphics-project) – How to create a new graphics project.
+- [Developing Graphics](#developing-graphics) – How to develop graphics for a project bootstrapped with Create Caspar Graphics.
 
-Create Caspar Graphics works on macOS, Windows, and Linux.<br>
+Create Caspar Graphics works on macOS, Windows, and Linux.
+
 If something doesn’t work, please [file an issue](https://github.com/nxtedition/create-caspar-graphics/issues/new).
+
+## Table of Contents
+
+- [Create Caspar Graphics](#create-caspar-graphics)
+- [Table of Contents](#table-of-contents)
+- [Creating a Graphics Project](#creating-a-graphics-project)
+  - [npx](#npx)
+  - [npm](#npm)
+  - [Yarn](#yarn)
+  - [npm ren dev or `yarn dev`](#npm-run-dev-or-yarn-dev)
+  - [npm run build or `yarn build`](#npm-run-build-or-yarn-build)
+  - [Developing Graphics](#developing-graphics)
+    - [Props](#props)
+      - [data](#data)
+      - [state](#state)
+    - [componentWillLeave(onComplete)](#componentwillleaveoncomplete)
+    - [static previewData](#static-previewdata)
+    - [Example (using GSAP)](#example-using-gsap)
+    - [Viewing Your Graphic](#viewing-your-graphic)
+      - [With Development UI](#with-development-ui)
+      - [Without Development UI](#without-development-ui)
+      - [Query Parameters](#query-parameters)
+  - [Extras](#extras)
 
 ## Creating a Graphics Project
 
@@ -41,29 +42,31 @@ To create a new app, you can choose one of the following methods:
 npx create-caspar-graphics my-graphics
 ```
 
-*[npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher*
+_[npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) comes with npm 5.2+ and higher_
 
 ### npm
 
 ```sh
 npm init caspar-graphics my-graphics
 ```
-*`npm init` is available in npm 6+*
+
+_`npm init` is available in npm 6+_
 
 ### Yarn
 
 ```sh
 yarn create caspar-graphics my-graphics
 ```
-*`yarn create` is available in Yarn 0.25+*
 
-It will create a directory called `my-graphics` inside the current folder.<br>
+_`yarn create` is available in Yarn 0.25+_
+
+It will create a directory called `my-graphics` inside the current folder.
 
 > **Note**: this will create a project for 1080p. If you're developing for 720, you can pass `--mode 720p` as an argument. It can also be changed later in your package.json.
 
 Inside that directory, it will generate the initial project structure and install the transitive dependencies:
 
-```
+```bash
 my-graphics
 ├── node_modules
 ├── package.json
@@ -82,29 +85,28 @@ cd my-graphics
 
 Inside the newly created project, you can run some built-in commands:
 
-### `npm start` or `yarn start`
+### `npm run dev` or `yarn dev`
 
-Runs the app in development mode.<br>
+Runs the app in development mode.
+
 Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
-<p align='center'>
-<img width="1237" alt="dev-preview" src="https://user-images.githubusercontent.com/3599069/46212164-98db6c00-c335-11e8-93ed-d18cddd0c3bf.png" alt="Development View">
-</p>
+![Development View](https://user-images.githubusercontent.com/3599069/46212164-98db6c00-c335-11e8-93ed-d18cddd0c3bf.png)
 
 Every template that you've added to the `/templates` folder will automatically be picked up, and turned into a CasparCG template that you can interact with.
 Use the GUI to view your graphics, change their preview data, send commands (e.g. play, pause, stop) and change background.
 
-The page will automatically reload if you make changes to the code.<br>
+The page will automatically reload if you make changes to the code.
+
 And you will see the build errors and lint warnings in the console.
 
 ### `npm run build` or `yarn build`
 
-Builds your graphics for production to the `dist` folder.<br>
+Builds your graphics for production to the `dist` folder.
 
 It correctly bundles React in production mode and optimizes the build for the best performance, and then inlines every graphic into its own HTML file.
 
-> **Tip**: use `--include` (shorthand `-i`) or `--exlude` (shorthand `-e`)  to control which graphics get built.
-
+> **Tip**: use `--include` (shorthand `-i`) or `--exlude` (shorthand `-e`) to control which graphics get built.
 
 Your graphics are now ready to be played in CasparCG!
 
@@ -121,29 +123,32 @@ The only thing different from a "normal" React component, is that you have one e
 ### Props
 
 #### `data`
+
 > object | defaults to `{}`
 
 Contains the data sent by CasparCG. Every time a new `update()` is performed, you'll receive the new data in `props.data`.
 
 #### `state`
+
 > string | defaults to `"LOADING"`
 
 The current Caspar state. All available states are exported under the `States` namespace:
 
 ```js
 States = {
-  loading: 'LOADING',
-  loaded: 'LOADED',
-  playing: 'PLAYING',
-  paused: 'PAUSED',
-  stopping: 'STOPPING',
-  stopped: 'STOPPED'
-}
+  loading: "LOADING",
+  loaded: "LOADED",
+  playing: "PLAYING",
+  paused: "PAUSED",
+  stopping: "STOPPING",
+  stopped: "STOPPED",
+};
 ```
 
 Usually, you only have to care about the states `playing` and `pausing`, since everything else is handled for you.
 
 ### `componentWillLeave(onComplete)`
+
 > function
 
 When Caspar sends the `stop()` command, `props.state` will change to `"STOPPING"`. If you don't do anything, your graphic will just be removed.
@@ -157,58 +162,61 @@ When developing your graphic, you often need example data. This can be really te
 We've made this easy for you — simply specify a static property called `previewData` in your class, and you'll automatically get it as `props.data` when developing.
 
 ### Example (using GSAP)
+
 ```js
-import React, { Component } from 'react'
-import { TimelineMax } from 'gsap'
-import { States } from 'caspar-graphics'
+import React, { Component } from "react";
+import { TimelineMax } from "gsap";
+import { States } from "caspar-graphics";
 
 export default class Example extends Component {
   static previewData = {
-    leftText: 'Live',
-    rightText: 'nxtedition demo'
-  }
+    leftText: "Live",
+    rightText: "nxtedition demo",
+  };
 
   componentDidMount() {
-    this.timeline = new TimelineMax({ paused: true })
-      .from(this.element, 0.6, { x: '100%', opacity: 0 })
+    this.timeline = new TimelineMax({ paused: true }).from(this.element, 0.6, {
+      x: "100%",
+      opacity: 0,
+    });
 
-    this.setState({ didMount: true }) // Make sure componentDidUpadte() is called
+    this.setState({ didMount: true }); // Make sure componentDidUpadte() is called
   }
 
   componentDidUpdate() {
     if (this.state.state === this.props.state) {
-      return
+      return;
     }
 
     if (this.props.state === States.playing) {
-      this.timeline.play()
-      this.setState({ state: States.playing })
+      this.timeline.play();
+      this.setState({ state: States.playing });
     } else if (this.props.state === States.paused) {
-      this.timeline.pause()
-      this.setState({ state: States.paused })
+      this.timeline.pause();
+      this.setState({ state: States.paused });
     }
   }
 
   componentWillLeave(onComplete) {
     this.timeline
-      .eventCallback('onReverseComplete', onComplete)
+      .eventCallback("onReverseComplete", onComplete)
       .timeScale(2)
-      .reverse()
+      .reverse();
   }
 
   componentWillUnmount() {
-    this.timeline.kill()
+    this.timeline.kill();
   }
 
   render() {
-    const { leftText, rightText } = this.props.data
+    const { leftText, rightText } = this.props.data;
 
     return (
-      <div ref={ref => (this.element = ref)}>
+      <div ref={(ref) => (this.element = ref)}>
         <div>{leftText}</div>
         <div>{rightText}</div>
       </div>
-    )
+    );
   }
 }
 ```
@@ -230,23 +238,27 @@ you can also go to [http://localhost:8080/example.html](http://localhost:8080/ex
 
 You can pass a few query parameters:
 
-**_fit**
+##### \_fit
+
 > boolean | defaults to `false`
 
 If true, your graphic will be scaled down to fit your browsers window (useful when developing on smaller screens).
 
-**_bg**
+##### \_bg
+
 > string or boolean
 
 Add a background to your graphic's container. Either pass true, for a green color, or pass your own e.g. "#ffff00".
 
-**_autoPreview**
+##### \_autoPreview
+
 > boolean | defaults to `false`
 
-If true, the graphic will be played immediately when mounted.  
+If true, the graphic will be played immediately when mounted.
 
 **e.g.**
-> http://localhost:8080/example.html?_fit=true&_bg="#ff0000"&_autoPreview=true
+
+> [http://localhost:8080/example.html?\_fit=true&\_bg="#ff0000"&\_autoPreview=true](http://localhost:8080/example.html?_fit=true&_bg="#ff0000"&_autoPreview=true)
 
 #### Graphics background preview
 
