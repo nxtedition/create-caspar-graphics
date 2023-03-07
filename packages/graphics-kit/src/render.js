@@ -1,5 +1,7 @@
 import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
+import { flushSync } from 'react-dom'
+
 import { TemplateProvider } from './TemplateProvider'
 
 let root = null
@@ -32,7 +34,9 @@ export const render = (Template, options) => {
     root = createRoot(container)
   }
 
-  root.render(
-    createElement(TemplateProvider, { name }, createElement(Template))
-  )
+  flushSync(() => {
+    root.render(
+      createElement(TemplateProvider, { name }, createElement(Template))
+    )
+  })
 }
