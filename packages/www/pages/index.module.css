@@ -1,0 +1,58 @@
+.app {
+  border-radius: 10px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+  overflow: hidden;
+  margin: 2.4em 0;
+}
+
+.cta {
+  display: inline-block;
+  background: linear-gradient(to bottom, #238aff, #0077ff);
+  text-decoration: none;
+  border-radius: 9999px;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  margin-top: 0.5rem;
+  text-shadow: 0 1px 1px #00387838;
+  box-shadow: 0 1px 2px #00295738;
+  transition: all 0.2s ease;
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.cta span {
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+.cta:hover span {
+  transform: translateX(3px);
+}
+.cta:hover {
+  box-shadow: 0 5px 30px -10px #0078ffab;
+  filter: brightness(1.05);
+}
+.cta:active {
+  box-shadow: 0 1px 3px #00295738;
+  filter: brightness(0.95);
+}
+.cta:active span {
+  transform: translateX(5px);
+}
+.cta:focus-visible {
+  outline: 2px solid
+    hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) 77%);
+  outline-offset: 2px;
+}
+.cta:focus-visible span {
+  transform: translateX(3px);
+}
+.cta + .cta {
+  background: linear-gradient(to bottom, #747474, #5e5e5e);
+  margin-left: 20px;
+}
+.cta + .cta:hover {
+  box-shadow: 0 5px 30px -10px #444444c9;
+}
+

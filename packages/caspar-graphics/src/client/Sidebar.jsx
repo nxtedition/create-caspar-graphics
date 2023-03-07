@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './sidebar.module.css'
 import { MdArrowDropDown, MdChevronRight } from 'react-icons/md'
 import { FiArrowRight, FiArrowRightCircle } from 'react-icons/fi'
@@ -19,7 +19,7 @@ import {
   MenuLabel,
   MenuSeparator
 } from './Menu'
-import { getPresets } from './'
+import { getPresets } from './app'
 import { IoIosSettings } from 'react-icons/io'
 import { TopSettings, BottomSettings } from './Settings'
 import { JsonEditor } from './JsonEditor'
@@ -37,7 +37,7 @@ export const Sidebar = ({ state, dispatch, settings, onSettingsChange, projectSt
       : 'light'
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.body.classList.remove('light-theme', 'dark-theme')
     document.body.classList.add(colorMode + '-theme')
   }, [colorMode])

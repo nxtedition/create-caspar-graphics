@@ -1,0 +1,35 @@
+# Preview Images
+
+If you're working from a reference image, it can be useful to put that image as a semi-transparent overlay 
+while developing your graphic.
+
+![Preview Image as an overlay](/preview-image.jpg)
+
+You can add images to the `previewImages` property in `manifest.json`:
+
+```json filename="manifest.json" {23}
+{
+  "name": "Lowerthird",
+  "schema": {
+    "name": {
+      "type": "string",
+      "label": "Name"
+    },
+    "title": {
+      "type": "string",
+      "label": "Title"
+    }
+  },
+  "previewData": {
+    "Thierry Henry": {
+      "name": "Thierry Henry",
+      "title": "King of Highbury"
+    },
+    "Bukayo Saka": {
+      "name": "Bukayo Saka",
+      "title": "King of Emirates"
+    }
+  },
+  "previewImages": ["./reference.jpg"]
+}
+```

@@ -39,7 +39,7 @@ const FRAMEWORKS = [
         color: lightGreen
       },
       {
-        name: 'react-bare',
+        name: 'react',
         display: 'Bare',
         color: yellow
       }

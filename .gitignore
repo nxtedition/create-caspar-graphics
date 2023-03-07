@@ -21,7 +21,6 @@ coverage
 # node-waf configuration
 .lock-wscript
 
-
 # Dependency directory
 node_modules
 
@@ -35,3 +34,5 @@ node_modules
 build
 dist
 .vscode
+.vercel
+.next

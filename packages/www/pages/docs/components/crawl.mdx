@@ -1,0 +1,55 @@
+# Crawl
+
+A component that moves items horizontally across the screen. A common use case is to create a News
+Ticker. 
+
+## Reference
+
+```js
+<Crawl
+  play={isPlaying}
+  items={items}
+  renderItem={(item) => <Item {...item} />}
+  pixelsPerFrame={10}
+/>
+
+```
+
+### Props
+
+- `items`: An array of the items you want to be displayed in the crawl.
+- `renderItem`: A function that should return an element for each item in the `items` array.
+- `play`: A boolean. If true the items will move. The Crawl will be hidden until it `play` is true the first time.
+- `pixelsPerFrame` (default: `5`): The number of pixels each item should move every frame.
+- `frameRate` (default: `25`): The frame rate (used in `pixelsPerFrame`).
+
+## Usage
+
+### Creating a News Ticker from an RSS Feed.
+```js
+import { render, Crawl, useCaspar, useRssFeed } from '@nxtedition/graphics-kit'
+
+function NewsTicker() {
+  const { isPlaying } = useCaspar()
+  const feed = useRssFeed('https://feeds.simplecast.com/54nAGcIl')
+
+  return (
+    <div className='news-ticker'>
+      <div className='label'>{feed?.title}</div>
+      <div className='content'>
+        <Crawl
+          play={isPlaying}
+          items={feed?.items?.slice(0, 10)}
+          renderItem={({ id, title }) => (
+            <div key={id} className='item'>
+              {title}
+            </div>
+          )}
+        />
+      </div>
+    </div>
+  )
+}
+
+render(NewsTicker)
+```

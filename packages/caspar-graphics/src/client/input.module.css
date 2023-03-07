@@ -17,6 +17,7 @@
   padding: 0 6px;
   box-sizing: border-box;
   color: var(--neutral12);
+  font-size: 13px;
 }
 
 .input:hover {

@@ -49,14 +49,14 @@ cli
   .command('build [root]', 'build for production')
   .option('-i, --include [...templates]', 'templates included in this build')
   .option(
-    '--target',
+    '--target <target>',
     '[string] browser compatibility target for the final bundle'
   )
-  .option('--manifest', '[boolean] emit build manifest json')
-  .option('--gzip', '[boolean] gzip final bundle')
+  .option('--singleFile', '[boolean] inline JavaScript and CSS resources into a single html file per template')
+  .option('--outDir <outDir>' , '[string] output directory (relative to project root).')
   .action(async (root, options) => {
     const { build } = await import('./build.js')
-    const templates = await build(getOptions(options))
+    await build(getOptions(options))
     process.exit(0)
   })
 

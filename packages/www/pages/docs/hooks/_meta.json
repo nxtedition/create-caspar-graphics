@@ -1,0 +1,8 @@
+{
+  "use-caspar": "useCaspar",
+  "use-font": "useFont",
+  "use-image": "useImage",
+  "use-fetch": "useFetch",
+  "use-caspar-data": "useCasparData",
+  "use-caspar-state": "useCasparState"
+}

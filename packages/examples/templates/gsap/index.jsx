@@ -7,7 +7,7 @@ const GsapExample = () => {
 
   return (
     <GsapTimeline
-      wait={!name}
+      hide={!name}
       onPlay={timeline => {
         timeline.from('#name', { y: 50, opacity: 0 })
       }}
@@ -15,7 +15,7 @@ const GsapExample = () => {
         timeline.to('#name', { y: 50, opacity: 0 })
       }}
     >
-      <div key={name} id="name">
+      <div id="name">
         {name}
       </div>
     </GsapTimeline>

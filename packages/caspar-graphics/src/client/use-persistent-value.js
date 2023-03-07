@@ -1,26 +1,66 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React from 'react'
 
-export function usePersistentValue(key, defaultValue) {
-  const [value, setValue] = useState()
+export function usePersistentValue(key, initialValue) {
+  const getSnapshot = () => getLocalStorageItem(key)
+  const store = React.useSyncExternalStore(
+    useLocalStorageSubscribe,
+    getSnapshot,
+    getLocalStorageServerSnapshot
+  )
 
-  if (value === undefined && key) {
-    const stored = window.localStorage.getItem(key)
-    setValue(stored !== null ? JSON.parse(stored) : defaultValue ?? null)
-  }
+  const setState = React.useCallback(
+    v => {
+      try {
+        const nextState = typeof v === 'function' ? v(JSON.parse(store)) : v
 
-  const onChange = valueOrFn => {
-    const newValue =
-      typeof valueOrFn === 'function' ? valueOrFn(value) : valueOrFn
+        if (nextState === undefined || nextState === null) {
+          removeLocalStorageItem(key)
+        } else {
+          setLocalStorageItem(key, nextState)
+        }
+      } catch (e) {
+        console.warn(e)
+      }
+    },
+    [key, store]
+  )
 
-    setValue(newValue)
-
-    if (key) {
-      window.localStorage.setItem(
-        key,
-        newValue != null ? JSON.stringify(newValue) : undefined
-      )
+  React.useEffect(() => {
+    if (
+      getLocalStorageItem(key) === null &&
+      typeof initialValue !== 'undefined'
+    ) {
+      setLocalStorageItem(key, initialValue)
     }
-  }
+  }, [key, initialValue])
 
-  return [key ? value || defaultValue : null, onChange]
+  return [store ? JSON.parse(store) : initialValue, setState]
+}
+
+const setLocalStorageItem = (key, value) => {
+  const stringifiedValue = JSON.stringify(value)
+  window.localStorage.setItem(key, stringifiedValue)
+  dispatchStorageEvent(key, stringifiedValue)
+}
+
+const removeLocalStorageItem = key => {
+  window.localStorage.removeItem(key)
+  dispatchStorageEvent(key, null)
+}
+
+const getLocalStorageItem = key => {
+  return window.localStorage.getItem(key)
+}
+
+const useLocalStorageSubscribe = callback => {
+  window.addEventListener('storage', callback)
+  return () => window.removeEventListener('storage', callback)
+}
+
+const getLocalStorageServerSnapshot = () => {
+  return null
+}
+
+function dispatchStorageEvent(key, newValue) {
+  window.dispatchEvent(new StorageEvent('storage', { key, newValue }))
 }

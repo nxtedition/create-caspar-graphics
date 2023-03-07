@@ -8,19 +8,20 @@ import React, {
 } from 'react'
 import { TemplateContext } from './TemplateProvider'
 import { States } from './constants'
+import { useTimeout } from './use-timeout'
 
 export const useCaspar = opts => {
-  const { state, ...context } = React.useContext(TemplateContext)
+  const { state, safeToRemove, ...context } = React.useContext(TemplateContext)
   const data = useCasparData(opts)
+
+  useTimeout(safeToRemove, opts?.removeDelay)
 
   return {
     ...context,
     data,
     state,
-    isLoading: state === States.loading,
-    isLoaded: state === States.loaded,
+    safeToRemove,
     isPlaying: state === States.playing,
-    isPaused: state === States.paused,
     isStopped: state === States.stopped
   }
 }

@@ -1,0 +1,51 @@
+# useImage
+
+`useImage` is React hook that pre-loads an image and blocks playing until its decoded and
+ready.
+
+```js
+const image = useImage({ src })
+```
+
+## Reference
+
+Call `useImage` at the top level of your component to get a pre-loaded image source back. If called
+before `play`, it will defer playing until the image is ready.
+
+```js
+import { useImage } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const image = useImage({ src })
+  // ...
+}
+```
+
+### Parameters
+- `src`: The path to the image you want to preload.
+
+### Returns
+
+`useImage` returns null while loading, and when ready it returns an object with:
+- `src`: The same path you sent as a parameter. 
+
+## Usage
+
+### Wait for the image to load before showing it
+
+Call `useImage` at the top level of your component to get a pre-loaded path back. 
+
+```js
+import { useImage } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const image = useImage({ src: 'https://images.pexels.com/photos/13234873/pexels-photo-13234873.jpeg' })
+
+  return (
+    <FramerMotion>
+      <motion.img src={image?.src} initial={{ scale: 0 }} animate={{ scale: 1 }} />
+    </FramerMotion>
+  )
+}
+```
+

@@ -1,0 +1,79 @@
+# useFetch
+
+`useFetch` is React hook that lets you get data using the native [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
+
+```js
+const { data, error, isLoading } = useFetch(url, options?)
+```
+
+## Reference
+
+Call `useFetch` at the top level of your component to fetch data from a url.
+
+```js
+import { useFetch } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const { data, error, isLoading } = useFetch(url, { interval: 30 })
+  // ...
+}
+```
+
+### Parameters
+- `url`: The url to the data you want to fetch.
+- **optional** `options`: An object with the options for the request:
+  - **optional** `interval`: A number specifying how often a request will be made (in seconds). If empty only one request will be made.
+  - **optional** `responseMethod` (default: `"json"`): An identifier for the method on the Response that reads it to completion.
+
+### Returns
+
+`useFetch` returns an object with:
+- `data`: The data returned by the response.
+- `error`: error thrown by `fetch`.
+- `isLoading`: A boolean indicating if there's an ongoing request.
+
+## Usage
+
+### Fetch data from an external API
+
+Call `useFetch` at the top level of your component to fetch data from an external API.
+
+```js
+import { useFetch } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const { data, isLoading }= useFetch("https://swapi.dev/api/people/1/")
+
+  if (isLoading) {
+    return null
+  }
+
+  return (
+    <div>
+      {data?.name}
+    </div>
+  )
+}
+```
+
+### Poll an API every 30 seconds
+
+Call `useFetch` at the top level of your component to fetch data from an external API.
+
+```js
+import { useFetch } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const { data, isLoading } = useFetch("https://swapi.dev/api/people/1/", { interval: 30 })
+
+  if (isLoading) {
+    return null
+  }
+
+  return (
+    <div>
+      {data?.name}
+    </div>
+  )
+}
+```

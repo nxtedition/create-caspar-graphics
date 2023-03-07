@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useId
+} from 'react'
 import FontFaceObserver from 'fontfaceobserver'
 import { useDelayPlay } from './use-caspar'
 
@@ -34,9 +40,28 @@ export const useFontObserver = (...args) => {
   return loaded
 }
 
-export function useFont({ src, weight, style }) {
+function convertToISO10646(inputString) {
+  let result = ''
+  for (let i = 0; i < inputString.length; i++) {
+    const charCode = inputString.charCodeAt(i)
+    if (charCode > 127) {
+      // Convert non-ASCII characters to Unicode escape sequences
+      result += `\\u${charCode
+        .toString(16)
+        .toUpperCase()
+        .padStart(4, '0')}`
+    } else {
+      result += inputString[i]
+    }
+  }
+  return result
+}
+
+export function useFont({ name, src, weight, style }) {
   const key = src ? JSON.stringify(src) : null
   const [font, resume] = useDelayPlay({ key })
+  const id = useId().replace(/:/g, '-') // ":" aren't valid in a font family name
+  const fontName = name ?? id
 
   useLayoutEffect(() => {
     const fonts = Array.isArray(src) ? src : [{ path: src, weight, style }]
@@ -46,13 +71,12 @@ export function useFont({ src, weight, style }) {
     }
 
     async function loadFonts() {
-      const name = fonts[0].path
-        ?.split('/')
-        ?.slice(-1)[0]
-        ?.split('.')[0]
       const fontFaces = await Promise.all(
         fonts.map(({ path, weight, style }) => {
-          const fontFile = new FontFace(name, `url(${path})`, { weight, style })
+          const fontFile = new FontFace(fontName, `url(${path})`, {
+            weight,
+            style
+          })
           document.fonts.add(fontFile)
           return fontFile.load()
         })
@@ -63,7 +87,7 @@ export function useFont({ src, weight, style }) {
     try {
       loadFonts()
     } catch (err) {
-      console.error('Failed to load font ' + name + ':', err)
+      console.error('Failed to load font ' + fontName + ':', err)
     }
   }, [key, weight, style, resume])
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 const States = {
   load: 0,
@@ -61,14 +61,14 @@ export const ServerTemplate = ({ socket, name, layer, show, data }) => {
 
 export const TemplatePreview = ({
   name,
+  src = `/templates/${name}/index.html`,
   show,
   dispatch,
-  layer,
   data,
-  ...props
 }) => {
   const [templateWindow, setTemplateWindow] = useState()
   const [didShow, setDidShow] = useState(false)
+  const ref = useRef()
 
   // Data Updates
   useEffect(() => {
@@ -95,11 +95,12 @@ export const TemplatePreview = ({
       }
     }
   }, [templateWindow, show, didShow])
-
+ 
   return (
     <iframe
-      src={`/templates/${name}/index.html`}
       style={{ pointerEvents: show ? 'auto' : 'none' }}
+      ref={ref}
+      src={src}
       onLoad={evt => {
         const { contentWindow } = evt.target
 

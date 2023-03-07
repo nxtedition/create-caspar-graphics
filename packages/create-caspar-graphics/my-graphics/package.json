@@ -1,0 +1,23 @@
+{
+  "name": "my-graphics",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "caspar-graphics dev",
+    "build": "caspar-graphics build"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.4.9",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fontsource/work-sans": "^4.5.14",
+    "@nxtedition/graphics-kit": "^2.0.0-alpha.5",
+    "react": "^18.2.0",
+    "react-countdown": "^2.3.5",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@nxtedition/caspar-graphics": "^1.0.0-alpha.14"
+  }
+}

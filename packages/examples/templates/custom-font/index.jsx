@@ -12,7 +12,7 @@ import robotoCondensedBold from './RobotoCondensed-Bold.ttf'
 import './style.css'
 
 const CustomFontExample = () => {
-  const { name, title, goals } = useCasparData()
+  const { name = 'hello', title, goals } = useCasparData()
 
   // This is a variable font, so we only need to load one file for all styles.
   const exo = useFont({ src: exoVF })
