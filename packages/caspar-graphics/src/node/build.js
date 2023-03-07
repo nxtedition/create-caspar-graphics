@@ -5,6 +5,7 @@ import chokidar from 'chokidar'
 import paths from './paths.js'
 import chalk from 'chalk'
 import react from '@vitejs/plugin-react'
+import { viteSingleFile } from 'vite-plugin-singlefile'
 
 export async function build({
   version,
@@ -28,12 +29,12 @@ export async function build({
     },
     build: {
       target,
-      minify: false,
+      minify: true,
       manifest: false,
       outDir: join(paths.appPath, outDir, name),
       emptyOutDir: true
     },
-    plugins: [react()]
+    plugins: [react(), viteSingleFile()]
   })
 
   let templates = await getTemplates()
