@@ -1,5 +1,6 @@
 import React, {
   useEffect,
+  useLayoutEffect,
   useState,
   useCallback,
   memo,
@@ -29,7 +30,7 @@ export const TemplateProvider = ({ children, name }) => {
   }, [])
 
   // Handle state and data updates
-  useEffect(() => {
+  useLayoutEffect(() => {
     let didPlay = false
 
     window.load = () => {
@@ -49,8 +50,13 @@ export const TemplateProvider = ({ children, name }) => {
     }
 
     window.stop = () => {
-      setState(States.stopped)
-      logger('.stop()')
+      if (didPlay) {
+        setState(States.stopped)
+        logger('.stop()')
+      } else {
+        setState(States.removed)
+        logger('.stop() without play')
+      }
     }
 
     window.update = payload => {
@@ -81,12 +87,12 @@ export const TemplateProvider = ({ children, name }) => {
 
   // If we received an update before the play command, we want to wait for its render cycle to
   // finish before we check if there are any registered delays.
-  React.useEffect(() => {
+  useEffect(() => {
     resume?.()
   }, [resume])
 
   // Wait for any delays to finish before playing.
-  React.useEffect(() => {
+  useEffect(() => {
     if (state < States.playing && requestPlay && !delays.length) {
       setState(States.playing)
     }
