@@ -54,7 +54,6 @@
     "react-icons": "^4.6.0",
     "terser": "^5.15.1",
     "vite": "^3.2.4",
-    "vite-plugin-singlefile": "^0.13.2",
     "ws": "^8.11.0"
   }
 }
