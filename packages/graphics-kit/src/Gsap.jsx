@@ -32,10 +32,11 @@ export const GsapTimeline = ({ children, hide, wait = hide, onPlay, onStop }) =>
     } else {
       onStop(timeline)
 
-      timeline
-        .eventCallback('onComplete', safeToRemove)
-        .eventCallback('onReverseComplete', safeToRemove)
-        .play()
+      const callbackType = timeline.reversed()
+        ? 'onReverseComplete'
+        : 'onComplete'
+
+      timeline.eventCallback(callbackType, safeToRemove)
     }
   }, [isStopped, safeToRemove])
 
