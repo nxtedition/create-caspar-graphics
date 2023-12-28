@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@nxtedition/caspar-graphics-docs",
   "version": "1.0.0-beta.0",
   "description": "Caspar Graphics Docs",
