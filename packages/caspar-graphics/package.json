@@ -24,7 +24,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && vite build -c vite.config.lib.js",
-    "prepublishOnly": "vite build",
+    "prepublishOnly": "vite build && vite build -c vite.config.lib.js",
     "preview": "vite preview"
   },
   "files": [
