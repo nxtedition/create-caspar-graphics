@@ -1,14 +1,15 @@
 {
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "bugs": "https://github.com/nxtedition/create-caspar-graphics/issues",
   "homepage": "https://github.com/nxtedition/create-caspar-graphics#readme",
   "devDependencies": {
-    "eslint": "^4.6.1",
     "husky": "2.1.0",
-    "lerna": "6.0.3",
+    "lerna": "8.0.1",
     "lint-staged": "^4.0.0",
-    "prettier": "^1.4.4"
+    "prettier": "^3.1.1"
   },
   "scripts": {
     "format": "prettier --single-quote --no-semi --write 'packages/*/*.js' 'packages/*/!(node_modules)/**/*.js'",
@@ -20,9 +21,6 @@
       "prettier --single-quote --no-semi --write",
       "git add"
     ]
-  },
-  "resolutions": {
-    "file-loader": "1.1.11"
   },
   "prettier": {
     "tabWidth": 2,
