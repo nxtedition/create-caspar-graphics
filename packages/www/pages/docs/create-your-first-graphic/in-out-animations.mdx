@@ -1,0 +1,231 @@
+# In/Out Animations
+
+So far we've managed to send dynamic text to our graphic and making sure it fades in/out using
+simple CSS transitions. You can get pretty far with this, but at some point you'll most likely 
+reach for an animation library to create more complex animations. 
+
+There are a lot of options to choose from, and they all have their pros and cons. We typically reach
+for [Framer Motion](https://www.framer.com/motion/) for most use cases, but sometimes utilize
+  [GSAP](https://greensock.com/gsap/) for orchestrating animations in a timeline or to animate
+  characters, words or lines individually. Here we'll show how you can create the following in/out animation 
+  using Framer Motion:
+
+<video src="/in-out-animations.mp4" autoPlay controls loop style={{ margin: '20px 0', borderRadius: 4 }} />
+
+Here's a breakdown of what we're seeing above: 
+
+1. The white box is positioned 20px below the bottom of the screen with an opacity of 0.
+2. When it receives `play`, it moves up to its original position during 600 ms, while also fading
+in during 400 ms. 
+3. After 300 ms, the text 
+
+## Framer Motion
+
+We'll start by converting our div into a [`motion.div`](https://www.framer.com/motion/component/),
+and wrapping it inside a FramerMotion component:
+
+```js filename="my-graphics/templates/example/index.jsx" {1, 2, 8, 9, 24, 25}
+import { render, useCaspar, FramerMotion } from '@nxtedition/graphics-kit'
+import { motion } from 'framer-motion'
+
+function Example() {
+  const { data } = useCaspar()
+
+  return (
+    <FramerMotion>
+      <motion.div
+        style={{
+          position: 'absolute',
+          bottom: 80,
+          left: 266,
+          width: 1388,
+          padding: 20,
+          backgroundColor: 'white',
+          borderRadius: 6,
+          fontSize: 70,
+          fontFamily: 'Arial',
+          overflow: 'hidden'
+        }}
+      >
+        {data.text}
+      </motion.div>
+    </FramerMotion>
+  )
+}
+
+render(Example)
+```
+
+This gives our `div` super powers, allowing us to easily add animations to it. `<FramerMotion>` also
+takes care of calling `safeToRemove()` once we're done animating. 
+
+Now we can tell it what it should look like **before** it receives `play` using the `initial` prop:
+
+```js
+initial={{ opacity: 0, y: 100 }}
+```
+
+Next we can tell it what it should look like **after** it receives the `play` command using the `animate` prop:
+
+```js
+animate={{
+  opacity: 1,
+  y: 0,
+  transition: {
+    opacity: {
+      duration: 0.4
+    },
+    y: {
+      duration: 0.6
+    }
+  }
+}}
+```
+
+And finally what should happen when it receives `stop` using the `exit` prop:
+
+```js
+exit={{
+  y: 100,
+  opacity: 0,
+  transition: {
+    duration: 0.4
+  }
+}}
+```
+
+Putting it all together we get this:
+
+```js filename="my-graphics/templates/example/index.jsx" {22-44}
+import { render, useCaspar, FramerMotion } from '@nxtedition/graphics-kit'
+import { motion } from 'framer-motion'
+
+function Example() {
+  const { data } = useCaspar()
+
+  return (
+    <FramerMotion>
+      <motion.div
+        style={{
+          position: 'absolute',
+          bottom: 80,
+          left: 266,
+          width: 1388,
+          padding: 20,
+          backgroundColor: 'white',
+          borderRadius: 6,
+          fontSize: 70,
+          fontFamily: 'Arial',
+          overflow: 'hidden'
+        }}
+        initial={{
+          opacity: 0,
+          y: 100
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          transition: {
+            opacity: {
+              duration: 0.4
+            },
+            y: {
+              duration: 0.6
+            }
+          }
+        }}
+        exit={{
+          y: 100,
+          opacity: 0,
+          transition: {
+            duration: 0.4
+          }
+        }}
+      >
+        {data.text}
+      </motion.div>
+    </FramerMotion>
+  )
+}
+
+render(Example)
+```
+
+This will animate our white background properly, but if you looked closely at the animation above
+you might have noticed that the text has its own animation, with a slight delay. Let's fix that by
+wrapping the text in its own `<motion.div>`:
+
+
+```js filename="my-graphics/templates/example/index.jsx" {46-61}
+import { render, useCaspar, FramerMotion } from '@nxtedition/graphics-kit'
+import { motion } from 'framer-motion'
+
+function Example() {
+  const { data } = useCaspar()
+
+  return (
+    <FramerMotion>
+      <motion.div
+        style={{
+          position: 'absolute',
+          bottom: 80,
+          left: 266,
+          width: 1388,
+          padding: 20,
+          backgroundColor: 'white',
+          borderRadius: 6,
+          fontSize: 70,
+          fontFamily: 'Arial',
+          overflow: 'hidden'
+        }}
+        initial={{
+          opacity: 0,
+          y: 100
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+          transition: {
+            opacity: {
+              duration: 0.4
+            },
+            y: {
+              duration: 0.6
+            }
+          }
+        }}
+        exit={{
+          y: 100,
+          opacity: 0,
+          transition: {
+            duration: 0.4
+          }
+        }}
+      >
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: '100%'
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            transition: {
+              duration: 0.3,
+              delay: 0.3
+            }
+          }}
+        >
+          {data.text}
+        </motion.div>
+      </motion.div>
+    </FramerMotion>
+  )
+}
+
+render(Example)
+```
+
+And we're done! 🎉 We now have a graphic that can receive dynamic data and that animates in and out nicely as we send `play` and `stop` commands. 
+The only thing left before we can use it in CasparCG is to build it. 
+

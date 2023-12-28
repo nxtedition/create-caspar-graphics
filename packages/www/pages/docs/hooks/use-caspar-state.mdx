@@ -1,0 +1,65 @@
+# useCasparState
+
+`useCasparState` is React hook that lets you access the graphic's current state. 
+It only re-runs when the state changes.
+
+```js
+const state = useCasparState()
+```
+
+## Reference
+
+Call `useCasparState` at the top level of your component to get access to the current state.
+
+```js
+import { useCasparState } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const state = useCasparState()
+  // ...
+}
+```
+### Returns
+
+`useCasparState` returns a constant representing the current [State](/docs/states).
+
+## Usage
+
+### Showing data sent by CasparCG
+
+Call `useCasparData` at the top level of your component to get access to all data sent to it. 
+
+```js
+import { useCaspar } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const { data } = useCaspar()
+
+  return (
+    <div>{data.name}</div>
+  )
+}
+```
+
+### Animating in/out when receiving play/stop comands
+
+Access the graphic's current state to hide and show your graphic as desired.
+
+```js
+import { useCaspar } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const { data, isPlaying } = useCaspar({ removeDelay: 0.5 })
+
+  return (
+    <div 
+      style={{
+        opacity: isPlaying ? 1 : 0,
+        transition: 'opacity 0.5s ease'
+      }}
+    >
+      {data.name}
+    </div>
+  )
+}
+```

@@ -1,0 +1,40 @@
+{
+  "name": "FitText",
+  "schema": {
+    "text": {
+      "type": "string",
+      "label": "Text"
+    },
+    "preferredSize": {
+      "type": "number",
+      "label": "Preferred Size"
+    },
+    "minSize": {
+      "type": "number",
+      "label": "Minimum Size"
+    },
+    "unit": {
+      "type": "string",
+      "label": "Unit"
+    },
+    "step": {
+      "type": "number",
+      "label": "Step"
+    }
+  },
+  "previewData": {
+    "Shrink to Fit": {
+      "text": "Some text that doesn't fit with the preferred size",
+      "preferredSize": 70
+    },
+    "Already Fits": {
+      "text": "This text will fit without shrinking",
+      "preferredSize": 70
+    },
+    "Hitting Minimium Size": {
+      "text": "This text will not fit even at the minimum size, so the end will get cut off",
+      "preferredSize": 60,
+      "minSize": 46
+    }
+  }
+}

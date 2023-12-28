@@ -1,0 +1,37 @@
+# Create a Project
+
+Start by [creating a new](/docs/getting-started#create-a-new-project) project called `my-graphics`:
+
+```bash
+  npm create caspar-graphics@latest my-graphics --template react
+```
+
+This will give you a `templates` folder containing another folder called `example`:
+
+```
+my-graphics
+└── templates
+    └── example
+        └── index.html
+        └── index.jsx
+        └── manifest.json
+```
+
+Open `my-graphics` in your editor of choice and [start the development server](/docs/getting-started#run-the-development-server). You should now see this in your browser:
+
+![React Example](/react-example-1.jpg)
+
+In the sidebar on the left you can see that a graphic called "React Example" has been picked up by the server. 
+
+### Change the Name
+Let's start by changing its name by opening up `manifest.json` and change the property `name` to `"Lowerthird"`.
+
+```json filename="my-graphics/templates/example/manifest.json" {2}
+{
+  "name": "Lowerthird",
+  "schema": {},
+  "previewData": {}
+}
+```
+
+Now if you save and reload the page you should see the graphic has been renamed.

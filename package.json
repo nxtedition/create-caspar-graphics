@@ -1,20 +1,19 @@
 {
   "private": true,
+  "workspaces": ["packages/*"],
   "bugs": "https://github.com/nxtedition/create-caspar-graphics/issues",
   "homepage": "https://github.com/nxtedition/create-caspar-graphics#readme",
   "devDependencies": {
     "eslint": "^4.6.1",
     "husky": "2.1.0",
-    "lerna": "3.20.2",
+    "lerna": "6.0.3",
     "lint-staged": "^4.0.0",
-    "prettier": "^1.4.4",
-    "ps-tree": "1.1.0",
-    "semver": "5.4.1",
-    "shelljs": "^0.7.8"
+    "prettier": "^1.4.4"
   },
   "scripts": {
-    "changelog": "lerna-changelog",
-    "format": "prettier --single-quote --no-semi --write 'packages/*/*.js' 'packages/*/!(node_modules)/**/*.js'"
+    "format": "prettier --single-quote --no-semi --write 'packages/*/*.js' 'packages/*/!(node_modules)/**/*.js'",
+    "examples": "lerna run examples",
+    "dev": "lerna run --parallel dev"
   },
   "lint-staged": {
     "*.js": [
@@ -25,7 +24,11 @@
   "resolutions": {
     "file-loader": "1.1.11"
   },
-  "dependencies": {},
+  "prettier": {
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"

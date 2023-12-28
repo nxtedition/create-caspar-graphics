@@ -1,0 +1,16 @@
+{
+  "name": "caspar-graphics-vanilla-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "caspar-graphics dev",
+    "build": "caspar-graphics build"
+  },
+  "dependencies": {
+    "@nxtedition/graphics-kit": "^2.0.0-alpha.5"
+  },
+  "devDependencies": {
+    "@nxtedition/caspar-graphics": "^1.0.0-alpha.14"
+  }
+}

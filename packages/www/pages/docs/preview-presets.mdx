@@ -1,0 +1,40 @@
+# Preview Presets
+
+When you're building a graphic, it can be tedious having to send the same data updates all over again
+every time you want to test or change something. To make this easier, you can set up sets of preview
+data in your graphic's `manifest.json`.
+
+Let's create two preview sets, each containing the two fields `name` and `title` :
+
+```json filename="manifest.json" {13-22}
+{
+  "name": "Lowerthird",
+  "schema": {
+    "name": {
+      "type": "string",
+      "label": "Name"
+    },
+    "title": {
+      "type": "string",
+      "label": "Title"
+    }
+  },
+  "previewData": {
+    "Thierry Henry": {
+      "name": "Thierry Henry",
+      "title": "King of Highbury"
+    },
+    "Bukayo Saka": {
+      "name": "Bukayo Saka",
+      "title": "King of Emirates"
+    }
+  }
+}
+```
+
+![Presets for Thierry Henry (selected) and Bukayo Saka](/thierry-henry.jpg)
+
+In the sidebar, you'll now have a new tab called "Presets" where you'll find the presets you just
+created. Clicking one of the presets will send an update to the template containing all of its
+fields. This can be very useful to quickly test different variations of the graphic.
+

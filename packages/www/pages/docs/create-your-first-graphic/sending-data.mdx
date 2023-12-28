@@ -1,0 +1,80 @@
+# Sending Data
+
+Our Lowerthird is visible on the screen, but it's just showing the static text "Example":
+
+![Lowerthird](/lowerthird-1.jpg)
+
+## Add a Text Field
+
+Let's make it possible to send any text to it. Open up `manifest.json` once again, but this time add a property called `text` to its schema:
+
+```json filename="my-graphics/templates/example/manifest.json" {4-7}
+{
+  "name": "Lowerthird",
+  "schema": {
+    "text": {
+      "type": "string",
+      "label": "Text"
+    }
+  },
+  "previewData": {}
+}
+```
+
+You can think of the `schema` as the graphic's blueprint. Here we're saying that our Lowerthird 
+accepts one field called `text` of type `string`. 
+
+If you save the file and reload the page, you should see that we now have a new input called "Text" in the sidebar:
+
+![A new input called "Text" has appeared in the Sidebar](/lowerthird-data-text.jpg)
+
+We can now use this field to send text to the graphic. If we type in "Hello World" and press the 
+"Update" button, a `JSON` object will be sent to the graphic (you can verify this by opening up the console in Dev Tools):
+
+```json
+{
+  "text": "Hello World"
+}
+```
+
+## Make the Graphic Respond to Updates
+
+We've just sent an update to our Lowerthird, but it's still just displaying the text "Example". 
+Now we need to tell it to use the `text` field from our update. Open up `index.jsx` and grab 
+the `data` object from the `useCaspar()` hook. This object will contain everything we send to it. 
+So we can now replace the static text "Example" with the dynamic `data.text` that we just sent to it:
+
+```js filename="my-graphics/templates/example/index.jsx" {1, 4, 20}
+import { render, useCaspar } from '@nxtedition/graphics-kit'
+
+function Example() {
+  const { data } = useCaspar()
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: 80,
+        left: 266,
+        width: 1388,
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 6,
+        fontSize: 70,
+        fontFamily: 'Arial',
+        overflow: 'hidden'
+      }}
+    >
+      {data.text}
+    </div>
+  )
+}
+
+render(Example)
+```
+
+And just like that you should now see it display "Hello World" 🎉 
+
+![Our Lowerthird showing the text "Hello World"](/lowerthird-hello-world.jpg)
+
+If you try sending more updates, you'll see that it updates immediately.

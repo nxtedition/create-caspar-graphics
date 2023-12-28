@@ -1,0 +1,69 @@
+@import '@radix-ui/colors/indigo.css';
+@import '@radix-ui/colors/indigoDark.css';
+@import '@radix-ui/colors/slate.css';
+@import '@radix-ui/colors/slateDark.css';
+@import '@radix-ui/colors/red.css';
+@import '@radix-ui/colors/redDark.css';
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  --space-0: 2px;
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 10px;
+  --space-5: 12px;
+  --space-6: 16px;
+  --space-7: 20px;
+  --space-ui: 20px;
+
+  --shadow: 0px 0px 16px -1px rgba(0, 0, 0, 0.05), 0px 0px 16px -8px rgba(0, 0, 0, 0.05), 0px 0px 16px -12px rgba(0, 0, 0, 0.12), 0px 0px 2px 0px rgba(0, 0, 0, 0.08);
+  --shadow-inset: inset 0 0 4px 2px rgb(0 0 0 / 5%);
+}
+
+.dark-theme {
+  --shadow: 0px 0px 16px -1px rgba(0, 0, 0, 0.5), 0px 0px 16px -8px rgba(0, 0, 0, 0.5), 0px 0px 16px -12px rgba(0, 0, 0, 0.72), 0px 0px 2px 0px rgba(0, 0, 0, 0.8);
+  --shadow-inset: inset 0 0 4px 3px rgb(0 0 0 / 70%);
+}
+
+:root,
+.dark-theme {
+  --neutral1: var(--slate1);
+  --neutral2: var(--slate2);
+  --neutral3: var(--slate3);
+  --neutral4: var(--slate4);
+  --neutral5: var(--slate5);
+  --neutral6: var(--slate6);
+  --neutral7: var(--slate7);
+  --neutral8: var(--slate8);
+  --neutral9: var(--slate9);
+  --neutral10: var(--slate10);
+  --neutral11: var(--slate11);
+  --neutral12: var(--slate12);
+
+  --primary1: var(--indigo1);
+  --primary2: var(--indigo2);
+  --primary3: var(--indigo3);
+  --primary4: var(--indigo4);
+  --primary5: var(--indigo5);
+  --primary6: var(--indigo6);
+  --primary7: var(--indigo7);
+  --primary8: var(--indigo8);
+  --primary9: var(--indigo9);
+  --primary10: var(--indigo10);
+  --primary11: var(--indigo11);
+  --primary12: var(--indigo12);
+}

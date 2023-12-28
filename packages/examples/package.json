@@ -1,24 +1,20 @@
 {
-  "name": "examples",
-  "version": "1.0.0-next.9.3",
+  "name": "@nxtedition/caspar-graphics-examples",
+  "version": "1.0.0-beta.0",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "caspar-graphics start",
-    "dev": "caspar-graphics start"
-  },
-  "caspar-graphics": {
-    "mode": "1080p"
-  },
-  "devDependencies": {
-    "caspar-graphics": "^1.0.0-next.9.3"
+    "dev": "caspar-graphics start --mode dev",
+    "examples": "caspar-graphics start",
+    "serve": "next start",
+    "build": "caspar-graphics build --target vercel"
   },
   "dependencies": {
-    "framer-motion": "^1.10.3",
-    "gsap": "^3.3.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "styled-components": "^5.1.1"
+    "@nxtedition/caspar-graphics": "*",
+    "@nxtedition/graphics-kit": "*",
+    "framer-motion": "^7.6.15",
+    "gsap": "^3.11.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

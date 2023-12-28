@@ -1,24 +1,4 @@
 {
-  "lerna": "3.20.2",
-  "packages": [
-    "packages/caspar-graphics",
-    "packages/create-caspar-graphics",
-    "packages/examples",
-    "packages/graphics-kit"
-  ],
-  "useWorkspaces": false,
-  "npmClient": "yarn",
-  "changelog": {
-    "repo": "nxtedition/caspar-graphics",
-    "labels": {
-      "tag: new feature": ":rocket: New Feature",
-      "tag: breaking change": ":boom: Breaking Change",
-      "tag: bug fix": ":bug: Bug Fix",
-      "tag: enhancement": ":nail_care: Enhancement",
-      "tag: documentation": ":memo: Documentation",
-      "tag: internal": ":house: Internal"
-    },
-    "cacheDir": ".changelog"
-  },
-  "version": "independent"
+  "version": "independent",
+  "useWorkspaces": true
 }

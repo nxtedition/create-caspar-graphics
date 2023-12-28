@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      #name {
+        position: absolute;
+        bottom: 80px;
+        left: 266px;
+        width: 1388px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 6px;
+        font-size: 70px;
+        font-family: Arial;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import { gsap } from 'gsap'
+      import { parse } from '@nxtedition/graphics-kit'
+
+      const timeline = gsap.timeline({ paused: true })
+
+      window.update = raw => {
+        const data = parse(raw)
+
+        if (data && data.name) {
+          document.getElementById('name').textContent = data.name
+        }
+      }
+
+      window.play = () => {
+        timeline
+          .fromTo('#name', { y: 50, opacity: 0 }, { y: 0, opacity: 1 })
+          .play()
+      }
+
+      window.stop = () => {
+        timeline
+          .eventCallback('onReverseComplete', () => {
+            window?.remove()
+          })
+          .reverse()
+      }
+    </script>
+    <div id="name" style="opacity: 0;" />
+  </body>
+</html>

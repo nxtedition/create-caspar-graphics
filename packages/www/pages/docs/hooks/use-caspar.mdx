@@ -1,0 +1,86 @@
+# useCaspar
+
+`useCaspar` is React hook that lets you access internals such as `data` and `state`.
+
+```js
+const { data, state, safeToRemove } = useCaspar(options?)
+```
+
+## Reference
+
+Call `useCaspar` at the top level of your component to get access to `data` and the current `state`.
+
+```js
+import { useCaspar } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const { 
+    data, 
+    state, 
+    isPlaying, 
+    isStopped, 
+    safeToRemove 
+  } = useCaspar({ trim: true, removeDelay: 1 })
+  // ...
+}
+```
+
+### Parameters
+- **optional** `options`: An object with options for this graphic instance:
+  - **optional** `trim` (default: `true`): A boolean. If true, all strings inside `data` will be
+    trimmed.
+  - **optional** `removeDelay`: Number of seconds before the graphic will remove itself after
+    receiving stop. If you don't define this you need to call `safeToRemove` yourself.
+
+### Returns
+
+`useCaspar` returns an object with:
+- `data`: An object containing all data sent to the `update` function.
+- `state`: A constant representing the current [State](/docs/states).
+- `isPlaying`: A boolean. True if `state === States.playing`.
+- `isStopped`: A boolean. True if `state === States.stopped`.
+- `safeToRemove`: A function. Call this when your graphic has animated out completely after
+  receiving `stop`. This isn't necessary if you've defined a `removeDelay`.
+
+## Usage
+
+### Showing data sent by CasparCG
+
+Call `useCaspar` at the top level of your component to access all data sent to the `update` function
+by CasparCG.
+
+```js
+import { useCaspar } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const { data } = useCaspar()
+
+  return (
+    <div>{data.name}</div>
+  )
+}
+```
+
+### Animating in/out when receiving play/stop comands
+
+Access the graphic's current state to hide and show your graphic as desired.
+
+```js
+import { useCaspar } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const { data, isPlaying } = useCaspar({ removeDelay: 0.5 })
+
+  return (
+    <div 
+      style={{
+        opacity: isPlaying ? 1 : 0,
+        transition: 'opacity 0.5s ease'
+      }}
+    >
+      {data.name}
+    </div>
+  )
+}
+```
+

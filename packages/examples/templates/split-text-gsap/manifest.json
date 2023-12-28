@@ -1,0 +1,17 @@
+{
+  "name": "SplitText (GSAP)",
+  "schema": {
+    "text": {
+      "type": "string",
+      "label": "Text"
+    }
+  },
+  "previewData": {
+    "Single Line": {
+      "text": "Some text that should flip in on a single line"
+    },
+    "Two Lines": {
+      "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore."
+    }
+  }
+}

@@ -1,0 +1,55 @@
+# useFont
+
+`useFont` is React hook that prevents [FOUT](https://fonts.google.com/knowledge/glossary/fout) by pre-loading font(s) and blocks playing until its downloaded and ready.
+
+```js
+const font = useFont({ src })
+```
+
+## Reference
+
+Call `useFont` at the top level of your component to get a pre-loaded font back. If called
+before `play`, it will defer playing until the font is ready.
+
+```js
+import { useFont } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const font = useFont({ src })
+  // ...
+}
+```
+
+### Parameters
+- `src`: The path of the font file as a string or an array of objects (with type `Array<{path: string, weight?: string, style?: string}>`).
+- **optional** `weight`: A string that contains the weight of the font. It is equivalent to the font-weight descriptor.
+- **optional** `style`: A string that retrieves or sets the style of the font. It is equivalent to the font-style descriptor.
+
+### Returns
+
+`useFont` returns an object with:
+- `style`: an object containing `fontFamily` and `visibility`.
+
+## Usage
+
+### Wait for the  to load before showing it
+
+Call `useFont` at the top level of your component to get a pre-loaded font back. 
+
+```js
+import { useFont } from '@nxtedition/graphics-kit'
+import src from './custom-font.woff2'
+
+function MyGraphic() {
+  const font = useFont({ src })
+
+  return (
+    <FramerMotion>
+      <motion.div style={font.style} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        Text that will only be visible once the font has loaded
+      </motion.div>
+    </FramerMotion>
+  )
+}
+```
+

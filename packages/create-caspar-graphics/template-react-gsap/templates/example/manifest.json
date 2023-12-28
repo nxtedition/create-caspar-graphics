@@ -1,0 +1,17 @@
+{
+  "name": "GSAP Example",
+  "schema": {
+    "name": {
+      "type": "string",
+      "label": "Name"
+    }
+  },
+  "previewData": {
+    "Thierry Henry": {
+      "name": "Thierry Henry"
+    },
+    "Dennis Bergkamp": {
+      "name": "Dennis Bergkamp"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+# GsapTimeline 
+
+A component that makes it easier to use a [GSAP](https://greensock.com/gsap/) `timeline` for animations.
+
+## Reference
+
+```js
+  <GsapTimeline
+    hide={!text}
+    onPlay={timeline => {
+      timeline.from('#text', { y: 50, opacity: 0 })
+    }}
+    onStop={timeline => {
+      timeline.to('#text', { y: 50, opacity: 0 })
+    }}
+  >
+    <div id="text">
+      {text}
+    </div>
+  </GsapTimeline>
+```
+
+### Props
+
+- `hide`: A boolean that can be used to hide the graphic when certain conditions aren't met. 
+- `onPlay` An [`onPlay`](/docs/gsap-timeline#onplay-callback) callback. It fires after the graphic has received `play` and any blocking resources has been loaded. It receives a [GSAP timeline](https://greensock.com/docs/v3/GSAP/Timeline) that will be played as soon as your function ends. 
+- `onStop` An [`onStop`](/docs/gsap-timeline#onplay-callback) callback. It fires after the graphic has received `stop`.
+
+## `onPlay` callback
+
+This callback will be called when the graphic has received the `play` command, and any blocking 
+resources has been loaded. Nothing will be visible until this happens. When your function ends, 
+the timeline will be played from start to finish.
+
+### Parameters
+- `timeline`: A [GSAP Timeline](https://greensock.com/docs/v3/GSAP/Timeline) that will be played from start to finish.
+
+## `onStop` callback
+
+This callback will be called when the graphic has received the `stop` command. Once it has ended, `safeToRemove` will be called automatically. 
+
+### Parameters
+- `timeline`: The same [GSAP Timeline](https://greensock.com/docs/v3/GSAP/Timeline) that was received in [`onPlay`](/docs/gsap-timeline#onplay-callback). 

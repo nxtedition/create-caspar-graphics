@@ -1,0 +1,55 @@
+# Build for CasparCG
+
+When it's time to use the graphics in CasparCG, open up your terminal and run:
+
+```bash
+npm run build
+```
+
+This will take your graphic(s) and create an optimized bundle of each, and put them into a `/dist` folder in your project's root:
+
+```markdown {6-8}
+my-graphics
+└── templates
+    └── example
+        └── index.html
+        └── manifest.json
+└── dist
+    └── example
+        └── index.html
+├── node_modules
+├── package.json
+├── .gitignore
+```
+
+Here all JavaScript and CSS have been inlined into the `/dist/example/index.html` file so that it can be played directly by CasparCG. 
+Now all you need to do is move it over to your CasparCG server and play it.
+
+## Build Options
+
+### build.target
+Type: `string | string[]`  
+Default: `ccg2.3.3`
+
+Compatibility target for the final bundle. The default value is the latest stable CasparCG version, which will be translated into a corresponding Chromium version. 
+
+There's a special value `nxt` available that will bundle the graphics for nxtedition (note that this will override `build.singleFile`). 
+
+Other valid browsers targets (most aren't suitable for CasparCG) can be seen here: https://esbuild.github.io/api/#target.
+
+### build.singleFile
+Type: `boolean`  
+Default: `true`
+
+If `true` each graphic will produce a single HTML file, with all JavaScript and CSS resources inlined.
+
+### build.include
+Type: `string | string[]`
+
+Specify which graphics should be included in the build. If left empty, all graphics will be included.
+
+### build.outDir
+Type: `string`  
+Default: `dist`
+
+Specify the output directory (relative to project root).

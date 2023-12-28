@@ -1,0 +1,93 @@
+# Introducing State
+
+Currently our graphic is always visible, even though it says `OFF` in the sidebar (which would be the same as it showing before receiving the `play` command from Caspar). 
+Let's change that! 
+
+Open up `index.jsx` and grab the `isPlaying` state from the `useCaspar()` hook so that we can hide
+the graphic when it's not playing:
+
+```js filename="my-graphics/templates/example/index.jsx" {4, 9-10}
+import { render, useCaspar } from '@nxtedition/graphics-kit'
+
+function Example() {
+  const { data, isPlaying } = useCaspar()
+
+  return (
+    <div
+      style={{
+        opacity: isPlaying ? 1 : 0,
+        transition: 'opacity 1s ease',
+        position: 'absolute',
+        bottom: 80,
+        left: 266,
+        width: 1388,
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 6,
+        fontSize: 70,
+        fontFamily: 'Arial',
+        overflow: 'hidden'
+      }}
+    >
+      {data.text}
+    </div>
+  )
+}
+
+render(Example)
+```
+
+![Lowerthird hidden when set to OFF](/lowerthird-off.jpg)
+
+Now if we make the graphic appear again, by toggling the switch to `ON`, we'll see it fade in over 1
+second.
+
+## Safe to Remove
+
+Take the graphic `OFF` again and you'll see that it fades off as expected. But if you try 
+toggling it back `ON` you'll  notice that it doesn't work. So what's going on here? 
+
+Typically when taking a graphic off, you want to do so with an animation. And only once that
+animation has finished, we want the server to actually remove the graphic. But the server doesn't know how long 
+that will take, so instead it will wait for you to tell it that it's safe to remove.
+
+You can do this in two different ways:
+
+1. Call the `safeToRemove()` function when your graphic is ready to be removed.
+2. Use the `removeDelay` option to specify how long it should wait before taking the graphic off. 
+
+Since we set our opacity transition to 1s, we'll just set the `removeDelay` to `1`, which will
+remove it once second after it recieves `stop`:
+
+```js filename="my-graphics/templates/example/index.jsx" {4}
+import { render, useCaspar } from '@nxtedition/graphics-kit'
+
+function Example() {
+  const { data, isPlaying } = useCaspar({ removeDelay: 1 })
+
+  return (
+    <div
+      style={{
+        opacity: isPlaying ? 1 : 0,
+        transition: 'opacity 1s ease',
+        position: 'absolute',
+        bottom: 80,
+        left: 266,
+        width: 1388,
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 6,
+        fontSize: 70,
+        fontFamily: 'Arial',
+        overflow: 'hidden'
+      }}
+    >
+      {data.text}
+    </div>
+  )
+}
+
+render(Example)
+```
+
+Now you can toggle the graphic ON/OFF as many times as you want. 

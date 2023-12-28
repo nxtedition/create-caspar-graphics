@@ -1,0 +1,25 @@
+# FramerMotion
+
+A component that makes it easier to use `motion` elements from [Framer
+Motion](https://www.framer.com/motion/) for animations.
+
+## Reference
+
+```js
+<FramerMotion mode='wait' hide={!text}>
+  <motion.div 
+    initial={ y: 100 }
+    animate={ y: 0 }
+    exit={ y: 100 }
+  >
+    {text}
+  </motion.div>
+</FramerMotion>
+```
+
+### Props
+
+- `hide`: A boolean that can be used to hide the graphic when certain conditions aren't met. 
+- `mode` (`"sync" | "wait" | "popLayout"`): Decides how entering and exiting children will behave.
+  See full [docs at Framer Motion](https://www.framer.com/motion/animate-presence/###mode).
+

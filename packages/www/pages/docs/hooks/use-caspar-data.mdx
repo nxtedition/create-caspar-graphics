@@ -1,0 +1,49 @@
+# useCasparData
+
+`useCasparData` is React hook that lets you access the data sent to the graphic. It only re-runs
+when new data is sent to the `update` function.
+
+```js
+const data = useCasparData(options?)
+```
+
+## Reference
+
+Call `useCasparData` at the top level of your component to get access to all data sent to it.
+
+```js
+import { useCasparData } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const data = useCasparData({ trim: true })
+  // ...
+}
+```
+
+### Parameters
+- **optional** `options`: An object with options for this graphic instance:
+  - **optional** `trim` (default: `true`): A boolean. If true, all strings inside `data` will be
+    trimmed.
+
+### Returns
+
+`useCasparData` returns an object containing all data sent to the `update` function.
+
+## Usage
+
+### Showing data sent by CasparCG
+
+Call `useCasparData` at the top level of your component to get access to all data sent to it. 
+
+```js
+import { useCasparData } from '@nxtedition/graphics-kit'
+
+function MyGraphic() {
+  const data = useCasparData()
+
+  return (
+    <div>{data.name}</div>
+  )
+}
+```
+

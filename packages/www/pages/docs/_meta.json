@@ -1,0 +1,19 @@
+{
+  "index": "Introduction",
+  "getting-started": "Getting Started",
+  "-- Guide": {
+    "type": "separator",
+    "title": "Guide"
+  },
+  "create-your-first-graphic": "Create Your First Graphic",
+  "build-for-caspar": "Build for CasparCG",
+  "preview-presets": "Preview Presets",
+  "preview-images": "Preview Images",
+  "-- Graphics Kit": {
+    "type": "separator",
+    "title": "Graphics Kit"
+  },
+  "graphics-kit": "Intro",
+  "hooks": "Hooks",
+  "components": "Components"
+}

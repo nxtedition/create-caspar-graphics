@@ -1,0 +1,69 @@
+# Getting Started
+
+
+## Setup
+
+First, let’s make sure that your development environment is ready.
+
+- If you don’t have Node.js installed, install it from [here](https://nodejs.org/en/). You’ll need Node.js version 18 or later.
+- You’ll be using your own text editor and terminal app.
+
+
+## Create a new project
+
+To scaffold a new project, run any of the following three commands and answer the command prompt questions:
+
+### npm
+
+```bash
+npm create caspar-graphics@latest
+```
+
+### yarn
+
+```bash
+yarn create caspar-graphics
+```
+
+### pnpm
+
+```bash
+pnpm create caspar-graphics@latest
+```
+
+--- 
+
+After your project has been created, you'll have a folder containing:
+
+```
+.
+└── templates
+    └── example
+        └── index.html
+        └── manifest.json
+├── node_modules
+├── package.json
+├── .gitignore
+```
+
+The `templates` folder contains all your graphic templates. Each subfolder that contains an 
+`index.html` file and a `manifest.json` will be picked up as a graphic, with the html file as its entry point. 
+
+*An `example` graphic has been created for you that you can either delete or rename to your liking.*
+
+ 
+## Run the development server
+
+Once the installation is done, follow the on-screen instructions by moving into your project folder and running:
+
+```bash
+npm install
+npm run dev  
+```
+
+
+This will install the dependencies and start the development server and its accompanying UI. Open [http://localhost:8080](http://localhost:8080) to view it inside the browser:
+
+![Initial Launch](/initial-launch.jpg)
+
+
