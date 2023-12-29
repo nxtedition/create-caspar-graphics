@@ -12,4 +12,4 @@ Caspar Graphics is a tool for building, testing and packaging HTML graphics for 
 
 We've built Caspar Graphics on top of [Vite](https://vitejs.dev/), which offers fast and reliable performance with no need for configuration. This means that you can benefit from most of those features as well.
 
-[Read the Docs to Learn More.](https://caspar-graphics.vercel.app)
+[Read the Docs to Learn More.](https://gfx.nxtedition.com)

@@ -12,7 +12,8 @@
   "author": "nxtedition",
   "license": "MIT",
   "dependencies": {
-    "@nxtedition/caspar-graphics": "*",
+    "@napi-rs/simple-git": "^0.1.9",
+    "@nxtedition/caspar-graphics": "1.0.0-beta.26",
     "next": "^14.0.4",
     "nextra": "^2.13.2",
     "nextra-theme-docs": "^2.13.2",
