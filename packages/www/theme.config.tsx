@@ -47,7 +47,13 @@ const Logo = () => {
 
 const config: DocsThemeConfig = {
   logo: <Logo />,
-  useNextSeoProps: () => ({ titleTemplate: '%s | Caspar Graphics' }),
+  head: (
+    <>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="icon" href="/favicon.png" type="image/png" />
+    </>
+  ),
+  useNextSeoProps: () => ({ titleTemplate: '%s — nxt|gfx', description: 'Make HTML graphics for CasparCG' }),
   project: {
     link: 'https://github.com/nxtedition/create-caspar-graphics',
   },
