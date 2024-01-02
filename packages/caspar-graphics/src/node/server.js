@@ -245,42 +245,44 @@ function getTemplates() {
   return Object.entries(watcher.getWatched()).map(([dirPath, files]) => {
     let manifest
 
-    if (files.includes('manifest.json')) {
-      try {
-        manifest = JSON.parse(
-          fs.readFileSync(path.join(dirPath, 'manifest.json'))
-        )
+    if (!files.includes('manifest.json') || !files.includes('index.html')) {
+      return
+    }
 
-        if (Array.isArray(manifest.previewImages)) {
-          manifest.previewImages = manifest.previewImages.map(imagePath => {
-            return imagePath.startsWith('.')
-              ? '/templates/' +
-                  path.relative(
-                    paths.appTemplates,
-                    path.join(dirPath, imagePath)
-                  )
-              : imagePath
-          })
-        }
+    try {
+      manifest = JSON.parse(
+        fs.readFileSync(path.join(dirPath, 'manifest.json'))
+      )
 
-        if (manifest.schema && manifest.previewData) {
-          for (const [key, property] of Object.entries(manifest.schema)) {
-            if (!property?.default) {
-              continue
-            }
+      if (Array.isArray(manifest.previewImages)) {
+        manifest.previewImages = manifest.previewImages.map(imagePath => {
+          return imagePath.startsWith('.')
+            ? '/templates/' +
+                path.relative(
+                  paths.appTemplates,
+                  path.join(dirPath, imagePath)
+                )
+            : imagePath
+        })
+      }
 
-            for (const preset of Object.values(manifest.previewData)) {
-              if (!preset[key]) {
-                preset[key] = property.default
-              }
+      if (manifest.schema && manifest.previewData) {
+        for (const [key, property] of Object.entries(manifest.schema)) {
+          if (!property?.default) {
+            continue
+          }
+
+          for (const preset of Object.values(manifest.previewData)) {
+            if (!preset[key]) {
+              preset[key] = property.default
             }
           }
         }
-      } catch (err) {
-        console.error(err)
       }
+    } catch (err) {
+      console.error(err)
     }
 
-    return { name: dirPath.split('/').at(-1), manifest }
-  })
+    return { name: dirPath.split(path.sep).at(-1), manifest }
+  }).filter(Boolean)
 }
