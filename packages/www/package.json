@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "@napi-rs/simple-git": "^0.1.9",
-    "@nxtedition/caspar-graphics": "^1.0.0-beta.28",
+    "@nxtedition/caspar-graphics": "*",
     "next": "^14.0.4",
     "nextra": "^2.13.2",
     "nextra-theme-docs": "^2.13.2",
