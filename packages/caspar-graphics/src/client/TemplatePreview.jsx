@@ -98,7 +98,7 @@ export const TemplatePreview = ({
  
   return (
     <iframe
-      style={{ pointerEvents: show ? 'auto' : 'none' }}
+      style={{ pointerEvents: show ? 'auto' : 'none', colorScheme: 'normal' }}
       ref={ref}
       src={src}
       onLoad={evt => {
