@@ -1,7 +1,7 @@
 import { build as buildVite } from 'vite'
 import fs from 'node:fs'
-import { join } from 'node:path'
-import { writeFile, copyFile, cp } from 'node:fs/promises'
+import { join, sep } from 'node:path'
+import { writeFile, copyFile } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import paths from './paths.js'
 import chalk from 'chalk'
@@ -11,7 +11,7 @@ import { viteSingleFile } from 'vite-plugin-singlefile'
 const TARGETS = {
   'ccg2.3.3': 'chrome71',
   nxt: 'chrome71',
-  vercel: 'chrome71'
+  vercel: 'chrome71',
 }
 
 export async function build({
@@ -20,7 +20,7 @@ export async function build({
   target = 'ccg2.3.3',
   logLevel = 'error',
   outDir = 'dist',
-  singleFile = true
+  singleFile = true,
 }) {
   const plugins = [react()]
 
@@ -35,7 +35,7 @@ export async function build({
     logLevel,
     resolve: {
       // NOTE: this is required when graphics-kit is linked.
-      dedupe: ['react', 'react-dom']
+      dedupe: ['react', 'react-dom'],
       // react: resolve(paths.appNodeModules, 'react'),
       // 'react-dom': resolve(paths.appNodeModules, 'react-dom')
     },
@@ -44,9 +44,9 @@ export async function build({
       minify: true,
       manifest: false,
       outDir: join(paths.appPath, outDir, name),
-      emptyOutDir: true
+      emptyOutDir: true,
     },
-    plugins
+    plugins,
   })
 
   let templates = await getTemplates()
@@ -63,8 +63,8 @@ export async function build({
       chalk.green(
         `building ${templates.length} template${
           templates.length === 1 ? '' : 's'
-        }...`
-      )
+        }...`,
+      ),
   )
 
   await Promise.all(
@@ -76,19 +76,19 @@ export async function build({
           try {
             await copyFile(
               join(path, 'manifest.json'),
-              join(paths.appPath, outDir, name, 'manifest.json')
+              join(paths.appPath, outDir, name, 'manifest.json'),
             )
           } catch (err) {
             console.log(err)
           }
         } else if (singleFile) {
-          await fs.rename(
+          fs.rename(
             join(paths.appPath, outDir, name, 'index.html'),
-            join(paths.appPath, outDir, `${name}.html`)
+            join(paths.appPath, outDir, `${name}.html`),
           )
-          await fs.rm(join(paths.appPath, outDir, name), {
+          fs.rm(join(paths.appPath, outDir, name), {
             recursive: true,
-            force: true
+            force: true,
           })
         }
 
@@ -97,7 +97,7 @@ export async function build({
         console.log(chalk.red('✗ ' + name))
         console.error(err)
       }
-    })
+    }),
   )
 
   if (target === 'vercel') {
@@ -107,17 +107,20 @@ export async function build({
 }
 
 const watcher = chokidar.watch(paths.appTemplates + '/**/index.html', {
-  depth: 1
+  depth: 1,
 })
 
 async function getTemplates() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     watcher.on('ready', () => {
       resolve(
-        Object.keys(watcher.getWatched()).map(path => [
-          path.split('/').at(-1),
-          path
-        ])
+        Object.entries(watcher.getWatched())
+          .map(([dirPath, files]) => {
+            return files.includes('index.html')
+              ? [dirPath.split(sep).at(-1), dirPath]
+              : null
+          })
+          .filter(Boolean),
       )
     })
   })
