@@ -1,7 +1,7 @@
 import { build as buildVite } from 'vite'
 import fs from 'node:fs'
 import { join, sep } from 'node:path'
-import { writeFile, copyFile } from 'node:fs/promises'
+import { writeFile, copyFile, rename, rm } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import paths from './paths.js'
 import chalk from 'chalk'
@@ -82,11 +82,11 @@ export async function build({
             console.log(err)
           }
         } else if (singleFile) {
-          fs.rename(
+          await rename(
             join(paths.appPath, outDir, name, 'index.html'),
             join(paths.appPath, outDir, `${name}.html`),
           )
-          fs.rm(join(paths.appPath, outDir, name), {
+          await rm(join(paths.appPath, outDir, name), {
             recursive: true,
             force: true,
           })
