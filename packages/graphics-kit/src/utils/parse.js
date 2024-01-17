@@ -31,7 +31,7 @@ function parseTemplateData(string) {
   for (const element of componentData) {
     const obj = {}
 
-    for (const data of el.getElementsByTagName('data') || []) {
+    for (const data of element.getElementsByTagName('data') || []) {
       obj[data.getAttribute('id')] = data.getAttribute('value')
     }
 
