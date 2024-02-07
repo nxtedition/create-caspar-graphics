@@ -29,13 +29,12 @@ function parseTemplateData(string) {
   const result = {}
 
   for (const element of componentData) {
-    const obj = {}
-
     for (const data of element.getElementsByTagName('data') || []) {
-      obj[data.getAttribute('id')] = data.getAttribute('value')
+      if (data.getAttribute('value') != null) {
+        result[element.getAttribute('id')] = data.getAttribute('value')
+        break
+      }
     }
-
-    result[element.getAttribute('id')] = obj
   }
 
   return result
