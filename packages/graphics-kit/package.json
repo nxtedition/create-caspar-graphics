@@ -20,7 +20,7 @@
   "dependencies": {
     "fontfaceobserver": "^2.1.0",
     "framer-motion": "^7.6.12",
-    "gsap": "^3.11.3",
+    "gsap": "^3.12.5",
     "htmlparser2": "^7.1.2",
     "js-base64": "^3.7.3"
   },
