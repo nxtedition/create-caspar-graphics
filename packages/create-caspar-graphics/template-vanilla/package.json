@@ -8,9 +8,9 @@
     "build": "caspar-graphics build"
   },
   "dependencies": {
-    "@nxtedition/graphics-kit": "^2.0.0-alpha.5"
+    "@nxtedition/graphics-kit": "2.0.0-alpha.25",
   },
   "devDependencies": {
-    "@nxtedition/caspar-graphics": "^1.0.0-alpha.14"
+    "@nxtedition/caspar-graphics": "1.0.0-beta.30"
   }
 }
