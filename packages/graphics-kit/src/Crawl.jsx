@@ -20,7 +20,14 @@ export const Crawl = React.memo((props) => {
 
 let key = 0
 
-const CrawlPrimitive = ({ items, renderItem, pixelsPerFrame = 5, frameRate = 25, play }) => {
+const CrawlPrimitive = ({
+  items,
+  renderItem,
+  pixelsPerFrame = 5,
+  frameRate = 25,
+  play,
+  loop = true,
+}) => {
   const ref = React.createRef()
   const [rect, setRect] = React.useState()
   const [visibleEntries, setVisibleEntries] = React.useState([[key, items[0]]])
@@ -32,9 +39,14 @@ const CrawlPrimitive = ({ items, renderItem, pixelsPerFrame = 5, frameRate = 25,
   const onEntered = (item) => {
     // NOTE: this expects each item to have an id, which probably isn't ideal.
     const index = items.findIndex(({ id }) => id === item.id)
-    const nextIndex = (index + 1) % items.length
-    let nextItem = items[nextIndex]
-    setVisibleEntries(items => [...items, [++key, nextItem]])
+    const nextIndex = loop ? (index + 1) % items.length : index + 1
+
+    if (nextIndex >= items.length) {
+      return
+    }
+
+    const nextItem = items[nextIndex]
+    setVisibleEntries((items) => [...items, [++key, nextItem]])
   }
 
   const onExited = () => {
@@ -47,28 +59,38 @@ const CrawlPrimitive = ({ items, renderItem, pixelsPerFrame = 5, frameRate = 25,
       style={{
         position: 'relative',
         width: '100%',
-        height: '100%'
+        height: '100%',
       }}
     >
       {rect != null &&
-        visibleEntries.map(([key, item]) => (
-          <Item
-            key={key}
-            item={item}
-            offset={rect.width}
-            pixelsPerSecond={pixelsPerFrame * frameRate}
-            onEntered={onEntered}
-            onExited={onExited}
-            play={play}
-          >
-            {renderItem(item)}
-          </Item>
-        ))}
+        visibleEntries.map(([key, item]) => {
+          return (
+            <Item
+              key={key}
+              item={item}
+              offset={rect.width}
+              pixelsPerSecond={pixelsPerFrame * frameRate}
+              onEntered={onEntered}
+              onExited={onExited}
+              play={play}
+            >
+              {renderItem(item)}
+            </Item>
+          )
+        })}
     </div>
   )
 }
 
-const Item = ({ item, children, offset, pixelsPerSecond, onEntered, onExited, play }) => {
+const Item = ({
+  item,
+  children,
+  offset,
+  pixelsPerSecond,
+  onEntered,
+  onExited,
+  play,
+}) => {
   const { id } = item
   const ref = React.useRef()
   const [rect, setRect] = React.useState()
@@ -98,7 +120,9 @@ const Item = ({ item, children, offset, pixelsPerSecond, onEntered, onExited, pl
   }, [id])
 
   const enterDurationMs = rect ? (rect.width / pixelsPerSecond) * 1000 : null
-  const totalDurationMs = rect ? ((rect.width + offset) / pixelsPerSecond) * 1000 : null
+  const totalDurationMs = rect
+    ? ((rect.width + offset) / pixelsPerSecond) * 1000
+    : null
 
   useTimeout(() => onEntered(item), enterDurationMs)
   useTimeout(() => onExited(item), totalDurationMs)
@@ -112,7 +136,7 @@ const Item = ({ item, children, offset, pixelsPerSecond, onEntered, onExited, pl
       animationIterationCount: 1,
       animationDuration: rect ? `${totalDurationMs / 1000}s` : 0,
       animationName: rect ? `scroll-${id}` : null,
-      animationPlayState: play ? 'running' : 'paused'
+      animationPlayState: play ? 'running' : 'paused',
     }
   }
 
@@ -123,7 +147,7 @@ const Item = ({ item, children, offset, pixelsPerSecond, onEntered, onExited, pl
         opacity: rect != null ? 1 : 0,
         position: 'absolute',
         left: offset,
-        ...animation
+        ...animation,
       }}
     >
       {children}
