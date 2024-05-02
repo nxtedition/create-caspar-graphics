@@ -64,7 +64,6 @@ const CrawlPrimitive = ({
     >
       {rect != null &&
         visibleEntries.map(([key, item]) => {
-          console.log(key, item, 'item')
           return (
             <Item
               key={key}
