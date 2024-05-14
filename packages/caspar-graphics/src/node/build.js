@@ -1,12 +1,13 @@
 import { build as buildVite } from 'vite'
 import fs from 'node:fs'
 import { join, sep } from 'node:path'
-import { writeFile, copyFile, rename, rm } from 'node:fs/promises'
+import { writeFile, copyFile, rename, rm, readFile } from 'node:fs/promises'
 import chokidar from 'chokidar'
 import paths from './paths.js'
 import chalk from 'chalk'
 import react from '@vitejs/plugin-react'
 import { viteSingleFile } from 'vite-plugin-singlefile'
+import crypto from 'node:crypto'
 
 const TARGETS = {
   'ccg2.3.3': 'chrome71',
@@ -72,20 +73,46 @@ export async function build({
       try {
         await buildVite(getConfig(name, path))
 
-        if (target.startsWith('nxt') || target === 'vercel') {
+        async function includeManifest() {
+          await copyFile(
+            join(path, 'manifest.json'),
+            join(paths.appPath, outDir, name, 'manifest.json'),
+          )
+        }
+
+        const indexPath = join(paths.appPath, outDir, name, 'index.html')
+
+        if (target.startsWith('nxt')) {
           try {
-            await copyFile(
-              join(path, 'manifest.json'),
-              join(paths.appPath, outDir, name, 'manifest.json'),
+            await includeManifest()
+
+            // Hash the index.html file.
+            const indexFile = await readFile(indexPath)
+            const hash = crypto
+              .createHash('sha1')
+              .update(indexFile)
+              .digest('hex')
+            await rename(
+              indexPath,
+              join(
+                paths.appPath,
+                outDir,
+                name,
+                `index.${hash.slice(0, 10)}.html`,
+              ),
             )
           } catch (err) {
             console.log(err)
           }
+        } else if (target === 'vercel') {
+          try {
+            await includeManifest()
+            await rename(indexPath, join(paths.appPath, outDir, `${name}.html`))
+          } catch (err) {
+            console.log(err)
+          }
         } else if (singleFile) {
-          await rename(
-            join(paths.appPath, outDir, name, 'index.html'),
-            join(paths.appPath, outDir, `${name}.html`),
-          )
+          await rename(indexPath, join(paths.appPath, outDir, `${name}.html`))
           await rm(join(paths.appPath, outDir, name), {
             recursive: true,
             force: true,
