@@ -14,7 +14,7 @@ export const useCaspar = (opts) => {
   const { state, safeToRemove, ...context } = React.useContext(TemplateContext)
   const data = useCasparData(opts)
 
-  useTimeout(safeToRemove, isStopped ? opts?.removeDelay : null)
+  useTimeout(safeToRemove, state === States.stopped ? opts?.removeDelay : null)
 
   return {
     ...context,
