@@ -1,15 +1,13 @@
 import React from 'react'
-import { useTimeout } from './use-timeout'
+import { motion } from 'framer-motion'
 
 export const Crawl = React.memo((props) => {
   const { play, items } = props
   const [wasStarted, setWasStarted] = React.useState(play)
 
-  React.useEffect(() => {
-    if (!wasStarted && play) {
-      setWasStarted(true)
-    }
-  }, [wasStarted, play])
+  if (!wasStarted && play) {
+    setWasStarted(true)
+  }
 
   if (!items?.length || !wasStarted) {
     return null
@@ -20,7 +18,15 @@ export const Crawl = React.memo((props) => {
 
 let key = 0
 
-const CrawlPrimitive = ({ items, renderItem, pixelsPerFrame = 5, frameRate = 25, play }) => {
+const CrawlPrimitive = ({
+  items,
+  renderItem,
+  pixelsPerFrame = 5,
+  frameRate = 25,
+  play,
+  loop = true,
+  onExit,
+}) => {
   const ref = React.createRef()
   const [rect, setRect] = React.useState()
   const [visibleEntries, setVisibleEntries] = React.useState([[key, items[0]]])
@@ -34,10 +40,13 @@ const CrawlPrimitive = ({ items, renderItem, pixelsPerFrame = 5, frameRate = 25,
     const index = items.findIndex(({ id }) => id === item.id)
     const nextIndex = (index + 1) % items.length
     let nextItem = items[nextIndex]
-    setVisibleEntries(items => [...items, [++key, nextItem]])
+    setVisibleEntries((items) => [...items, [++key, nextItem]])
   }
 
   const onExited = () => {
+    if (visibleEntries.length === 1 && onExit) {
+      onExit()
+    }
     setVisibleEntries((items) => items.slice(1))
   }
 
@@ -47,86 +56,80 @@ const CrawlPrimitive = ({ items, renderItem, pixelsPerFrame = 5, frameRate = 25,
       style={{
         position: 'relative',
         width: '100%',
-        height: '100%'
+        height: '100%',
       }}
     >
       {rect != null &&
-        visibleEntries.map(([key, item]) => (
-          <Item
-            key={key}
-            item={item}
-            offset={rect.width}
-            pixelsPerSecond={pixelsPerFrame * frameRate}
-            onEntered={onEntered}
-            onExited={onExited}
-            play={play}
-          >
-            {renderItem(item)}
-          </Item>
-        ))}
+        play &&
+        visibleEntries.map(([key, item]) => {
+          const index = items.findIndex(({ id }) => id === item.id)
+          return (
+            <Item
+              key={key}
+              item={item}
+              offset={Math.round(rect.width)}
+              pixelsPerSecond={pixelsPerFrame * frameRate}
+              onEntered={onEntered}
+              onExited={onExited}
+            >
+              {renderItem(item, {
+                showSeparator: loop || index < items.length - 1,
+              })}
+            </Item>
+          )
+        })}
     </div>
   )
 }
 
-const Item = ({ item, children, offset, pixelsPerSecond, onEntered, onExited, play }) => {
-  const { id } = item
+const Item = ({
+  item,
+  children,
+  offset,
+  pixelsPerSecond,
+  onEntered,
+  onExited,
+}) => {
   const ref = React.useRef()
-  const [rect, setRect] = React.useState()
+  const [width, setWidth] = React.useState()
 
-  React.useLayoutEffect(() => {
-    const head = document.getElementsByTagName('head')[0]
-    const rect = ref.current.getBoundingClientRect()
-    const style = document.createElement('style')
-    style.type = 'text/css'
-    style.innerHTML = `
-      @keyframes scroll-${id} {
-        from {
-          transform: translate3d(0px, 0px, 0px);
-        }
-        100% {
-          transform: translate3d(-${offset + rect.width}px, 0px, 0px);
-        }
-      }
-    `
+  React.useEffect(() => {
+    setWidth(ref.current.getBoundingClientRect().width)
+  }, [])
 
-    head.appendChild(style)
-    setRect(rect)
-
-    return () => {
-      head.removeChild(style)
-    }
-  }, [id])
-
-  const enterDurationMs = rect ? (rect.width / pixelsPerSecond) * 1000 : null
-  const totalDurationMs = rect ? ((rect.width + offset) / pixelsPerSecond) * 1000 : null
-
-  useTimeout(() => onEntered(item), enterDurationMs)
-  useTimeout(() => onExited(item), totalDurationMs)
-
-  let animation
-
-  if (rect) {
-    animation = {
-      animationTimingFunction: 'linear',
-      animationFillMode: 'backwards',
-      animationIterationCount: 1,
-      animationDuration: rect ? `${totalDurationMs / 1000}s` : 0,
-      animationName: rect ? `scroll-${id}` : null,
-      animationPlayState: play ? 'running' : 'paused'
-    }
-  }
+  const totalDistance = offset + (width ?? 0)
 
   return (
-    <div
+    <motion.div
       ref={ref}
       style={{
-        opacity: rect != null ? 1 : 0,
         position: 'absolute',
         left: offset,
-        ...animation
+      }}
+      animate={
+        width
+          ? {
+              x: -totalDistance,
+              transition: {
+                duration: totalDistance / pixelsPerSecond,
+                ease: 'linear',
+              },
+            }
+          : false
+      }
+      onAnimationStart={() => {
+        window.setTimeout(
+          () => {
+            onEntered(item)
+          },
+          (width / pixelsPerSecond) * 1000,
+        )
+      }}
+      onAnimationComplete={() => {
+        onExited(item)
       }}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }
