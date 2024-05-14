@@ -1,6 +1,6 @@
 {
   "name": "@nxtedition/caspar-graphics",
-  "version": "1.0.0-beta.30",
+  "version": "1.0.0",
   "type": "module",
   "description": "A UI for building graphics for CasparCG in isolation.",
   "repository": "github:nxtedition/create-caspar-graphics",

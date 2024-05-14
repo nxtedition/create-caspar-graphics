@@ -1,6 +1,6 @@
 {
   "name": "create-caspar-graphics",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "CLI tool to bootstrap CasparCG graphics with no configuration",
   "type": "module",
   "main": "index.js",
