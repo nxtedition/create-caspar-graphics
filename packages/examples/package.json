@@ -1,6 +1,6 @@
 {
   "name": "@nxtedition/caspar-graphics-examples",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
     "build": "caspar-graphics build --target vercel"
   },
   "dependencies": {
-    "@nxtedition/caspar-graphics": "*",
+    "@nxtedition/caspar-graphics": "^1.0.1",
     "@nxtedition/graphics-kit": "*",
     "framer-motion": "^7.6.15",
     "gsap": "^3.11.3",
