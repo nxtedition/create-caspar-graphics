@@ -1,0 +1,29 @@
+{
+  "name": "Webscreen",
+  "schema": {
+    "backroundVideoUrl": {
+      "type": "string",
+      "label": "Background Video URL"
+    },
+    "slideDuration": {
+      "type": "number",
+      "label": "Slide Duration"
+    },
+    "maxItems": {
+      "type": "number",
+      "label": "Max Items"
+    },
+    "feedUrl": {
+      "type": "string",
+      "label": "Feed URL"
+    }
+  },
+  "previewData": {
+    "tv2nord": {
+      "feedUrl": "https://public.nord.bazo.dk/v1/articles"
+    },
+    "tv2nord1": {
+      "feedUrl": "https://public.nord.bazo.dk/v1/articles"
+    }
+  }
+}
