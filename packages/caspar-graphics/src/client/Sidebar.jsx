@@ -126,7 +126,7 @@ const Template = ({
         />
         <Switch
           disabled={!enabled}
-          checked={show}
+          checked={show && enabled}
           onChange={checked => {
             dispatch({
               type: checked ? 'show' : 'hide',
