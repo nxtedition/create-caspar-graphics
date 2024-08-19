@@ -2,14 +2,26 @@ import React, { useState } from 'react'
 import { useSize } from '@radix-ui/react-use-size'
 import styles from './screen.module.css'
 
-export const Screen = ({
-  children,
-  background,
-  size = { width: 1920, height: 1080 },
-  image
-}) => {
+export const Screen = ({ children, background, image, aspectRatio }) => {
   const [ref, setRef] = useState()
   const containerSize = useSize(ref)
+
+  let width = containerSize?.width
+  let height = containerSize?.height
+
+  if (aspectRatio && containerSize) {
+    const containerAspectRatio = containerSize.width / containerSize.height
+    const [rWidth, rHeight] = aspectRatio.split(':').map(Number)
+    const ratio = rWidth / rHeight
+
+    if (ratio > containerAspectRatio) {
+      width = containerSize.width
+      height = containerSize.width / ratio
+    } else {
+      width = containerSize.height * ratio
+      height = containerSize.height
+    }
+  }
 
   return (
     <div ref={setRef} className={styles.container}>
@@ -17,13 +29,11 @@ export const Screen = ({
         className={styles.screen}
         style={{
           background,
-          width: size?.width || 0,
-          height: size?.height || 0,
-          transform: `scale(${calcScale(containerSize, size)})
-          translate(-50%, -50%)`
+          width,
+          height,
         }}
       >
-        {children}
+        {containerSize ? children({ width, height }) : null}
         {image ? (
           <img
             src={image.url}
@@ -34,15 +44,4 @@ export const Screen = ({
       </div>
     </div>
   )
-}
-
-function calcScale(container, template) {
-  if (!container || !template) {
-    return 1
-  }
-
-  const ratio = container.width / container.height
-  return ratio >= 16 / 9
-    ? container.height / template.height
-    : container.width / template.width
 }

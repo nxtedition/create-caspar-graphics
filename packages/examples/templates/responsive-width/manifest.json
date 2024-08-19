@@ -1,6 +1,5 @@
 {
-  "name": "Custom Font",
-  "width": 1920,
+  "name": "Responsive Width",
   "height": 1080,
   "schema": {
     "name": {
@@ -10,22 +9,16 @@
     "title": {
       "type": "string",
       "label": "Title"
-    },
-    "goals": {
-      "type": "number",
-      "label": "Goals"
     }
   },
   "previewData": {
     "Thierry Henry": {
       "name": "Thierry Henry",
-      "title": "Arsenal Legend",
-      "goals": 228
+      "title": "King of Highbury"
     },
     "Dennis Bergkamp": {
       "name": "Dennis Bergkamp",
-      "title": "Arsenal Legend",
-      "goals": 87
+      "title": "Non-flying Dutchman"
     }
   }
 }

@@ -5,12 +5,13 @@ export function usePersistentValue(key, initialValue) {
   const store = React.useSyncExternalStore(
     useLocalStorageSubscribe,
     getSnapshot,
-    getLocalStorageServerSnapshot
+    getLocalStorageServerSnapshot,
   )
 
   const setState = React.useCallback(
-    v => {
+    (v) => {
       try {
+        console.log('setState', key, v, JSON.parse(store))
         const nextState = typeof v === 'function' ? v(JSON.parse(store)) : v
 
         if (nextState === undefined || nextState === null) {
@@ -22,7 +23,7 @@ export function usePersistentValue(key, initialValue) {
         console.warn(e)
       }
     },
-    [key, store]
+    [key, store],
   )
 
   React.useEffect(() => {
@@ -43,16 +44,16 @@ const setLocalStorageItem = (key, value) => {
   dispatchStorageEvent(key, stringifiedValue)
 }
 
-const removeLocalStorageItem = key => {
+const removeLocalStorageItem = (key) => {
   window.localStorage.removeItem(key)
   dispatchStorageEvent(key, null)
 }
 
-const getLocalStorageItem = key => {
+const getLocalStorageItem = (key) => {
   return window.localStorage.getItem(key)
 }
 
-const useLocalStorageSubscribe = callback => {
+const useLocalStorageSubscribe = (callback) => {
   window.addEventListener('storage', callback)
   return () => window.removeEventListener('storage', callback)
 }

@@ -1,5 +1,7 @@
 {
   "name": "React Example",
+  "width": 1920,
+  "height": 1080,
   "schema": {},
   "previewData": {}
 }

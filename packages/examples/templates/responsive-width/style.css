@@ -1,0 +1,62 @@
+.name {
+  position: absolute;
+  bottom: 40px;
+  left: 5%;
+  width: 90%;
+  padding: 10px;
+  background-color: white;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 38px;
+  font-family: sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  background: #5E00BD;
+  color: white;
+  font-family: sans-serif;
+  padding: 10px;
+  font-size: 20px;
+  box-sizing: border-box;
+  position: absolute;
+  border-radius: 6px;
+  bottom: 110px;
+  left: 5%;
+  width: 90%;
+  text-align: center;
+}
+
+@media (aspect-ratio >= 1) {
+  .name {
+    font-size: 60px;
+    justify-content: flex-start;
+    padding: 10px 15px;
+  }
+
+  .title {
+    font-size: 26px;
+    bottom: 134px;
+    width: auto;
+    padding: 10px 15px;
+  }
+}
+
+@media (aspect-ratio >= 16 / 9) {
+  .name {
+    font-size: 70px;
+    padding: 15px;
+  }
+
+  .title {
+    font-size: 30px;
+    top: 5%;
+    right: 5%;
+    bottom: auto;
+    left: auto;
+  }
+}

@@ -8,6 +8,7 @@ export const Switch = ({ checked, onChange, className, labels, id, ...props }) =
     <SwitchPrimitive.Root
       id={id}
       className={`${styles.root} ${className}`}
+      title={checked ? 'Stop (Enter / Space)' : 'Play (Enter / Space)'}
       checked={checked}
       onCheckedChange={onChange}
       {...props}

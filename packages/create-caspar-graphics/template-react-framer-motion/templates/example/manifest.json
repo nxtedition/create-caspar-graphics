@@ -1,5 +1,7 @@
 {
   "name": "Framer Motion Example",
+  "width": 1920,
+  "height": 1080,
   "schema": {
     "name": {
       "type": "string",

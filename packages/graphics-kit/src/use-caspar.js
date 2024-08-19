@@ -5,13 +5,14 @@ import React, {
   useCallback,
   useRef,
   useMemo,
+  useContext,
 } from 'react'
 import { TemplateContext } from './TemplateProvider'
 import { States } from './constants'
 import { useTimeout } from './use-timeout'
 
 export const useCaspar = (opts) => {
-  const { state, safeToRemove, ...context } = React.useContext(TemplateContext)
+  const { state, safeToRemove, size, ...context } = useContext(TemplateContext)
   const data = useCasparData(opts)
 
   useTimeout(
@@ -23,6 +24,8 @@ export const useCaspar = (opts) => {
 
   return {
     ...context,
+    size,
+    aspectRatio: size.width / size.height,
     data,
     state,
     safeToRemove,
@@ -32,11 +35,11 @@ export const useCaspar = (opts) => {
 }
 
 export const useCasparState = () => {
-  return React.useContext(TemplateContext).state
+  return useContext(TemplateContext).state
 }
 
 export const useCasparData = (opts) => {
-  const { data } = React.useContext(TemplateContext)
+  const { data } = useContext(TemplateContext)
   const { trim = true } = opts || {}
 
   return useMemo(() => {
@@ -58,7 +61,7 @@ export const useMergedData = (opts) => {
   const data = useCasparData(opts)
   const ref = useRef({})
 
-  React.useEffect(() => {
+  useEffect(() => {
     ref.current = { ...ref.current, ...data }
   }, [data])
 
@@ -67,7 +70,7 @@ export const useMergedData = (opts) => {
 
 export const useDelayPlay = ({ key }) => {
   const [delayedValue, setDelayedValue] = useState()
-  const { delayPlay } = React.useContext(TemplateContext)
+  const { delayPlay } = useContext(TemplateContext)
   const resumeRef = useRef()
 
   // Reset when key changes
