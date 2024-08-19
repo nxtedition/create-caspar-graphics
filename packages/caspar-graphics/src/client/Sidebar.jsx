@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from './sidebar.module.css'
 import { MdArrowDropDown, MdChevronRight } from 'react-icons/md'
-import { FiArrowRight, FiArrowRightCircle } from 'react-icons/fi'
+import { FiArrowRightCircle } from 'react-icons/fi'
 import { Switch } from './Switch'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import { Input } from './Input'
@@ -11,16 +11,11 @@ import {
   MenuTrigger,
   MenuContent,
   MenuItem,
-  MenuSub,
-  MenuSubTrigger,
-  MenuSubContent,
   MenuRadioGroup,
   MenuRadioItem,
   MenuLabel,
   MenuSeparator
 } from './Menu'
-import { getPresets } from './app'
-import { IoIosSettings } from 'react-icons/io'
 import { TopSettings, BottomSettings } from './Settings'
 import { JsonEditor } from './JsonEditor'
 import * as Tabs from '@radix-ui/react-tabs'
@@ -48,6 +43,8 @@ export const Sidebar = ({ state, dispatch, settings, onSettingsChange, projectSt
         value={settings}
         onChange={onSettingsChange}
         colorMode={colorMode}
+        projectState={projectState}
+        onProjectStateChange={onProjectStateChange}
       />
       {settings.showSidebar && (
         <>

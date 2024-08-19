@@ -1,0 +1,53 @@
+# Manifest
+
+Each graphic template is defined by two files — `index.html` and `manifest.json`. Both these files should be placed in the template's root folder. 
+The `index.html` is used as the entry point for the actual template, while `manifest.json` is used to describe the template. 
+
+## `name: string`
+
+The user-facing name of the template.
+
+## `width: number`
+
+The template's fixed width in pixels. Leave empty if this should be dynamic.
+
+## `height: number`
+
+The template's fixed height pixels. Leave empty if this should be dynamic.
+
+## `schema: object`
+
+Describes the data that the template expects to receive (via updates). 
+Each data property is defined by a key/value pair, where the key is the name of the field, and the value describes it.
+
+**Example:**
+
+```json
+{
+  "schema": {
+    "name": {
+      "type": "string",
+      "label": "Text"
+    },
+    "title": {
+      "type": "string",
+      "label": "Text"
+    },
+    "fontSize": {
+      "type": "number",
+      "label": "Font Size"
+    }
+  }
+}
+````
+
+This schema accepts three fields: `name`, `title` and `fontSize`. 
+
+## `previewData: object`
+
+Defines sets of data used to preview the graphic. This is only meant as help when developing the graphic and isn't used in production. See [Preview Presets](/docs/preview-presets) for more information.
+
+## `previewImages: array`
+
+A list of images to use when developing the graphic. This is only meant as help when developing the graphic and isn't used in production. See [Preview Images](/docs/preview-images) for more information.
+

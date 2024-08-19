@@ -1,0 +1,19 @@
+# Responsive Graphics
+
+When creating responsive graphics—graphics that automatically adapt to different screen resolutions—you can leverage standard web technologies like [media queries](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Responsive_Design#media_queries). As the developer, you have full control over how the graphic responds to various screen sizes and resolutions.
+
+For instance, in some cases, it may suffice to set a box's width to always be 80% of the window size. In other scenarios, you might need to rearrange elements, such as moving a box from the top to the bottom of the screen, to better accommodate different layouts.
+
+## Fluid Width and Height
+To create a graphic that adapts seamlessly to any resolution, remove both the `width` and `height` attributes from the [manifest.json](/docs/manifest). Be sure to use only relative CSS units to maintain flexibility across different screen sizes.
+
+## Fluid Width, Fixed Height
+
+If you’re primarily supporting HD formats and want a simpler approach when transitioning from a static design, consider setting a fixed `height` (e.g. 1080 pixels) in [manifest.json](/docs/manifest). This allows you to use absolute CSS units while still accommodating different aspect ratios.
+
+## Previewing Aspect Ratios
+
+When building your graphic, it's helpful to view it in different aspect ratios to ensure it looks great across all devices. To simplify this process, we've added an Aspect Ratio control that lets you easily toggle between common aspect ratios:
+
+![Aspect Ratio Toggle](/aspect-ratios.jpg)
+

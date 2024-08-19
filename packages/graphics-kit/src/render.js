@@ -10,7 +10,7 @@ export const render = (Template, options) => {
   let {
     container = document.getElementById('root'),
     cssReset = true,
-    name = Template.name
+    name = Template.name,
   } = options || {}
 
   if (!container) {
@@ -36,7 +36,14 @@ export const render = (Template, options) => {
 
   flushSync(() => {
     root.render(
-      createElement(TemplateProvider, { name }, createElement(Template))
+      createElement(
+        TemplateProvider,
+        {
+          name,
+          windowSize: { width: window.innerWidth, height: window.innerHeight },
+        },
+        createElement(Template),
+      ),
     )
   })
 }

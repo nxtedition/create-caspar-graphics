@@ -6,9 +6,11 @@
     "title": "Guide"
   },
   "create-your-first-graphic": "Create Your First Graphic",
-  "build-for-caspar": "Build for CasparCG",
+  "manifest": "Graphic Manifest",
   "preview-presets": "Preview Presets",
   "preview-images": "Preview Images",
+  "responsive": "Responsive Graphics",
+  "build-for-caspar": "Build for CasparCG",
   "-- Graphics Kit": {
     "type": "separator",
     "title": "Graphics Kit"

@@ -11,9 +11,10 @@ export const ServerTemplate = ({ socket, name, layer, show, data }) => {
   const [state, setState] = useState(States.load)
   const [prevUpdate, setPrevUpdate] = useState()
   const source = `/templates/${name}/index.html`
-  const nextUpdate = data && JSON.stringify(data) !== JSON.stringify(prevUpdate || {})
-    ? data
-    : null
+  const nextUpdate =
+    data && JSON.stringify(data) !== JSON.stringify(prevUpdate || {})
+      ? data
+      : null
 
   // Load
   useEffect(() => {
@@ -25,7 +26,11 @@ export const ServerTemplate = ({ socket, name, layer, show, data }) => {
 
   // Data Updates
   useEffect(() => {
-    if (socket && (state === States.loaded || state === States.play) && nextUpdate) {
+    if (
+      socket &&
+      (state === States.loaded || state === States.play) &&
+      nextUpdate
+    ) {
       socket.send(JSON.stringify({ type: 'update', layer, data: nextUpdate }))
       setPrevUpdate(nextUpdate)
     }
@@ -60,10 +65,14 @@ export const ServerTemplate = ({ socket, name, layer, show, data }) => {
 }
 
 export const TemplatePreview = ({
+  dispatch,
+  projectSize,
+  containerSize,
+  onKeyDown,
+  manifest,
   name,
   src = `/templates/${name}/index.html`,
   show,
-  dispatch,
   data,
 }) => {
   const [templateWindow, setTemplateWindow] = useState()
@@ -76,7 +85,6 @@ export const TemplatePreview = ({
       templateWindow.update(data || {})
     }
   }, [templateWindow, data])
-
 
   // State Updates
   useEffect(() => {
@@ -95,13 +103,53 @@ export const TemplatePreview = ({
       }
     }
   }, [templateWindow, show, didShow])
- 
+
+  // Forward keybindings
+  useEffect(() => {
+    if (!templateWindow) {
+      return
+    }
+
+    templateWindow.addEventListener('keydown', onKeyDown)
+
+    return () => {
+      templateWindow.removeEventListener('keydown', onKeyDown)
+    }
+  }, [templateWindow, onKeyDown])
+
+  let width = containerSize.width
+  let height = containerSize.height
+
+  if (manifest.width || manifest.height) {
+    width = manifest.width
+    height = manifest.height
+
+    if (!width && height) {
+      width = (containerSize.width / containerSize.height) * height
+    } else if (width && !height) {
+      height = (containerSize.height / containerSize.width) * width
+    }
+  }
+
   return (
     <iframe
-      style={{ pointerEvents: show ? 'auto' : 'none', colorScheme: 'normal' }}
+      style={{
+        width,
+        height,
+        transformOrigin: 'top left',
+        transform: `scale(${calcScale(containerSize, { width, height })}) translate(-50%, -50%)`,
+        background: 'transparent',
+        border: 'none',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        overflow: 'hidden',
+        pointerEvents: show ? 'auto' : 'none',
+        colorScheme: 'normal',
+      }}
       ref={ref}
       src={src}
-      onLoad={evt => {
+      onLoad={(evt) => {
         const { contentWindow } = evt.target
 
         // Once the template has animated off, we want to reload it.
@@ -130,4 +178,15 @@ export const TemplatePreview = ({
       }}
     />
   )
+}
+
+function calcScale(container, template) {
+  if (!container || !template) {
+    return 1
+  }
+
+  const ratio = container.width / container.height
+  return ratio >= 16 / 9
+    ? container.height / template.height
+    : container.width / template.width
 }

@@ -10,22 +10,36 @@ import { States } from './constants'
 
 export const TemplateContext = React.createContext()
 
-export const TemplateProvider = ({ children, name }) => {
+export const TemplateProvider = ({
+  children,
+  name,
+  windowSize: intitialWindowSize,
+}) => {
   const [state, setState] = useState(States.loading)
   const [data, setData] = useState({})
   const [delays, setDelays] = useState([])
   const [resume, setResume] = useState()
   const [requestPlay, setRequestPlay] = useState(false)
+  const [windowSize, setWindowSize] = useState(intitialWindowSize)
 
-  const logger = message => {
+  const logger = (message) => {
     console.log(`${name || ''}${message}`)
   }
 
-  const delayPlay = useCallback(key => {
-    setDelays(delays => [...delays, key])
+  const delayPlay = useCallback((key) => {
+    setDelays((delays) => [...delays, key])
 
     return () => {
-      setDelays(delays => delays.filter(delay => delay !== key))
+      setDelays((delays) => delays.filter((delay) => delay !== key))
+    }
+  }, [])
+
+  useEffect(() => {
+    window.onresize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
     }
   }, [])
 
@@ -59,12 +73,12 @@ export const TemplateProvider = ({ children, name }) => {
       }
     }
 
-    window.update = payload => {
+    window.update = (payload) => {
       const data = parse(payload)
 
       if (data) {
         logger(
-          `.update(${data ? JSON.stringify(data || {}, null, 2) : 'null'})`
+          `.update(${data ? JSON.stringify(data || {}, null, 2) : 'null'})`,
         )
 
         setData(data)
@@ -117,7 +131,8 @@ export const TemplateProvider = ({ children, name }) => {
         state,
         name,
         safeToRemove,
-        delayPlay
+        delayPlay,
+        size: windowSize,
       }}
     >
       {state !== States.removed ? (
