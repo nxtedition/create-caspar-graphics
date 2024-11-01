@@ -12,8 +12,11 @@
   "dependencies": {
     "@nxtedition/caspar-graphics": "^3.0.3",
     "@nxtedition/graphics-kit": "^3.0.0",
+    "@rive-app/canvas": "2.27.3",
+    "@rive-app/react-canvas": "4.20.1",
     "framer-motion": "^7.6.15",
     "gsap": "^3.11.3",
+    "lottie-web": "^5.12.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

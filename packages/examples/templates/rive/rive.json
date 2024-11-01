@@ -1,0 +1,68 @@
+{
+  "riveMeta": {
+    "expMultilineVod": {
+      "assets": {
+        
+      },
+      "artboards": {
+        "n169": {
+          "name": "16:9",
+          "animations": {
+            "fadeOut": "Fade Out",
+            "fadeIn": "Fade In",
+            "n169": "16:9",
+            "n916": "9:16"
+          },
+          "textValueRuns": {
+            "headline": "Skriv en rad. \nEller skriv tv\u00c3\u00a5 rader\nDu kan faktiskt skriva s\u00c3\u00a5 m\u00c3\u00a5nga du vill"
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                "stop": {
+                  "name": "stop",
+                  "type": "trigger",
+                  "defaultValue": "false"
+                },
+                "width": {
+                  "name": "width",
+                  "type": "number",
+                  "defaultValue": "1920.000000"
+                }
+              }
+            }
+          }
+        },
+        "n916": {
+          "name": "9:16",
+          "animations": {
+            "fadeOut": "Fade Out",
+            "fadeIn": "Fade In"
+          },
+          "textValueRuns": {
+            "headline": "Skriv en rad. \nEller skriv tv\u00c3\u00a5 rader\nDu kan faktiskt skriva s\u00c3\u00a5 m\u00c3\u00a5nga du vill"
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                "stop": {
+                  "name": "stop",
+                  "type": "trigger",
+                  "defaultValue": "false"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

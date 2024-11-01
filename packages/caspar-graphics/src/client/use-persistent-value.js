@@ -11,7 +11,6 @@ export function usePersistentValue(key, initialValue) {
   const setState = React.useCallback(
     (v) => {
       try {
-        console.log('setState', key, v, JSON.parse(store))
         const nextState = typeof v === 'function' ? v(JSON.parse(store)) : v
 
         if (nextState === undefined || nextState === null) {

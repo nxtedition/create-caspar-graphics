@@ -1,0 +1,21 @@
+{
+  "name": "Bodymovin",
+  "width": 1920,
+  "height": 1080,
+  "schema": {
+    "jsonPath": {
+      "type": "string",
+      "label": "JSON File URL"
+    },
+    "nxt_name": {
+      "type": "string",
+      "label": "Name"
+    }
+  },
+  "previewData": {
+    "updates": {
+      "jsonPath": "./updates.json",
+      "nxt_name": "Thierry Henry"
+    }
+  }
+}

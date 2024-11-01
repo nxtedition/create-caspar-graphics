@@ -1,0 +1,60 @@
+{
+  "riveMeta": {
+    {{#riv_files}}
+    "{{riv_camel_case}}": {
+      "assets": {
+        {{#assets}}
+        "{{asset_camel_case}}": {
+          "name": "{{asset_name}}",
+          "type": "{{asset_type}}",
+          "assetId": "{{asset_id}}",
+          "cdnUuid": "{{asset_cdn_uuid}}",
+          "cdnBaseUrl": "{{asset_cdn_base_url}}"
+        }{{^last}},{{/last}}
+        {{/assets}}
+      },
+      "artboards": {
+        {{#artboards}}
+        "{{artboard_camel_case}}": {
+          "name": "{{artboard_name}}",
+          "animations": {
+            {{#animations}}
+            "{{animation_camel_case}}": "{{animation_name}}"{{^last}},{{/last}}
+            {{/animations}}
+          },
+          "textValueRuns": {
+            {{#text_value_runs}}
+            "{{text_value_run_camel_case}}": "{{text_value_run_default_sanitized}}"{{^last}},{{/last}}
+            {{/text_value_runs}}
+          },
+          "nestedTextValueRuns": [
+            {{#nested_text_value_runs}}
+            {
+              "name": "{{nested_text_value_run_name}}",
+              "path": "{{nested_text_value_run_path}}"
+            }{{^last}},{{/last}}
+            {{/nested_text_value_runs}}
+          ],
+          "stateMachines": {
+            {{#state_machines}}
+            "{{state_machine_camel_case}}": {
+              "name": "{{state_machine_name}}",
+              "inputs": {
+                {{#inputs}}
+                "{{input_camel_case}}": {
+                  "name": "{{input_name}}",
+                  "type": "{{input_type}}",
+                  "defaultValue": "{{input_default_value}}"
+                }{{^last}},{{/last}}
+                {{/inputs}}
+              }
+            }{{^last}},{{/last}}
+            {{/state_machines}}
+          }
+        }{{^last}},{{/last}}
+        {{/artboards}}
+      }
+    }{{^last}},{{/last}}
+    {{/riv_files}}
+  }
+}

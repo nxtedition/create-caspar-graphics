@@ -1,0 +1,44 @@
+{
+  "name": "Rive",
+  "schema": {
+    "riveSource": {
+      "type": "string",
+      "label": "Rive File URL"
+    }
+  },
+  "previewData": {
+    "TV2K — Thierry Henry": {
+      "riveSource": "./lowerthird.riv",
+      "headline": "Thierry Henry",
+      "title": "King of Highbury"
+    },
+    "TV2K — Bukayo Saka": {
+      "riveSource": "./lowerthird.riv",
+      "headline": "Bukayo Saka",
+      "title": "King of Emirates",
+      "label": "Prince of Arsenal"
+    },
+    "EXP Multiline VOD": {
+      "riveSource": "http://localhost:8888/file/79ffc57944471109.riv",
+      "headline": "This is some text",
+      "image": "https://fastly.picsum.photos/id/641/466/257.jpg?hmac=6Qe1jdf26KtQBR1PFAI-9Uq_eIDmTYC5hPm8U-mSdzI"
+    },
+    "EXP Multiline VOD – No Image": {
+      "riveSource": "http://localhost:8888/file/79ffc57944471109.riv",
+      "headline": "This is some text",
+      "image": ""
+    },
+    "nxt": {
+      "riveSource": "./nxt.riv",
+      "headline": "This is some text"
+    },
+    "nxt-days": {
+      "riveSource": "./nxt_days.riv",
+      "headline": "Graphics in Rive are pretty awesome",
+      "name": "Tobias Andersen",
+      "tickerLabel": "LATEST",
+      "tickerText": "nxtedition announces support for Rive graphics at nxt days",
+      "clock": "@clock_hh:mm"
+    }
+  }
+}
