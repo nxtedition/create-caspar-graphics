@@ -107,9 +107,8 @@ export function App({ name, templates: initialTemplates }) {
       return
     }
 
-    console.log('connect', serverUrl)
-    socket.send(JSON.stringify({ type: 'connect', url: serverUrl }))
-  }, [socket, serverUrl])
+    socket.send(JSON.stringify({ type: 'connect', url: serverUrl, channel: serverChannel }))
+  }, [socket, serverUrl, serverChannel])
 
   const onKeyDown = useCallback(evt => {
     if (

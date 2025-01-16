@@ -9,24 +9,23 @@ import { WebSocketServer } from 'ws'
 import net from 'node:net'
 
 class AMCPConnection {
-  constructor(url, { onConnect, onClose, onError }) {
+  constructor(url, { channel = 1, onConnect, onClose, onError }) {
     url = new URL(url)
     this.url = url.href
     this.host = url.hostname
     this.port = url.port || 5250
+    this.channel = channel
 
     if (!this.host || !this.port) {
       throw new Error(`Invalid argument url=${url}`)
     }
-
-    this.channel = parseInt(url.pathname.slice(1)) || 0
 
     this.socket = net
       .connect(this.port, this.host)
       .on('connect', () => {
         onConnect()
       })
-      .on('error', err => {
+      .on('error', (err) => {
         console.log('err', err)
       })
       .on('close', () => {
@@ -47,9 +46,9 @@ const watcher = chokidar.watch(
     depth: 1,
     awaitWriteFinish: {
       stabilityThreshold: 300,
-      pollInterval: 100
-    }
-  }
+      pollInterval: 100,
+    },
+  },
 )
 
 export async function createServer({ name, mode, host = 'localhost' }) {
@@ -64,24 +63,24 @@ export async function createServer({ name, mode, host = 'localhost' }) {
       paths.appPath === paths.examplesPath
         ? {
             alias: {
-              'react-dom': path.resolve(paths.ownNodeModules, 'react-dom')
-            }
+              'react-dom': path.resolve(paths.ownNodeModules, 'react-dom'),
+            },
           }
         : {},
     esbuild: {
-      target: 'chrome71'
+      target: 'chrome71',
     },
     server: {
       host: true,
       port: templatesPort,
       fs: {
-        strict: false
+        strict: false,
       },
       hmr: {
-        clientPort: templatesPort
-      }
+        clientPort: templatesPort,
+      },
     },
-    plugins: [react()]
+    plugins: [react()],
   }
   const createTemplatesServer = mode === 'preview' ? preview : createViteServer
   const templatesServer = await createTemplatesServer(templatesConfig)
@@ -95,7 +94,7 @@ export async function createServer({ name, mode, host = 'localhost' }) {
     root: paths.ownClientSrc,
     clearScreen: false,
     build: {
-      outDir: paths.ownClientDist
+      outDir: paths.ownClientDist,
     },
     [mode === 'dev' ? 'server' : 'preview']: {
       host: true,
@@ -103,14 +102,14 @@ export async function createServer({ name, mode, host = 'localhost' }) {
       open: '/',
       proxy: {
         '^/templates/.+': {
-          target: `http://${host}:${templatesPort}`
+          target: `http://${host}:${templatesPort}`,
         },
         '/updates': {
           target: `ws://${host}:${wssPort}`,
-          ws: true
-        }
-      }
-    }
+          ws: true,
+        },
+      },
+    },
   }
 
   const createPreviewServer = mode === 'dev' ? createViteServer : preview
@@ -118,15 +117,15 @@ export async function createServer({ name, mode, host = 'localhost' }) {
   let connection
 
   // Once the client has connected we send information about the project.
-  wss.on('connection', client => {
+  wss.on('connection', (client) => {
     client.send(
       JSON.stringify({
         type: 'init',
         payload: {
           projectName: name,
-          templates: getTemplates()
-        }
-      })
+          templates: getTemplates(),
+        },
+      }),
     )
 
     function onConnect() {
@@ -144,11 +143,16 @@ export async function createServer({ name, mode, host = 'localhost' }) {
     function connect(data) {
       console.log('connect', data)
 
-      if (!connection || connection.url !== data.url) {
+      if (
+        !connection ||
+        connection.url !== data.url ||
+        connection.channel !== data.channel
+      ) {
         connection = new AMCPConnection(data.url, {
+          channel: data.channel,
           onConnect,
           onClose,
-          onError
+          onError,
         })
       }
     }
@@ -157,22 +161,22 @@ export async function createServer({ name, mode, host = 'localhost' }) {
       console.log('load', data)
       const baseUrl = templatesServer.resolvedUrls.network[0]?.replace(
         '/templates/',
-        ''
+        '',
       )
-      const { channel = 2, layer, source } = data
+      const { channel = connection.channel, layer, source } = data
       connection.send(
         `CG`,
         `${channel}-${layer}`,
         `ADD`,
         1,
         baseUrl + source,
-        0
+        0,
       )
     }
 
     function update(payload) {
       console.log('update', payload)
-      const { channel = 2, layer, data = {} } = payload
+      const { channel = connection.channel, layer, data = {} } = payload
       connection.send(
         `CG`,
         `${channel}-${layer}`,
@@ -180,23 +184,23 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         1,
         '"<templateData>' +
           Buffer.from(JSON.stringify(data)).toString('base64') +
-          '</templateData>"'
+          '</templateData>"',
       )
     }
 
     function play(data) {
       console.log('play', data)
-      const { channel = 2, layer } = data
+      const { channel = connection.channel, layer } = data
       connection.send(`CG`, `${channel}-${layer}`, `PLAY`, 1)
     }
 
     function stop(data) {
       console.log('stop', data)
-      const { channel = 2, layer } = data
+      const { channel = connection.channel, layer } = data
       connection.send(`CG`, `${channel}-${layer}`, `STOP`, 1)
     }
 
-    client.on('message', message => {
+    client.on('message', (message) => {
       const { type, ...data } = JSON.parse(message)
 
       const fn = {
@@ -204,7 +208,7 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         load,
         update,
         play,
-        stop
+        stop,
       }[type]
 
       if (fn) {
@@ -217,8 +221,8 @@ export async function createServer({ name, mode, host = 'localhost' }) {
       client.send(
         JSON.stringify({
           type: 'update',
-          payload: { templates: getTemplates() }
-        })
+          payload: { templates: getTemplates() },
+        }),
       )
     })
   })
@@ -235,54 +239,56 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         templatesServer.close?.(),
         previewServer.close?.(),
         watcher.close(),
-        wss.close()
+        wss.close(),
       ])
-    }
+    },
   }
 }
 
 function getTemplates() {
-  return Object.entries(watcher.getWatched()).map(([dirPath, files]) => {
-    let manifest
+  return Object.entries(watcher.getWatched())
+    .map(([dirPath, files]) => {
+      let manifest
 
-    if (!files.includes('manifest.json') || !files.includes('index.html')) {
-      return
-    }
-
-    try {
-      manifest = JSON.parse(
-        fs.readFileSync(path.join(dirPath, 'manifest.json'))
-      )
-
-      if (Array.isArray(manifest.previewImages)) {
-        manifest.previewImages = manifest.previewImages.map(imagePath => {
-          return imagePath.startsWith('.')
-            ? '/templates/' +
-                path.relative(
-                  paths.appTemplates,
-                  path.join(dirPath, imagePath)
-                )
-            : imagePath
-        })
+      if (!files.includes('manifest.json') || !files.includes('index.html')) {
+        return
       }
 
-      if (manifest.schema && manifest.previewData) {
-        for (const [key, property] of Object.entries(manifest.schema)) {
-          if (!property?.default) {
-            continue
-          }
+      try {
+        manifest = JSON.parse(
+          fs.readFileSync(path.join(dirPath, 'manifest.json')),
+        )
 
-          for (const preset of Object.values(manifest.previewData)) {
-            if (!preset[key]) {
-              preset[key] = property.default
+        if (Array.isArray(manifest.previewImages)) {
+          manifest.previewImages = manifest.previewImages.map((imagePath) => {
+            return imagePath.startsWith('.')
+              ? '/templates/' +
+                  path.relative(
+                    paths.appTemplates,
+                    path.join(dirPath, imagePath),
+                  )
+              : imagePath
+          })
+        }
+
+        if (manifest.schema && manifest.previewData) {
+          for (const [key, property] of Object.entries(manifest.schema)) {
+            if (!property?.default) {
+              continue
+            }
+
+            for (const preset of Object.values(manifest.previewData)) {
+              if (!preset[key]) {
+                preset[key] = property.default
+              }
             }
           }
         }
+      } catch (err) {
+        console.error(err)
       }
-    } catch (err) {
-      console.error(err)
-    }
 
-    return { name: dirPath.split(path.sep).at(-1), manifest }
-  }).filter(Boolean)
+      return { name: dirPath.split(path.sep).at(-1), manifest }
+    })
+    .filter(Boolean)
 }
