@@ -52,6 +52,7 @@
     "@radix-ui/react-switch": "^1.0.1",
     "@radix-ui/react-tabs": "^1.0.1",
     "@vitejs/plugin-react": "4.2.1",
+    "@vitejs/plugin-vue": "5.2.3",
     "cac": "^6.7.14",
     "chalk": "5.1.2",
     "chokidar": "^3.5.3",

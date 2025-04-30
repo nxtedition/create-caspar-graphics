@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import chokidar from 'chokidar'
 import react from '@vitejs/plugin-react'
+import vue from '@vitejs/plugin-vue'
 import getPort from 'get-port'
 import { createServer as createViteServer, preview } from 'vite'
 import paths from './paths.js'
@@ -80,7 +81,7 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         clientPort: templatesPort,
       },
     },
-    plugins: [react()],
+    plugins: [react(), vue()],
   }
   const createTemplatesServer = mode === 'preview' ? preview : createViteServer
   const templatesServer = await createTemplatesServer(templatesConfig)
