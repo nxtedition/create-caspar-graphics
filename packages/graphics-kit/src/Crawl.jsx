@@ -38,11 +38,15 @@ const CrawlPrimitive = ({
   const onEntered = (item) => {
     // NOTE: this expects each item to have an id, which probably isn't ideal.
     const index = items.findIndex(({ id }) => id === item.id)
-    const nextIndex = (index + 1) % items.length
-    let nextItem = items[nextIndex]
+    const nextIndex = loop ? (index + 1) % items.length : index + 1
+
+    if (nextIndex >= items.length) {
+      return
+    }
+
+    const nextItem = items[nextIndex]
     setVisibleEntries((items) => [...items, [++key, nextItem]])
   }
-
   const onExited = () => {
     if (visibleEntries.length === 1 && onExit) {
       onExit()

@@ -10,17 +10,16 @@ import { WebSocketServer } from 'ws'
 import net from 'node:net'
 
 class AMCPConnection {
-  constructor(url, { onConnect, onClose, onError }) {
+  constructor(url, { channel = 1, onConnect, onClose, onError }) {
     url = new URL(url)
     this.url = url.href
     this.host = url.hostname
     this.port = url.port || 5250
+    this.channel = channel
 
     if (!this.host || !this.port) {
       throw new Error(`Invalid argument url=${url}`)
     }
-
-    this.channel = parseInt(url.pathname.slice(1)) || 0
 
     this.socket = net
       .connect(this.port, this.host)
@@ -145,8 +144,13 @@ export async function createServer({ name, mode, host = 'localhost' }) {
     function connect(data) {
       console.log('connect', data)
 
-      if (!connection || connection.url !== data.url) {
+      if (
+        !connection ||
+        connection.url !== data.url ||
+        connection.channel !== data.channel
+      ) {
         connection = new AMCPConnection(data.url, {
+          channel: data.channel,
           onConnect,
           onClose,
           onError,
@@ -160,7 +164,7 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         '/templates/',
         '',
       )
-      const { channel = 2, layer, source } = data
+      const { channel = connection.channel, layer, source } = data
       connection.send(
         `CG`,
         `${channel}-${layer}`,
@@ -173,7 +177,7 @@ export async function createServer({ name, mode, host = 'localhost' }) {
 
     function update(payload) {
       console.log('update', payload)
-      const { channel = 2, layer, data = {} } = payload
+      const { channel = connection.channel, layer, data = {} } = payload
       connection.send(
         `CG`,
         `${channel}-${layer}`,
@@ -187,13 +191,13 @@ export async function createServer({ name, mode, host = 'localhost' }) {
 
     function play(data) {
       console.log('play', data)
-      const { channel = 2, layer } = data
+      const { channel = connection.channel, layer } = data
       connection.send(`CG`, `${channel}-${layer}`, `PLAY`, 1)
     }
 
     function stop(data) {
       console.log('stop', data)
-      const { channel = 2, layer } = data
+      const { channel = connection.channel, layer } = data
       connection.send(`CG`, `${channel}-${layer}`, `STOP`, 1)
     }
 

@@ -16,18 +16,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  overflow: hidden;
-  transform-origin: top left;
-}
-
-.screen iframe {
-  background: transparent;
-  border: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  transform: translate(-50%, -50%);
   overflow: hidden;
 }
 

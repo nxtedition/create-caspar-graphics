@@ -4,34 +4,42 @@ import React, {
   useState,
   useCallback,
   useRef,
-  useMemo
+  useMemo,
+  useContext,
 } from 'react'
 import { TemplateContext } from './TemplateProvider'
 import { States } from './constants'
 import { useTimeout } from './use-timeout'
 
-export const useCaspar = opts => {
-  const { state, safeToRemove, ...context } = React.useContext(TemplateContext)
+export const useCaspar = (opts) => {
+  const { state, safeToRemove, size, ...context } = useContext(TemplateContext)
   const data = useCasparData(opts)
 
-  useTimeout(safeToRemove, opts?.removeDelay)
+  useTimeout(
+    safeToRemove,
+    state === States.stopped && Number.isFinite(opts?.removeDelay)
+      ? opts.removeDelay * 1000
+      : null,
+  )
 
   return {
     ...context,
+    size,
+    aspectRatio: size.width / size.height,
     data,
     state,
     safeToRemove,
     isPlaying: state === States.playing,
-    isStopped: state === States.stopped
+    isStopped: state === States.stopped,
   }
 }
 
 export const useCasparState = () => {
-  return React.useContext(TemplateContext).state
+  return useContext(TemplateContext).state
 }
 
-export const useCasparData = opts => {
-  const { data } = React.useContext(TemplateContext)
+export const useCasparData = (opts) => {
+  const { data } = useContext(TemplateContext)
   const { trim = true } = opts || {}
 
   return useMemo(() => {
@@ -49,11 +57,11 @@ export const useCasparData = opts => {
   }, [data, trim])
 }
 
-export const useMergedData = opts => {
+export const useMergedData = (opts) => {
   const data = useCasparData(opts)
   const ref = useRef({})
 
-  React.useEffect(() => {
+  useEffect(() => {
     ref.current = { ...ref.current, ...data }
   }, [data])
 
@@ -62,7 +70,7 @@ export const useMergedData = opts => {
 
 export const useDelayPlay = ({ key }) => {
   const [delayedValue, setDelayedValue] = useState()
-  const { delayPlay } = React.useContext(TemplateContext)
+  const { delayPlay } = useContext(TemplateContext)
   const resumeRef = useRef()
 
   // Reset when key changes
@@ -85,11 +93,11 @@ export const useDelayPlay = ({ key }) => {
   }, [delayPlay, key])
 
   const resume = useCallback(
-    value => {
+    (value) => {
       setDelayedValue(value)
       resumeRef.current?.()
     },
-    [key]
+    [key],
   )
 
   return [delayedValue, resume]

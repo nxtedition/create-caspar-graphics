@@ -1,5 +1,6 @@
 {
-  "name": "Lowerthird",
+  "name": "Responsive Width",
+  "height": 1080,
   "schema": {
     "name": {
       "type": "string",
@@ -15,12 +16,9 @@
       "name": "Thierry Henry",
       "title": "King of Highbury"
     },
-    "Bukayo Saka": {
-      "name": "Bukayo Saka",
-      "title": "King of Emirates"
+    "Dennis Bergkamp": {
+      "name": "Dennis Bergkamp",
+      "title": "Non-flying Dutchman"
     }
-  },
-  "previewImages": [
-    "./frame.jpg"
-  ]
+  }
 }
