@@ -119,6 +119,11 @@ export function App({ name, templates: initialTemplates }) {
     }
 
     switch (evt.key) {
+      case 'n': {
+        // Trigger next for all enabled and playing templates
+        dispatch({ type: 'caspar-next-all' })
+        break
+      }
       case 'a':
         setPersistedState((persisted) => {
           const ratios = Object.values(ASPECT_RATIOS)
@@ -171,12 +176,14 @@ export function App({ name, templates: initialTemplates }) {
                   containerSize={screenSize}
                   onKeyDown={onKeyDown}
                   {...template}
+                  nextExecutionId={template.nextExecutionId}
                 />
                 {serverState === 'connected' && (
                   <ServerTemplate
                     key={template.name}
                     socket={socket}
                     {...template}
+                    nextExecutionId={template.nextExecutionId}
                   />
                 )}
               </Fragment>
@@ -197,35 +204,30 @@ function reducer(state, action) {
     }
   }
 
-  if (!action.template) {
+  if (!action.template && action.type !== 'caspar-next-all') {
     console.warn('The action you just dispatched is missing template:', action)
     return state
   }
 
+  // Find template index for single-template actions
   const index = state.templates.findIndex(
     (template) => template.name === action.template,
   )
 
-  if (index === -1) {
-    return state
-  }
-
-  const template = state.templates[index]
-
-  const updateTemplate = (data) => {
+  const updateTemplate = (data, idx = index) => {
     const templates = [...state.templates]
-    templates[index] = { ...template, ...data }
+    templates[idx] = { ...state.templates[idx], ...data }
     return { ...state, templates }
   }
 
   switch (action.type) {
     case 'toggle-enabled':
       return updateTemplate({
-        enabled: !template.enabled,
-        show: template.enabled ? false : template.show,
+        enabled: !state.templates[index].enabled,
+        show: state.templates[index].enabled ? false : state.templates[index].show,
       })
     case 'toggle-open':
-      return updateTemplate({ open: !template.open })
+      return updateTemplate({ open: !state.templates[index].open })
     case 'show':
       // TODO: wait for `removed` to arrive before allowing show a second time.
       return updateTemplate({ show: true })
@@ -234,13 +236,13 @@ function reducer(state, action) {
     case 'removed':
       return updateTemplate({
         state: States.loading,
-        removed: (template.removed ?? 0) + 1,
+        removed: (state.templates[index].removed ?? 0) + 1,
       })
     case 'preset-change':
       const payload = { preset: action.preset }
 
       if (action.update) {
-        payload.data = template.presets.find(
+        payload.data = state.templates[index].presets.find(
           ([key]) => key === action.preset,
         )?.[1]
       }
@@ -253,12 +255,23 @@ function reducer(state, action) {
     case 'toggle-image':
       return updateTemplate({
         image:
-          template.image?.url === action.url
+          state.templates[index].image?.url === action.url
             ? null
             : { url: action.url, opacity: 0.5 },
       })
     case 'select-tab':
       return updateTemplate({ tab: action.tab })
+    case 'caspar-next': {
+      // Bump nextExecutionId to a new value (timestamp)
+      return updateTemplate({ nextExecutionId: Date.now() })
+    }
+    case 'caspar-next-all': {
+      // Trigger next for all enabled and playing templates
+      const templates = state.templates.map(t =>
+        t.enabled && t.show ? { ...t, nextExecutionId: Date.now() } : t
+      )
+      return { ...state, templates }
+    }
     default:
       return state
   }
@@ -315,6 +328,7 @@ function getInitialState({ projectName, templates }) {
           tab: templateSnapshot?.tab,
           state: States.loading,
           layer: layer ?? index,
+          nextExecutionId: null,
         }
       })
       .sort((a, b) => a.layer - b.layer),

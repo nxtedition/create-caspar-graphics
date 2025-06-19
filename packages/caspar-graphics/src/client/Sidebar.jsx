@@ -172,6 +172,15 @@ const Template = ({
                 >
                   Update
                 </button>
+                <button
+                  className={styles.button}
+                  onClick={() => {
+                    dispatch({ type: 'caspar-next', template: name })
+                  }}
+                  disabled={!enabled || !show}
+                >
+                  Next
+                </button>
                 <Menu>
                   <MenuTrigger className={styles.button}>
                     <MdArrowDropDown />

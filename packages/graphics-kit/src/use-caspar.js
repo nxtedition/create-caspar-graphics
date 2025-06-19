@@ -12,7 +12,8 @@ import { States } from './constants'
 import { useTimeout } from './use-timeout'
 
 export const useCaspar = (opts) => {
-  const { state, safeToRemove, size, ...context } = useContext(TemplateContext)
+  const { state, safeToRemove, size, nextCount, ...context } =
+    useContext(TemplateContext)
   const data = useCasparData(opts)
 
   useTimeout(
@@ -27,6 +28,7 @@ export const useCaspar = (opts) => {
     size,
     aspectRatio: size.width / size.height,
     data,
+    nextCount,
     state,
     safeToRemove,
     isPlaying: state === States.playing,
