@@ -27,6 +27,7 @@ export default function Rive() {
 
 const RiveSource = ({ src }) => {
   const { state, safeToRemove, data, aspectRatio } = useCaspar()
+  const { _debug: debug = false } = data
   const [{ stateMachine, viewModelInstance }, setInstances] = useState({})
   const assetRefs = useRef(new Map())
   const { rive, RiveComponent } = useRive({
@@ -39,8 +40,16 @@ const RiveSource = ({ src }) => {
       return shouldLoadAsset
     },
     onStateChange: ({ data }) => {
+      if (debug) {
+        console.log('DEBUG: onStateChange', data)
+      }
+
       if (data.includes('exit')) {
         safeToRemove()
+
+        if (debug) {
+          console.log('DEBUG: safeToRemove()')
+        }
       }
     },
     layout: new Layout({ fit: Fit.Cover, alignment: Alignment.TopLeft }),
@@ -52,7 +61,12 @@ const RiveSource = ({ src }) => {
       return
     }
 
-    const artboard = getArtboard(rive, aspectRatio, data.artboard)
+    const artboard = getArtboard(rive, aspectRatio, data.artboard, debug)
+
+    if (debug) {
+      console.log('DEBUG: artboard', artboard?.name, { aspectRatio, name: data.artboard })
+    }
+
     const stateMachine = artboard?.stateMachines[0]
 
     if (!stateMachine) {
@@ -66,6 +80,10 @@ const RiveSource = ({ src }) => {
       const viewModelInstance = viewModel?.defaultInstance()
 
       if (viewModelInstance) {
+        if (debug) {
+          console.log(`DEBUG: rive.bindViewModelInstance() for view model: ${viewModel.name}`)
+        }
+
         rive.bindViewModelInstance(viewModelInstance)
       } else {
         console.log('No default view model instance found.')
@@ -74,6 +92,14 @@ const RiveSource = ({ src }) => {
       setInstances({ stateMachine, viewModelInstance })
     })
 
+    if (debug) {
+      console.log('DEBUG: rive.load()', {
+        src,
+        artboard: artboard.name,
+        stateMachines: stateMachine.name,
+      })
+    }
+
     rive.load({
       src,
       artboard: artboard.name,
@@ -81,7 +107,7 @@ const RiveSource = ({ src }) => {
       autoplay: true,
     })
     rive.resizeToCanvas()
-  }, [rive, src, aspectRatio, data.artboard])
+  }, [rive, src, aspectRatio, data.artboard, debug])
 
   return (
     <RiveComponent style={{ opacity: state >= States.playing ? 1 : 0 }}>
@@ -91,6 +117,7 @@ const RiveSource = ({ src }) => {
           stateMachine={stateMachine}
           viewModelInstance={viewModelInstance}
           assetRefs={assetRefs}
+          debug={debug}
         />
       ) : null}
     </RiveComponent>
@@ -103,6 +130,7 @@ const RiveArtboard = ({
   viewModelInstance,
   children,
   assetRefs,
+  debug,
 }) => {
   const didPlayRef = useRef(false)
   const { data, state } = useCaspar()
@@ -110,7 +138,7 @@ const RiveArtboard = ({
 
   // Updates from caspar
   useEffect(() => {
-    const { riveSource, artboard, ...casparData } = data
+    const { riveSource, artboard, _debug: debug, ...casparData } = data
     const vmi = viewModelInstance
 
     if (!vmi) {
@@ -157,9 +185,12 @@ const RiveArtboard = ({
 
         const currentValue = assetRef ? assetRef.value : property?.value
 
-        console.log(key, { currentValue, value })
+        if (debug) {
+          console.log(`DEBUG: check if "${key}" needs update`, { currentValue, newValue: value })
+        }
 
         if (value === currentValue) {
+          console.log('DEBUG: no change, skipping updating')
           continue
         }
 
@@ -179,6 +210,14 @@ const RiveArtboard = ({
             update()
           } else {
             property.value = value
+
+            if (debug) {
+              if (!didPlayRef.current) {
+                console.log('DEBUG: Before play, simply update', key, value)
+              } else {
+                console.log('DEBUG: No updateTrigger, simply update', key, value)
+              }
+            }
           }
 
           continue
@@ -186,7 +225,7 @@ const RiveArtboard = ({
 
         // Unsure if this is a good idea or not. Let's start without it...
         // We previusly didn't have a value — but now we do. Here we need to update the data binding
-        // or image before firing the update. 
+        // or image before firing the update.
         // if (!currentValue && value) {
         //   if (asset) {
         //     const update = await loadImage(asset, value, assetRefs)
@@ -217,9 +256,17 @@ const RiveArtboard = ({
           // 3. Wait for an event with the same name to fire, and then replace the value.
           updateTrigger.fire()
 
+          if (debug) {
+            console.log('DEBUG: updateTrigger.fire()', key, value)
+          }
+
           rive.on(EventType.RiveEvent, ({ data }) => {
             if (data.name === `update_${key}`) {
               property.value = value
+
+              if (debug) {
+                console.log(`DEBUG: update_${key} received — updating value:`, value)
+              }
             }
           })
         }
@@ -256,10 +303,14 @@ const RiveArtboard = ({
 
     trigger?.fire()
 
+    if (debug) {
+      console.log(`DEBUG: ${triggerName}.fire()`)
+    }
+
     if (state === States.playing) {
       didPlayRef.current = true
     }
-  }, [rive, stateMachine, state, isUpdating])
+  }, [rive, stateMachine, state, isUpdating, debug])
 
   return children
 }
@@ -282,50 +333,77 @@ async function loadImage(asset, src, refs) {
   }
 }
 
-function getArtboard(rive, aspectRatio, name) {
-  // If there's an artboard that matches the specified name exactly we use that.
+function getArtboard(rive, aspectRatio, name, debug) {
+  const artboards = rive.contents.artboards
+
+  // If there's an artboard that matches the specified name exactly, return it.
   if (name) {
-    for (const a of rive.contents.artboards) {
+    for (const a of artboards) {
       if (a.name === name) {
+        if (debug) {
+          console.log('DEBUG: getArtboard() matched name', name)
+        }
         return a
       }
     }
   }
 
-  // Find all artboards with matching aspect ratios.
-  const matchingAspectRatios = rive.contents.artboards.filter(({ name }) => {
-    const [w, h] = name
+  // Compute aspect ratios for all artboards that have parsable ratios
+  const candidates = artboards.map((a) => {
+    const [w, h] = a.name
       .split(' ')[0]
       .split(':')
       .map(Number)
       .filter((x) => !isNaN(x))
 
     if (!w || !h) {
-      return false
+      return { artboard: a, ratio: null, diff: Infinity }
     }
 
     const artboardAspectRatio = w / h
+    const diff = Math.abs(artboardAspectRatio - aspectRatio)
 
-    return Math.abs(artboardAspectRatio - aspectRatio) <= 0.01
+    return { artboard: a, ratio: artboardAspectRatio, diff }
   })
 
-  if (!matchingAspectRatios.length) {
-    return rive.contents.artboards[0]
+  // Pick the artboard with the smallest aspect ratio difference
+  const bestMatch = candidates.reduce((best, curr) =>
+    curr.diff < best.diff ? curr : best,
+  )
+
+  if (debug) {
+    console.log('DEBUG: getArtboard() aspect ratios', { bestMatch, candidates })
   }
 
-  // Only one match, so we return it.
-  if (matchingAspectRatios.length === 1) {
-    return matchingAspectRatios[0]
+  if (!bestMatch || bestMatch.diff === Infinity) {
+    if (debug) {
+      console.log('DEBUG: getArtboard() no matching aspect ratio. Returning first artboard.', artboards[0].name)
+    }
+    return artboards[0]
   }
 
-  // Check if there's one that matches both aspect ratio and name.
-  for (const a of matchingAspectRatios) {
-    if (name === a.name.replace(/^\d+:\d+\s/, '')) {
-      return a
+  // If there's a name provided, check if one with the closest aspect ratio
+  // also matches the name (ignoring the leading ratio prefix).
+  if (name) {
+    const cleanedName = (n) => n.replace(/^\d+:\d+\s*/, '')
+    const byName = candidates
+      .filter((c) => cleanedName(c.artboard.name) === name)
+      .reduce((best, curr) => (curr.diff < best.diff ? curr : best), {
+        diff: Infinity,
+      })
+
+    if (byName && byName.diff !== Infinity) {
+      if (debug) {
+        console.log('DEBUG: getArtboard() matched name and aspect ratio', byName)
+      }
+      return byName.artboard
     }
   }
 
-  return rive.contents.artboards[0]
+  if (debug) {
+    console.log('DEBUG: getArtboard() matched aspect ratio', bestMatch.artboard.name)
+  }
+  return bestMatch.artboard
 }
 
 render(Rive)
