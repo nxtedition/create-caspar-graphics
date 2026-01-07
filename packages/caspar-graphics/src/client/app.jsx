@@ -158,6 +158,7 @@ export function App({ name, templates: initialTemplates }) {
         background={persistedState?.background || settings.background}
         aspectRatio={persistedState?.aspectRatio}
         image={persistedState?.image}
+        imageOpacity={persistedState?.imageOpacity}
       >
         {(screenSize) =>
           state.templates

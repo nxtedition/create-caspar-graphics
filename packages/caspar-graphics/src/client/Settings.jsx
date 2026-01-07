@@ -7,12 +7,13 @@ import { Switch } from './Switch'
 import { HexColorPicker } from 'react-colorful'
 import { Popover, PopoverTrigger, PopoverContent } from './Popover'
 import { Input } from './Input'
+import { Slider } from './Slider'
 import {
   Menu,
   MenuTrigger,
   MenuContent,
   MenuRadioGroup,
-  MenuRadioItem
+  MenuRadioItem,
 } from './Menu'
 import { ASPECT_RATIOS } from './app'
 
@@ -115,61 +116,87 @@ export const BottomSettings = ({
   colorMode,
 }) => {
   const { colorScheme } = settings
-  const { background, aspectRatio } = projectState || {}
+  const { background, aspectRatio, imageOpacity } = projectState || {}
 
   return (
-    <div className={styles.container}>
-      <div className={styles.control}>
-        <label>Background</label>
-        <Popover>
-          <PopoverTrigger className={styles.colorPicker}>
-            <span style={{ background }} />
-          </PopoverTrigger>
-          <PopoverContent>
-            <HexColorPicker
-              color={background}
-              onChange={(background) => {
-                onProjectStateChange((value) => ({ ...value, background }))
+    <div className={styles.bottomSettings}>
+      <div className={`${styles.container} ${styles.column}`}>
+        <div className={styles.control}>
+          <div className={styles.columnGap}>
+            <label htmlFor="opacity-slider">
+              Image Opacity: {Math.round(imageOpacity * 100)}%
+            </label>
+
+            <Slider
+              min={0}
+              max={1}
+              step={0.01}
+              value={[imageOpacity]}
+              onValueChange={([nextValue]) => {
+                onProjectStateChange((prev) => ({
+                  ...prev,
+                  imageOpacity: nextValue,
+                }))
               }}
             />
-          </PopoverContent>
-        </Popover>
+          </div>
+        </div>
       </div>
-      <Menu>
-        <MenuTrigger className={styles.button} style={{ marginLeft: 'auto' }}>
-          {colorMode === 'light' ? <FiSun /> : <FiMoon />}
-        </MenuTrigger>
-        <MenuContent>
-          <MenuRadioGroup
-            value={colorScheme || 'system'}
-            onValueChange={(colorScheme) => {
-              onSettingsChange((value) => ({ ...value, colorScheme }))
-            }}
-          >
-            <MenuRadioItem value="system">System</MenuRadioItem>
-            <MenuRadioItem value="light">Light</MenuRadioItem>
-            <MenuRadioItem value="dark">Dark</MenuRadioItem>
-          </MenuRadioGroup>
-        </MenuContent>
-      </Menu>
-      <Menu>
-        <MenuTrigger className={styles.button} title='Aspect Ratio (A)'>
-          <GuideIcon />
-        </MenuTrigger>
-        <MenuContent>
-          <MenuRadioGroup
-            value={aspectRatio ?? null}
-            onValueChange={(aspectRatio) => {
-              onProjectStateChange((value) => ({ ...value, aspectRatio }))
-            }}
-          >
-            {Object.entries(ASPECT_RATIOS).map(([label, value]) => (
-              <MenuRadioItem key={value} value={value}>{label}</MenuRadioItem>
-            ))}
-            <MenuRadioItem value={null}>Off</MenuRadioItem>
-          </MenuRadioGroup>
-        </MenuContent>
-      </Menu>
+      <div className={styles.container}>
+        <div className={styles.control}>
+          <label>Background</label>
+          <Popover>
+            <PopoverTrigger className={styles.colorPicker}>
+              <span style={{ background }} />
+            </PopoverTrigger>
+            <PopoverContent>
+              <HexColorPicker
+                color={background}
+                onChange={(background) => {
+                  onProjectStateChange((value) => ({ ...value, background }))
+                }}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <Menu>
+          <MenuTrigger className={styles.button} style={{ marginLeft: 'auto' }}>
+            {colorMode === 'light' ? <FiSun /> : <FiMoon />}
+          </MenuTrigger>
+          <MenuContent>
+            <MenuRadioGroup
+              value={colorScheme || 'system'}
+              onValueChange={(colorScheme) => {
+                onSettingsChange((value) => ({ ...value, colorScheme }))
+              }}
+            >
+              <MenuRadioItem value="system">System</MenuRadioItem>
+              <MenuRadioItem value="light">Light</MenuRadioItem>
+              <MenuRadioItem value="dark">Dark</MenuRadioItem>
+            </MenuRadioGroup>
+          </MenuContent>
+        </Menu>
+        <Menu>
+          <MenuTrigger className={styles.button} title="Aspect Ratio (A)">
+            <GuideIcon />
+          </MenuTrigger>
+          <MenuContent>
+            <MenuRadioGroup
+              value={aspectRatio ?? null}
+              onValueChange={(aspectRatio) => {
+                onProjectStateChange((value) => ({ ...value, aspectRatio }))
+              }}
+            >
+              {Object.entries(ASPECT_RATIOS).map(([label, value]) => (
+                <MenuRadioItem key={value} value={value}>
+                  {label}
+                </MenuRadioItem>
+              ))}
+              <MenuRadioItem value={null}>Off</MenuRadioItem>
+            </MenuRadioGroup>
+          </MenuContent>
+        </Menu>
+      </div>
     </div>
   )
 }
@@ -189,22 +216,8 @@ const GuideIcon = () => {
         d="M2.6 4.1v7.8h10.8V4.1H2.6zm-.1-1.6A1.5 1.5 0 0 0 1 4v8a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 15 12V4a1.5 1.5 0 0 0-1.5-1.5h-11z"
         fill="currentColor"
       />
-      <rect
-        x="7"
-        y="1.5"
-        width="2"
-        height="4"
-        rx=".5"
-        fill="currentColor"
-      />
-      <rect
-        x="7"
-        y="10.5"
-        width="2"
-        height="4"
-        rx=".5"
-        fill="currentColor"
-      />
+      <rect x="7" y="1.5" width="2" height="4" rx=".5" fill="currentColor" />
+      <rect x="7" y="10.5" width="2" height="4" rx=".5" fill="currentColor" />
       <rect
         x="16"
         y="7"
