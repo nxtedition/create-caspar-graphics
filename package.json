@@ -14,7 +14,8 @@
   "scripts": {
     "format": "prettier --single-quote --no-semi --write 'packages/*/*.js' 'packages/*/!(node_modules)/**/*.js'",
     "examples": "lerna run examples",
-    "dev": "lerna run --parallel dev"
+    "dev": "lerna run --parallel dev",
+    "release": "lerna publish"
   },
   "lint-staged": {
     "*.js": [
