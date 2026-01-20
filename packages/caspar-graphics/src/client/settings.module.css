@@ -16,6 +16,18 @@
   border-top: 1px solid var(--neutral5);
 }
 
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.columnGap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
 .control {
   display: flex;
   align-items: center;
