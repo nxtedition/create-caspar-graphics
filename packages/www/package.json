@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@nxtedition/caspar-graphics-docs",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "description": "Caspar Graphics Docs",
   "scripts": {
     "dev": "next dev",
@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "@napi-rs/simple-git": "^0.1.9",
-    "@nxtedition/caspar-graphics": "^3.0.3",
+    "@nxtedition/caspar-graphics": "^3.1.0",
     "next": "^14.0.4",
     "nextra": "^2.13.2",
     "nextra-theme-docs": "^2.13.2",
