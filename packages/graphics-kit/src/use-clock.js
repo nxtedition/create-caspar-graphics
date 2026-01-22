@@ -22,5 +22,5 @@ export const useClock = (...args) => {
     return null
   }
 
-  return Intl.DateTimeFormat(...args).format(date)
+  return isDisabled ? null : Intl.DateTimeFormat(...args).format(date)
 }

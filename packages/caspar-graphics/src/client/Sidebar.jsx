@@ -5,6 +5,7 @@ import { FiArrowRightCircle } from 'react-icons/fi'
 import { Switch } from './Switch'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import { Input } from './Input'
+import { TextArea } from './TextArea'
 import { Checkbox } from './Checkbox'
 import {
   Menu,
@@ -238,7 +239,7 @@ const Template = ({
               onKeyDown={evt => {
                 if (
                   (evt.key === 's' && evt.metaKey) ||
-                  (!showJson && evt.key === 'Enter')
+                  (!showJson && evt.key === 'Enter' && evt.target.tagName !== 'TEXTAREA')
                 ) {
                   evt.preventDefault()
 
@@ -277,6 +278,10 @@ const Template = ({
 
                   if (type === 'image') {
                     type = 'string'
+                  }
+
+                  if (property.widget === 'textarea') {
+                    return <TextArea {...props} value={value || ''} />
                   }
 
                   return <Input {...props} value={value || ''} type={type} />

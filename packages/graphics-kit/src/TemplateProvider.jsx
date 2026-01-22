@@ -10,6 +10,8 @@ import { States } from './constants'
 
 export const TemplateContext = React.createContext()
 
+const eventListeners = new Map()
+
 export const TemplateProvider = ({
   children,
   name,
@@ -44,23 +46,41 @@ export const TemplateProvider = ({
   }, [])
 
   // Handle state and data updates
-  useLayoutEffect(() => {
+  useEffect(() => {
     let didPlay = false
 
     window.load = () => {
       setState(States.loaded)
       logger('.load()')
+
+      for (const [listener, type] of eventListeners.entries()) {
+        if (type === 'load') {
+          listener()
+        }
+      }
     }
 
     window.play = () => {
       didPlay = true
       setRequestPlay(true)
       logger('.play()')
+
+      for (const [listener, type] of eventListeners.entries()) {
+        if (type === 'play') {
+          listener()
+        }
+      }
     }
 
     window.pause = () => {
       setState(States.paused)
       logger('.pause()')
+
+      for (const [listener, type] of eventListeners.entries()) {
+        if (type === 'pause') {
+          listener()
+        }
+      }
     }
 
     window.stop = () => {
@@ -70,6 +90,12 @@ export const TemplateProvider = ({
       } else {
         setState(States.removed)
         logger('.stop() without play')
+      }
+
+      for (const [listener, type] of eventListeners.entries()) {
+        if (type === 'stop') {
+          listener()
+        }
       }
     }
 
@@ -86,6 +112,12 @@ export const TemplateProvider = ({
         if (!didPlay) {
           const delay = delayPlay('__initialData')
           setResume(() => delay)
+        }
+      }
+
+      for (const [listener, type] of eventListeners.entries()) {
+        if (type === 'update') {
+          listener(data)
         }
       }
     }
@@ -124,6 +156,14 @@ export const TemplateProvider = ({
     setState(States.removed)
   }, [])
 
+  const addEventListener = useCallback((type, listener) => {
+    eventListeners.set(listener, type)
+
+    return () => {
+      eventListeners.delete(listener)
+    }
+  }, [])
+
   return (
     <TemplateContext.Provider
       value={{
@@ -133,6 +173,7 @@ export const TemplateProvider = ({
         safeToRemove,
         delayPlay,
         size: windowSize,
+        addEventListener
       }}
     >
       {state !== States.removed ? (

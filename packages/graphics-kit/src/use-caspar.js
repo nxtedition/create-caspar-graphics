@@ -57,6 +57,14 @@ export const useCasparData = (opts) => {
   }, [data, trim])
 }
 
+export const useCasparEvent = (type, listener) => {
+  const { addEventListener } = useContext(TemplateContext)
+
+  useEffect(() => {
+    return addEventListener(type, listener)
+  }, [type, listener, addEventListener])
+}
+
 export const useMergedData = (opts) => {
   const data = useCasparData(opts)
   const ref = useRef({})
