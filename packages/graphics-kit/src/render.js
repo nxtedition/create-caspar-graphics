@@ -21,8 +21,8 @@ export const render = (Template, options) => {
 
   if (cssReset) {
     const reset = ` 
-      width: 100vw;
       height: 100vh;
+      width: 100vw;
       overflow: hidden;
       margin: 0;
     `
