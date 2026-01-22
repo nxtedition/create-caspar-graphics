@@ -201,6 +201,14 @@ export async function createServer({ name, mode, host = 'localhost' }) {
       connection.send(`CG`, `${channel}-${layer}`, `STOP`, 1)
     }
 
+    function next(data) {
+      console.log('next', data)
+      if (connection) {
+        const { channel = connection.channel, layer } = data
+        connection.send(`CG`, `${channel}-${layer}`, `NEXT`)
+      }
+    }
+
     client.on('message', (message) => {
       const { type, ...data } = JSON.parse(message)
 
@@ -210,6 +218,7 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         update,
         play,
         stop,
+        next,
       }[type]
 
       if (fn) {

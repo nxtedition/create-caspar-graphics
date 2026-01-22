@@ -21,6 +21,7 @@ export const TemplateProvider = ({
   const [resume, setResume] = useState()
   const [requestPlay, setRequestPlay] = useState(false)
   const [windowSize, setWindowSize] = useState(intitialWindowSize)
+  const [nextCount, setNextCount] = useState(0)
 
   const logger = (message) => {
     console.log(`${name || ''}${message}`)
@@ -75,19 +76,21 @@ export const TemplateProvider = ({
 
     window.update = (payload) => {
       const data = parse(payload)
-
       if (data) {
         logger(
           `.update(${data ? JSON.stringify(data || {}, null, 2) : 'null'})`,
         )
-
         setData(data)
-
         if (!didPlay) {
           const delay = delayPlay('__initialData')
           setResume(() => delay)
         }
       }
+    }
+
+    window.next = () => {
+      setNextCount((c) => c + 1)
+      logger('.next()')
     }
 
     return () => {
@@ -96,6 +99,7 @@ export const TemplateProvider = ({
       delete window.pause
       delete window.stop
       delete window.update
+      delete window.next
     }
   }, [])
 
@@ -133,6 +137,7 @@ export const TemplateProvider = ({
         safeToRemove,
         delayPlay,
         size: windowSize,
+        nextCount,
       }}
     >
       {state !== States.removed ? (

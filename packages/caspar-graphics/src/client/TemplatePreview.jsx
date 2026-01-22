@@ -7,7 +7,7 @@ const States = {
   stop: 3,
 }
 
-export const ServerTemplate = ({ socket, name, layer, show, data }) => {
+export const ServerTemplate = ({ socket, name, layer, show, data, nextExecutionId }) => {
   const [state, setState] = useState(States.load)
   const [prevUpdate, setPrevUpdate] = useState()
   const source = `/templates/${name}/index.html`
@@ -61,6 +61,12 @@ export const ServerTemplate = ({ socket, name, layer, show, data }) => {
     }
   }, [socket, show, state])
 
+  useEffect(() => {
+    if (socket && state === States.play && nextExecutionId) {
+      socket.send(JSON.stringify({ type: 'next', layer }))
+    }
+  }, [socket, state, layer, nextExecutionId])
+
   return null
 }
 
@@ -74,6 +80,7 @@ export const TemplatePreview = ({
   src = `/templates/${name}/index.html`,
   show,
   data,
+  nextExecutionId,
 }) => {
   const [templateWindow, setTemplateWindow] = useState()
   const [didShow, setDidShow] = useState(false)
@@ -116,6 +123,12 @@ export const TemplatePreview = ({
       templateWindow.removeEventListener('keydown', onKeyDown)
     }
   }, [templateWindow, onKeyDown])
+
+  useEffect(() => {
+    if (templateWindow?.next && nextExecutionId) {
+      templateWindow.next()
+    }
+  }, [templateWindow, nextExecutionId, name])
 
   let width = containerSize.width
   let height = containerSize.height
