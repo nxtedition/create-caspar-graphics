@@ -20,11 +20,25 @@
   font-size: 13px;
 }
 
-.input:hover {
+.textarea {
+  background: var(--neutral5);
+  border: 1px solid var(--neutral7);
+  border-radius: 2px;
+  padding: 6px;
+  box-sizing: border-box;
+  color: var(--neutral12);
+  font-size: 13px;
+  font-family: inherit;
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+
+:is(.input, textarea):hover {
   border-color: var(--neutral8);
 }
 
-.input:focus {
+:is(.input, textarea):focus {
   border-color: var(--primary10);
   outline: none;
 }
+
