@@ -124,7 +124,7 @@ export const BottomSettings = ({
         <div className={styles.control}>
           <div className={styles.columnGap}>
             <label htmlFor="opacity-slider">
-              Image Opacity: {Math.round(imageOpacity * 100)}%
+              Image Opacity: {Math.round((imageOpacity ?? 0) * 100)}%
             </label>
 
             <Slider
