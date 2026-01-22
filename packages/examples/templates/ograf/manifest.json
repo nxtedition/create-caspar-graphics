@@ -1,0 +1,25 @@
+{
+  "name": "OGraf",
+  "schema": {
+    "ografMain": {
+      "type": "string",
+      "label": "OGraf manifest file URL"
+    }
+  },
+  "previewData": {
+    "minimal": {
+      "ografMain": "./samples/minimal/minimal.mjs",
+      "_debug": true
+    },
+    "logo": {
+      "ografMain": "./samples/logo/logo.mjs",
+      "_debug": true
+    },
+    "l3rd-name": {
+      "ografMain": "./samples/l3rd-name/graphic.mjs",
+      "title": "CEO",
+      "name": "John Doe",
+      "_debug": true
+    }
+  }
+}
