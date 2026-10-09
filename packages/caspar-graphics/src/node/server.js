@@ -16,28 +16,46 @@ class AMCPConnection {
     this.host = url.hostname
     this.port = url.port || 5250
     this.channel = channel
+    this.onConnect = onConnect
+    this.onClose = onClose
+    this.onError = onError
+    this._destroyed = false
 
     if (!this.host || !this.port) {
       throw new Error(`Invalid argument url=${url}`)
     }
 
+    this._connect()
+  }
+
+  _connect() {
+    if (this._destroyed) return
     this.socket = net
       .connect(this.port, this.host)
-      .on('connect', () => {
-        onConnect()
-      })
+      .on('connect', () => this.onConnect?.())
       .on('error', (err) => {
-        console.log('err', err)
+        console.log('amcp error', err)
+        this.onError?.(err)
       })
       .on('close', () => {
-        console.log('close')
+        console.log('amcp close')
+        this.onClose?.()
+        if (!this._destroyed) {
+          setTimeout(() => this._connect(), 2000)
+        }
       })
       .setEncoding('utf8')
+  }
 
-    this.send = (...args) => {
-      const cmd = args.join(' ')
-      this.socket.write(cmd + '\r\n')
+  send(...args) {
+    if (this.socket?.writable) {
+      this.socket.write(args.join(' ') + '\r\n')
     }
+  }
+
+  destroy() {
+    this._destroyed = true
+    this.socket?.destroy()
   }
 }
 
@@ -52,7 +70,72 @@ const watcher = chokidar.watch(
   },
 )
 
+const REMOVED_PATH = '/__caspar-graphics/removed'
+const LAYER_PARAM = 'casparLayer'
+
+// Injected into templates served to CasparCG. Wraps window.remove() so that the dev
+// server is notified once a template has finished animating out and removed itself.
+// Only active when the template was loaded with a layer param, i.e. by CasparCG and
+// not by the preview iframe.
+const removeNotifierScript = `
+(function () {
+  var layer = new URLSearchParams(location.search).get('${LAYER_PARAM}')
+  if (!layer) return
+  var remove = window.remove
+  function wrapped() {
+    navigator.sendBeacon('${REMOVED_PATH}?layer=' + encodeURIComponent(layer))
+    return remove && remove.apply(this, arguments)
+  }
+  Object.defineProperty(window, 'remove', {
+    configurable: true,
+    get: function () { return wrapped },
+    set: function (fn) { remove = fn },
+  })
+})()
+`
+
+function removeNotifier(onRemoved) {
+  return {
+    name: 'caspar-graphics-remove-notifier',
+    apply: 'serve',
+    transformIndexHtml() {
+      return [
+        {
+          tag: 'script',
+          children: removeNotifierScript,
+          injectTo: 'head-prepend',
+        },
+      ]
+    },
+    configureServer(server) {
+      server.middlewares.use(REMOVED_PATH, (req, res) => {
+        const url = new URL(req.url, 'http://localhost')
+        const [channel, layer] = (url.searchParams.get('layer') || '').split(
+          '-',
+        )
+        if (channel && layer) {
+          onRemoved({ channel: Number(channel), layer: Number(layer) })
+        }
+        res.statusCode = 204
+        res.end()
+      })
+    },
+  }
+}
+
 export async function createServer({ name, mode, host = 'localhost' }) {
+  // Start a WebSocket server so that we can send information about the templates.
+  const wssPort = await getPort()
+  const wss = new WebSocketServer({ port: wssPort })
+
+  function onTemplateRemoved(payload) {
+    console.log('removed', payload)
+    const message = JSON.stringify({ type: 'removed', payload })
+    for (const client of wss.clients) {
+      client.send(message)
+    }
+  }
+
   // Start a vite server for the user's templates.
   const templatesPort = await getPort()
   const templatesConfig = {
@@ -81,14 +164,10 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         clientPort: templatesPort,
       },
     },
-    plugins: [react(), vue()],
+    plugins: [react(), vue(), removeNotifier(onTemplateRemoved)],
   }
   const createTemplatesServer = mode === 'preview' ? preview : createViteServer
   const templatesServer = await createTemplatesServer(templatesConfig)
-
-  // Start a WebSocket server so that we can send information about the templates.
-  const wssPort = await getPort()
-  const wss = new WebSocketServer({ port: wssPort })
 
   // Start another vite server for our client UI.
   const previewConfig = {
@@ -149,12 +228,20 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         connection.url !== data.url ||
         connection.channel !== data.channel
       ) {
+        connection?.destroy()
         connection = new AMCPConnection(data.url, {
           channel: data.channel,
           onConnect,
           onClose,
           onError,
         })
+      } else {
+        connection.onConnect = onConnect
+        connection.onClose = onClose
+        connection.onError = onError
+        if (connection.socket?.writable) {
+          onConnect()
+        }
       }
     }
 
@@ -170,7 +257,7 @@ export async function createServer({ name, mode, host = 'localhost' }) {
         `${channel}-${layer}`,
         `ADD`,
         1,
-        baseUrl + source,
+        `${baseUrl}${source}?${LAYER_PARAM}=${channel}-${layer}`,
         0,
       )
     }
