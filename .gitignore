@@ -36,3 +36,10 @@ dist
 .vscode
 .vercel
 .next
+
+# Local AI workspaces and private scratch files
+.claude
+.codex
+.cursor
+.aider*
+.*-private
