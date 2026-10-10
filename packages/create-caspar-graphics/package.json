@@ -15,7 +15,12 @@
   },
   "files": [
     "index.js",
-    "template-*"
+    "template-*",
+    "!**/.claude",
+    "!**/.codex",
+    "!**/.cursor",
+    "!**/.aider*",
+    "!**/.*-private"
   ],
   "dependencies": {
     "kolorist": "^1.6.0",

@@ -30,7 +30,12 @@
   "files": [
     "bin",
     "src",
-    "dist"
+    "dist",
+    "!**/.claude",
+    "!**/.codex",
+    "!**/.cursor",
+    "!**/.aider*",
+    "!**/.*-private"
   ],
   "keywords": [
     "CasparCG",
