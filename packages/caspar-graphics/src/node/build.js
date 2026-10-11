@@ -8,11 +8,17 @@ import chalk from 'chalk'
 import react from '@vitejs/plugin-react'
 import { viteSingleFile } from 'vite-plugin-singlefile'
 import crypto from 'node:crypto'
+import { writeOgraf } from './ograf.js'
 
 const TARGETS = {
   'ccg2.3.3': 'chrome71',
   nxt: 'chrome71',
   vercel: 'chrome71',
+  ograf: 'es2020',
+}
+
+const ALIASES = {
+  ograph: 'ograf',
 }
 
 export async function build({
@@ -23,9 +29,11 @@ export async function build({
   outDir = 'dist',
   singleFile = true,
 }) {
+  target = ALIASES[target] || target
   const plugins = [react()]
 
-  if (singleFile && !target.startsWith('nxt')) {
+  // NOTE: ograf inlines the HTML into graphic.mjs, so it must be a single file.
+  if ((singleFile && !target.startsWith('nxt')) || target === 'ograf') {
     plugins.push(viteSingleFile())
   }
 
@@ -104,6 +112,14 @@ export async function build({
           } catch (err) {
             console.log(err)
           }
+        } else if (target === 'ograf') {
+          const appPkg = JSON.parse(await readFile(paths.appPackageJson))
+          await writeOgraf({
+            name,
+            templatePath: path,
+            outPath: join(paths.appPath, outDir, name),
+            appPkg,
+          })
         } else if (target === 'vercel') {
           try {
             await includeManifest()
