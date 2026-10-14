@@ -48,18 +48,42 @@ export const ServerTemplate = ({ socket, name, layer, show, data }) => {
     } else if (!show && state === States.play) {
       socket.send(JSON.stringify({ type: 'stop', layer }))
       setState(States.stop)
-
-      // TODO: wait for window.remove() to be called.
-      const timeout = window.setTimeout(() => {
-        setState(States.load)
-        setPrevUpdate(null)
-      }, 2000)
-
-      return () => {
-        window.clearTimeout(timeout)
-      }
+    } else if (show && state === States.stop) {
+      // Re-show during stop animation — reset immediately
+      setPrevUpdate(null)
+      setState(States.load)
     }
   }, [socket, show, state])
+
+  // Reset from stop back to load once the template has called window.remove() in CasparCG.
+  // Kept separate so it isn't cancelled by show/data changes —
+  // only a state transition away from States.stop should cancel it.
+  useEffect(() => {
+    if (!socket || state !== States.stop) return
+
+    const reset = () => {
+      setState(States.load)
+      setPrevUpdate(null)
+    }
+
+    const onMessage = (evt) => {
+      const { type, payload } = JSON.parse(evt.data)
+      if (type === 'removed' && String(payload.layer) === String(layer)) {
+        reset()
+      }
+    }
+
+    socket.addEventListener('message', onMessage)
+
+    // Fallback for templates that never call window.remove(), or when the
+    // remove notification isn't available (e.g. in preview mode).
+    const id = window.setTimeout(reset, 10000)
+
+    return () => {
+      socket.removeEventListener('message', onMessage)
+      window.clearTimeout(id)
+    }
+  }, [socket, state, layer])
 
   return null
 }
