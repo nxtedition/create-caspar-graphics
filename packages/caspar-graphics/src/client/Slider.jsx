@@ -1,6 +1,6 @@
 import * as SliderPrimitive from '@radix-ui/react-slider'
 import React from 'react'
-import styles from './slider.module.css'
+import styles from './Slider.module.css'
 
 export const Slider = React.forwardRef(function Slider(
   { value, ...props },
