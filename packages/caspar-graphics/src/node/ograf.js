@@ -86,10 +86,6 @@ export function toJsonSchema(schema, previewData) {
     return { type: 'object', properties: {} }
   }
 
-  if (schema.type === 'object' && schema.properties) {
-    return schema
-  }
-
   return toObjectSchema(schema, previewData)
 }
 
