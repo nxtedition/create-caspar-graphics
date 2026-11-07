@@ -74,12 +74,13 @@ function createManifest({ name, manifest, appPkg }) {
     renderRequirements: Object.keys(resolution).length
       ? [{ resolution }]
       : undefined,
-    v_previewData: previewData,
   }
 }
 
 // Converts our `{ key: { type, label } }` schema to JSON Schema (with GDD types).
 // https://superflytv.github.io/GraphicsDataDefinition/
+// nxt's OGraf importer passes unknown keys through, so nxt-only keys such as
+// `widget`, `placeholder` and `helpText` are kept on the property.
 export function toJsonSchema(schema, previewData) {
   if (!schema) {
     return { type: 'object', properties: {} }
@@ -89,34 +90,71 @@ export function toJsonSchema(schema, previewData) {
     return schema
   }
 
+  return toObjectSchema(schema, previewData)
+}
+
+// JSON Schema lists required fields on the parent, not `required: true` on each field.
+function toObjectSchema(fields, previewData) {
   const properties = {}
+  const required = []
 
-  for (const [key, { type, label, widget, ...rest }] of Object.entries(
-    schema,
-  )) {
-    const property = { ...rest, type, title: label ?? key }
-
-    if (type === 'image') {
-      property.type = 'string'
-      property.gddType = 'file-path/image-path'
-    } else if (type === 'color') {
-      property.type = 'string'
-      property.gddType = 'color-rrggbb'
-      property.pattern = '^#[0-9a-f]{6}$'
-    } else if (type === 'array') {
-      property.items ??= inferItems(key, previewData)
-    } else if (!JSON_TYPES.includes(type)) {
-      property.type = 'string'
+  for (const [key, field] of Object.entries(fields)) {
+    properties[key] = toProperty(key, field, previewData)
+    if (field.required === true) {
+      required.push(key)
     }
-
-    if (widget === 'textarea') {
-      property.gddType = 'multi-line'
-    }
-
-    properties[key] = property
   }
 
-  return { type: 'object', properties }
+  return required.length
+    ? { type: 'object', properties, required }
+    : { type: 'object', properties }
+}
+
+function toProperty(key, field, previewData) {
+  const { type, label, defaultValue, ...rest } = field
+  const property = { ...rest, type, title: label ?? rest.title ?? key }
+
+  if (typeof property.required === 'boolean') {
+    delete property.required
+  }
+
+  if (defaultValue !== undefined) {
+    property.default ??= defaultValue
+  }
+
+  if (type === 'image') {
+    property.type = 'string'
+    property.gddType = 'file-path/image-path'
+  } else if (type === 'color') {
+    property.type = 'string'
+    property.gddType = 'color-rrggbb'
+    property.pattern = '^#[0-9a-f]{6}$'
+  } else if (type === 'integer') {
+    // nxt has no integer type and drops the field.
+    property.type = 'number'
+  } else if (type === 'object') {
+    // nxt rejects objects without `properties`.
+    Object.assign(property, toObjectSchema(rest.properties ?? {}))
+  } else if (type === 'array') {
+    property.items = rest.items
+      ? toItems(rest.items)
+      : inferItems(key, previewData)
+  } else if (!JSON_TYPES.includes(type)) {
+    property.type = 'string'
+  }
+
+  // nxt ignores `multi-line` and uses the `widget` key kept above instead.
+  if ((rest.widget?.type ?? rest.widget) === 'textarea') {
+    property.gddType = 'multi-line'
+  }
+
+  return property
+}
+
+function toItems(items) {
+  return items.type === 'object'
+    ? { ...items, ...toObjectSchema(items.properties ?? {}) }
+    : items
 }
 
 // OGraf requires a full schema for array items, so infer it from the preview data.
