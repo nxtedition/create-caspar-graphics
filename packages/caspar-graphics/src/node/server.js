@@ -289,7 +289,34 @@ function getTemplates() {
         console.error(err)
       }
 
-      return { name: dirPath.split(path.sep).at(-1), manifest }
+      return {
+        name: dirPath.split(path.sep).at(-1),
+        manifest,
+        updatedAt: getLatestMtime(dirPath),
+      }
     })
     .filter(Boolean)
+}
+
+// The most recent modification time (ms) of any file within a template directory.
+function getLatestMtime(dirPath) {
+  let latest = 0
+
+  try {
+    for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
+      if (entry.name.startsWith('.') || entry.name === 'node_modules') {
+        continue
+      }
+
+      const entryPath = path.join(dirPath, entry.name)
+      const mtime = entry.isDirectory()
+        ? getLatestMtime(entryPath)
+        : fs.statSync(entryPath).mtimeMs
+      latest = Math.max(latest, mtime)
+    }
+  } catch (err) {
+    console.error(err)
+  }
+
+  return latest
 }

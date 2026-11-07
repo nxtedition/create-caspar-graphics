@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import styles from './sidebar.module.css'
-import { MdArrowDropDown, MdChevronRight } from 'react-icons/md'
+import { MdArrowDropDown, MdChevronRight, MdSort } from 'react-icons/md'
 import { FiArrowRightCircle } from 'react-icons/fi'
 import { Switch } from './Switch'
 import * as Collapsible from '@radix-ui/react-collapsible'
@@ -23,6 +23,12 @@ import * as Tabs from '@radix-ui/react-tabs'
 
 export const Sidebar = ({ state, dispatch, settings, onSettingsChange, projectState, onProjectStateChange }) => {
   const { templates } = state
+  const { templateSort = 'name' } = settings
+  const sortedTemplates = useMemo(
+    () => sortTemplates(templates, templateSort),
+    [templates, templateSort]
+  )
+  const hasEnabled = templates?.some(template => template.enabled)
 
   // TODO:
   const { colorScheme = 'system' } = settings
@@ -49,8 +55,44 @@ export const Sidebar = ({ state, dispatch, settings, onSettingsChange, projectSt
       />
       {settings.showSidebar && (
         <>
+          <div className={styles.toolbar}>
+            <Menu>
+              <MenuTrigger
+                className={styles.toolbarButton}
+                title="Sort templates"
+              >
+                <MdSort />
+                <span>
+                  {templateSort === 'updated' ? 'Recently updated' : 'Name'}
+                </span>
+              </MenuTrigger>
+              <MenuContent align="start">
+                <MenuLabel>Sort by</MenuLabel>
+                <MenuRadioGroup
+                  value={templateSort}
+                  onValueChange={templateSort => {
+                    onSettingsChange(value => ({ ...value, templateSort }))
+                  }}
+                >
+                  <MenuRadioItem value="name">Name</MenuRadioItem>
+                  <MenuRadioItem value="updated">
+                    Recently updated
+                  </MenuRadioItem>
+                </MenuRadioGroup>
+              </MenuContent>
+            </Menu>
+            <button
+              className={styles.toolbarButton}
+              disabled={!templates?.length}
+              onClick={() => {
+                dispatch({ type: 'set-all-enabled', enabled: !hasEnabled })
+              }}
+            >
+              {hasEnabled ? 'Uncheck all' : 'Check all'}
+            </button>
+          </div>
           <div className={styles.templates}>
-            {templates?.map(template => (
+            {sortedTemplates?.map(template => (
               <Template
                 key={template.name}
                 showJson={settings.showJson}
@@ -73,6 +115,27 @@ export const Sidebar = ({ state, dispatch, settings, onSettingsChange, projectSt
         </>
       )}
     </div>
+  )
+}
+
+const collator = new Intl.Collator(undefined, {
+  numeric: true,
+  sensitivity: 'base'
+})
+
+const getLabel = template => template.manifest?.name || template.name
+
+function sortTemplates(templates, sort) {
+  if (!Array.isArray(templates)) {
+    return templates
+  }
+
+  const byName = (a, b) => collator.compare(getLabel(a), getLabel(b))
+
+  return [...templates].sort(
+    sort === 'updated'
+      ? (a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0) || byName(a, b)
+      : byName
   )
 }
 

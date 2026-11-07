@@ -198,6 +198,17 @@ function reducer(state, action) {
     }
   }
 
+  if (action.type === 'set-all-enabled') {
+    return {
+      ...state,
+      templates: state.templates?.map((template) => ({
+        ...template,
+        enabled: action.enabled,
+        show: action.enabled ? template.show : false,
+      })),
+    }
+  }
+
   if (!action.template) {
     console.warn('The action you just dispatched is missing template:', action)
     return state
@@ -293,7 +304,7 @@ function getInitialState({ projectName, templates }) {
   return {
     projectName,
     templates: templates
-      .map(({ name, manifest, src }, index) => {
+      .map(({ name, manifest, src, updatedAt }, index) => {
         const { previewData, previewImages, schema, layer } = manifest || {}
         const presets = getPresets(previewData)
         const templateSnapshot = snapshot.templates?.[name]
@@ -301,6 +312,7 @@ function getInitialState({ projectName, templates }) {
         return {
           name,
           src,
+          updatedAt,
           manifest,
           schema,
           previewImages,
