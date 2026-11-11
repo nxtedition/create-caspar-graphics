@@ -8,12 +8,26 @@ const cli = cac()
 const ownPkg = JSON.parse(fs.readFileSync(paths.ownPackageJson))
 const appPkg = JSON.parse(fs.readFileSync(paths.appPackageJson))
 
-const getOptions = clOptions => ({
-  version: ownPkg.version,
-  name: appPkg.name,
-  ...(appPkg.casparGraphics || {}),
-  ...clOptions
-})
+// When an option is passed more than once (e.g. `yarn build --target ograf` with a
+// build script that already sets --target), cac gives an array. Let the last one win.
+const SINGLE_VALUE_OPTIONS = ['target', 'outDir']
+
+const getOptions = (clOptions) => {
+  const options = {
+    version: ownPkg.version,
+    name: appPkg.name,
+    ...(appPkg.casparGraphics || {}),
+    ...clOptions,
+  }
+
+  for (const key of SINGLE_VALUE_OPTIONS) {
+    if (Array.isArray(options[key])) {
+      options[key] = options[key].at(-1)
+    }
+  }
+
+  return options
+}
 
 // Start
 cli
@@ -21,7 +35,7 @@ cli
   .option('--port <port>', 'specify which port the server should listen on.')
   .option(
     '--host <host>',
-    'specify which IP addresses the server should listen on.'
+    'specify which IP addresses the server should listen on.',
   )
   .option('--mode <mode>', 'specify which mode to run the preview server in.')
   .action(async (root, options) => {
@@ -30,7 +44,7 @@ cli
       const server = await createServer(getOptions(options))
       await server.listen()
       console.log(
-        chalk.green(`${chalk.bold('Caspar Graphics')} v${ownPkg.version}`)
+        chalk.green(`${chalk.bold('Caspar Graphics')} v${ownPkg.version}`),
       )
       server.printUrls()
 
@@ -50,15 +64,15 @@ cli
   .option('-i, --include [...templates]', 'templates included in this build')
   .option(
     '--target <target>',
-    '[string] browser compatibility target for the final bundle'
+    '[string] browser compatibility target for the final bundle, or one of: nxt, vercel, ograf',
   )
   .option(
     '--singleFile',
-    '[boolean] inline JavaScript and CSS resources into a single html file per template'
+    '[boolean] inline JavaScript and CSS resources into a single html file per template',
   )
   .option(
     '--outDir <outDir>',
-    '[string] output directory (relative to project root).'
+    '[string] output directory (relative to project root).',
   )
   .action(async (root, options) => {
     const { build } = await import('./build.js')
